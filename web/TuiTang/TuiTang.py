@@ -6,7 +6,7 @@ import threading
 #设置最大线程锁
 thread_lock = threading.BoundedSemaphore(value=10)
 
-
+#下载page内容
 def  get_page(url):
     page = requests.get(url)
     page = page.content
@@ -14,20 +14,22 @@ def  get_page(url):
     return page
 
 
-#label搜索下载关键词，所有page下载
+#按照label关键词搜索下载所有page页的内容
 #print(get_page("https://www.duitang.com/napi/blog/list/by_search/?kw=%E6%A0%A1%E8%8A%B1&start=0&limit=100"))
 def pages_from_duitang(label):
     pages = []
     url = 'https://www.duitang.com/napi/blog/list/by_search/?kw={}&start={}&limit=100'
     label = urllib.parse.quote(label)
+    #
     for index in range(0,3600,100):
         u=url.format(label, index)
-        print(u)
+        #print('url',u)
         page = get_page(u)
         pages.append(page)
+        print('url:',len(pages),' ',u)
     return pages
 
-#获取一页内的所有图片链接
+#获取page页内的所有图片链接
 def findall_in_page(page,startpart,endstart):
     all_string = []
     end = 0
@@ -39,16 +41,15 @@ def findall_in_page(page,startpart,endstart):
         all_string.append(string)
     return all_string
 
-#所有的图片链接
+#获取所有page的图片链接
 def pic_url_from_pages(pages):
     pic_urls = []
     for page in pages:
         urls = findall_in_page(page,'path":"','"')
-        #print('urls:',urls)
         pic_urls.extend(urls)
     return pic_urls
  
-#下载
+#下载图片，并写入文件
 def download_pics(url,n):
     r=requests.get(url)
     path = 'pics/'+str(n)+'.jpg'
@@ -56,7 +57,9 @@ def download_pics(url,n):
         f.write(r.content)
     #解锁 
     thread_lock.release()
-        
+
+
+
 def main(label):
     pages = pages_from_duitang(label)
     pic_urls  = pic_url_from_pages(pages)
@@ -65,12 +68,14 @@ def main(label):
     print('一共下载图片',pic_count,'张')
     for url in  pic_urls:
         n +=1
-        print('下载{}一共{}张图片，正在下载{}张图片'.format(label,pic_count,n))
-        #上锁        
+        print('下载关键词‘{}’的图，一共{}张图片，正在下载{}张图片'.format(label,pic_count,n))
+        #上锁
         thread_lock.acquire()
         t = threading.Thread(target=download_pics,args=(url,n))
         t.start()
-        
+
+#--------------------------------------------------------------
+#输入关键词，进行搜索下载：漂亮，性感
 main('性感')       
         
         
