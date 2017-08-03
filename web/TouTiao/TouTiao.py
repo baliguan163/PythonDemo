@@ -75,7 +75,7 @@ def save_photo(photo_url, save_dir, timeout=10):
 	res=requests.get(photo_url)
 	with open(save_path,'wb') as f:
 		f.write(res.content)
-		#print('已下载图片:',save_path)
+		print('已下载图片:',save_path)
 
 
 

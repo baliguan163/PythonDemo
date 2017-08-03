@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #coding=utf-8
-import urllib2
+
 import urllib
 import re
-import MySQLdb
-import thread
+import pymysql
+import _thread
 import time
 
 #http://w3.afulyu.rocks/pw/thread.php?fid=49
@@ -20,13 +20,15 @@ values = {'name' : 'Michael Foord',
           'location' : 'Northampton',
           'language' : 'zh-cn' }
 headers = { 'User-Agent' : user_agent }
+
+
 # data = urllib.urlencode(values)
 # req = urllib2.Request(url, data, headers)
 # response = urllib2.urlopen(req)
 # the_page = response.read()
 
 #创建锁，用于访问数据库
-lock = thread.allocate_lock()
+lock = _thread.allocate_lock()
 
 #抓取函数
 def fetch(id=1,debug=False):
@@ -34,8 +36,8 @@ def fetch(id=1,debug=False):
     #url = urlbase + '&page=' + str(id)
     #print url
     #request = urllib2.Request(url='http://w3.afulyu.rocks/pw/thread.php?fid=7&page=2',headers = headers)
-    request = urllib2.Request(url='http://w3.afulyu.rocks/pw/thread.php?fid=49&page=' + str(id),headers = headers)
-    res = urllib2.urlopen(request).read()
+    request = urllib.request.Request(url='http://w3.afulyu.rocks/pw/thread.php?fid=49&page=' + str(id),headers = headers)
+    res = urllib.request.urlopen(request).read()
 
     # data = urllib.urlencode(values)
     # req = urllib2.Request(url,data, headers)
@@ -91,8 +93,8 @@ def insert_db(page):
         # req = urllib2.Request(url, data, headers)
         # res = urllib2.urlopen(req).read()
 
-        request = urllib2.Request(url,headers = headers)
-        res = urllib2.urlopen(request).read()
+        request = urllib.Request(url,headers = headers)
+        res = urllib.Request.urlopen(request).read()
 
         urldownArr = re.compile(r'read_tpc"(.*?)"w_tpc',re.DOTALL).findall(res)
         print(urldownArr)

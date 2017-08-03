@@ -1,7 +1,9 @@
 #decoding=utf-8
 import  urllib
 import  hashlib
-import MySQLdb
+import  pymysql
+import requests
+
 import  time
 
 
@@ -10,7 +12,7 @@ global conne
 def connnect_db():
     global conne
     global cur
-    conne=MySQLdb.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8')
+    conne=pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8')
     cur=conne.cursor()
 
 
@@ -24,12 +26,12 @@ def get_md5(src):
 #保存link信息
 def save_link(title,url):
     link_md5=get_md5(url)
-    print link_md5
+    print(link_md5)
     sql="SELECT * FROM url WHERE title = '"+title+"'"
     print(sql)
     cur.execute(sql)
     result=cur.fetchone()
-    print result
+    print(result)
     '''
     if result == None:
     domain=url.replace('http://','')
@@ -70,7 +72,12 @@ def htmlContentMark(conTent):
     conTent = conTent.replace("<", "");
     return conTent
 
-
+#下载page内容
+def  get_page(url):
+    page = requests.get(url)
+    page = page.content
+    page = page.decode('utf-8')
+    return page
 #http://www.yangxian.gov.cn/news/yxxw/index.html
 #http://www.yangxian.gov.cn/news/yxxw/index_2.html
 #http://www.yangxian.gov.cn/news/yxxw/index_3.html
@@ -88,8 +95,9 @@ while page <= 1:
        url = base_url + str(page)
 
     #print '请求地址:',url
-    print('爬取当中,当前第%d页...' % page,url)
-    newstr = urllib.urlopen(url).read()
+    #print('爬取当中,当前第%d页...' % page,url)
+    #newstr = urllib.request.urlopen(url).read()
+    newstr = get_page(url);
 
     href= newstr.find(r'class="red">')
     amark= newstr.find(r'goRight',href)
@@ -101,28 +109,30 @@ while page <= 1:
     while newdate != -1 and href != -1 and i <= 22:
         title = newstr[html+5:newdate-4]
         url = newstr[html-17:html+3]
-        print('----------------------爬取页数:',page,i,'个新闻')
-        print('title:',title)
         date  = newstr[amark+9:amark+19]
-        part  = newstr[href+15:amark-23]
+        part  = newstr[href+13:amark-21]
         path = 'http://www.yangxian.gov.cn'+url
+
+        print('-----------------爬取页数%d----------' % page,i,'个新闻')
+        print('title:',title)
         print('date:',date)
         print('part:',part)
         print('url:',path)
-        save_link(title,path)
+        #save_link(title,path)
 
-        print('文章内容')
+        print('获取文章内容')
         #读取标题
-        content = urllib.urlopen(path).read();
+        content = get_page(path);
+
         titleBegin= content.find(r'class="contentLeft">')
         titleEnd= content.find(r'class="infoMark">',titleBegin)
         title= content[titleBegin+85:titleEnd-73]
-        print('title:',title)
 
         #解析内容
         articleBegin= content.find(r'<div class="info">')
-        print('文章开始:',articleBegin)
         articleEnd= content.find(r'<div class="friend_link">')
+        print('title:',title)
+        print('文章开始:',articleBegin) 
         print('文章结束:',articleEnd)
         article= content[articleBegin+25:articleEnd-12]
         #print '文章内容:',htmlContentMark(article)
@@ -142,7 +152,7 @@ while page <= 1:
         i = i + 1
 
     else:
-        print("find end!"
+        print("find end!")
     page = page + 1
 else:
     print('page find end!')
