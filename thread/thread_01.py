@@ -22,7 +22,7 @@ def threadSJ(lst):
 
 #01-----------------------------------------------------------------------------
 def trace(value):
-    print value
+    print(value)
 
 info=[1,2,3,4,55,233]
 
@@ -32,7 +32,7 @@ for i in info:
     tLst.append(t)
 
 threadSJ(tLst)
-print 'the end'
+print('the end')
 
 
 
@@ -45,11 +45,11 @@ def getTitle(url):
     htmlDoc=urllib.urlopen(url).read()
     s=htmlDoc.find('<title>')+7
     e=htmlDoc.find('</title>')
-    print htmlDoc[s:e]
+    print(htmlDoc[s:e])
 
 def getCode(url):
     respon=urllib.urlopen(url)
-    print respon.getcode()
+    print(respon.getcode())
 
 titleThreadLst=[]
 codeThreadLst=[]

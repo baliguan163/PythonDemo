@@ -1,7 +1,6 @@
 
 import os
 
-
 def anyTrue(predicate, sequence):
     return  True in map(predicate, sequence);
 
