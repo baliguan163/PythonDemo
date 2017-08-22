@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 #coding=utf-8
-import urllib2
-import urllib
+from urllib import request
+from urllib import  parse
 import re
-import MySQLdb
-import thread
+import threading
 import time
 
 #http://pic.sogou.com/pics/recompic/detail.jsp?category=美女&tag=风情#0%265202109
@@ -19,59 +18,67 @@ values = {'name' : 'Michael Foord',
           'location' : 'Northampton',
           'language' : 'zh-cn' }
 headers = { 'User-Agent' : user_agent }
-# data = urllib.urlencode(values)
-# req = urllib2.Request(url, data, headers)
-# response = urllib2.urlopen(req)
-# the_page = response.read()
 
 #创建锁，用于访问数据库
-lock = thread.allocate_lock()
+lock = threading._allocate_lock()
+
+def  get_query_string(data):
+    return parse.urlencode(data)
 
 #抓取函数
 def fetch(id=1,debug=False):
+    category='美女'
+    tag='风情'
+    query_data = {'category':category,'tag': tag}
+    url = 'http://pic.sogou.com/pics/recompic/detail.jsp' + '?' + get_query_string(query_data)
+    print('url:',url)
+
     # urlbase = 'http://w3.afulyu.rocks/pw/thread.php?fid=7'
     # url = urlbase + '&page=' + str(id)
     #print url
     #request = urllib2.Request(url='http://w3.afulyu.rocks/pw/thread.php?fid=7&page=2',headers = headers)
-    request = urllib2.Request(url='http://pic.sogou.com/pics/recompic/detail.jsp?category=美女&tag=风情#0%265202109',headers = headers)
-    res = urllib2.urlopen(request).read()
-    print res
-    # data = urllib.urlencode(values)
-    # req = urllib2.Request(url,data, headers)
-    # res = urllib2.urlopen(req).read()
+    #req = request.Request(url='http://pic.sogou.com/pics/recompic/detail.jsp?category=美女&tag=风情#0%265202109',headers = headers)
+    req = request.Request(url,headers = headers)
+    page = request.urlopen(req).read()
+    page = page.decode('utf-8','ignore')
+    #print('page:',page)
 
-    # opener = urllib2.build_opener()
-    # res = opener.open(request).read()
-    # print feeddata.decode('u8')
     #findall函数返回的总是正则表达式在字符串中所有匹配结果的列表list
+    abstarct = re.compile(r'thumbUrl"(.*?)"wapLink',re.DOTALL).findall(page)
+    print('abstarct len:',len(abstarct))
 
-    abstarct = re.compile(r'thumbUrl"(.*?)"wapLink',re.DOTALL).findall(res)
-    print abstarct
     vid_list = []
     for i in range(0,len(abstarct)):
-        titleBegin= abstarct[i].find(r'a_ajax_')
-        titleEnd= abstarct[i].find(r'</a>',titleBegin)
-        titlename= abstarct[i][titleBegin+15:titleEnd]
+        #print('abstarct :',abstarct[i])
+        # titleBegin= abstarct[i].find(r'a_ajax_')
+        # titleEnd= abstarct[i].find(r'</a>',titleBegin)
+        #
+        # titlename= abstarct[i][titleBegin+15:titleEnd]
         #print titlename
         #src = re.compile(r'src="(.*?)"',re.DOTALL).findall(abstarct[i])
         #title = re.compile(r'title="(.*?)"',re.DOTALL).findall(abstarct[i])
-        href = re.compile(r'ori_pic_url":"(.*?)"',re.DOTALL).findall(abstarct[i])
-        #date = re.compile(r'<span>(.*?)</span>',re.DOTALL).findall(abstarct[i])
-        #print 'abstarct:',abstarct[i]
+
+        sthumbUrl = re.compile(r'sthumbUrl":"(.*?)"',re.DOTALL).findall(abstarct[i])
+        bthumbUrl = re.compile(r'bthumbUrl":"(.*?)"',re.DOTALL).findall(abstarct[i])
+        pic_url = re.compile(r'"pic_url":"(.*?)"',re.DOTALL).findall(abstarct[i])
+        ori_pic_url = re.compile(r'ori_pic_url":"(.*?)"',re.DOTALL).findall(abstarct[i])
+        page_url = re.compile(r'page_url":"(.*?)"',re.DOTALL).findall(abstarct[i])
+
         if debug == True:
 	        #http://w3.afulyu.rocks/pw/
             #url = 'http://w3.afulyu.rocks/pw/' + href[0]
-            print '---------------------------',id, i+1,'-----------------------------------------'
-            #print 'title',titlename
-            print 'href:',href
-            #print date[0]
+            print('---------------------------',id, i+1,'-----------------------------------------')
+            print('sthumbUrl',sthumbUrl)
+            print('bthumbUrl:',bthumbUrl)
+            print('pic_url:',pic_url)
+            print('ori_pic_url:',ori_pic_url)
+            print('page_url:',page_url)
 
+        vid = {
+            'ori_pic_url' : ori_pic_url,
+            'page_url': page_url
+        }
 
-        # vid = {
-        #     'src' : '',
-        #     'title': titlename,
-        #     'href': url
-        # }
         vid_list.append(vid)
     #print thread.get_ident()
     return vid_list
@@ -84,27 +91,27 @@ def insert_db(page):
     # sql = "insert into mygame (src,title,href) values (%s,%s,%s)"
     # print 'page:',page,sql
     # #插入数据，一页20条
-    for i in range(0,len(vid_date)):
-        param = (vid_date[i]['src'],vid_date[i]['title'],vid_date[i]['href'])
+    #for i in range(0,len(vid_date)):
+        #param = (vid_date[i]['src'],vid_date[i]['title'],vid_date[i]['href'])
         #print param
-        url=vid_date[i]['href']
+        #url=vid_date[i]['href']
         #print url
         # data = urllib.urlencode(values)
         # req = urllib2.Request(url, data, headers)
         # res = urllib2.urlopen(req).read()
 
-        request = urllib2.Request(url,headers = headers)
-        res = urllib2.urlopen(request).read()
-        print res
-        # pat =  re.compile(r'src="(.*?.jpg)"')
-        # urc=re.findall(pat,urldownArr[i])
-        urldownArr = re.compile(r'read_tpc"(.*?)"w_tpc',re.DOTALL).findall(res)
-        #print urldownArr
-        usrcs= re.compile(r'src="(.*?)"',re.DOTALL).findall(urldownArr[i])
-        urldown= re.compile(r'href="(.*?)"',re.DOTALL).findall(urldownArr[i])
-        print urldown
-        for i in range(0,len(vid_date)):
-            print usrcs[i]
+        # req = request.Request(url,headers = headers)
+        # res = request.urlopen(req).read()
+        # print(res)
+        # # pat =  re.compile(r'src="(.*?.jpg)"')
+        # # urc=re.findall(pat,urldownArr[i])
+        # urldownArr = re.compile(r'read_tpc"(.*?)"w_tpc',re.DOTALL).findall(res)
+        # #print urldownArr
+        # usrcs= re.compile(r'src="(.*?)"',re.DOTALL).findall(urldownArr[i])
+        # urldown= re.compile(r'href="(.*?)"',re.DOTALL).findall(urldownArr[i])
+        # print(urldown)
+        # for i in range(0,len(vid_date)):
+        #     print(usrcs[i])
 
     #     lock.acquire() #创建锁
     #     print 'page insert:',page,i
@@ -123,11 +130,10 @@ if __name__ == "__main__":
     #     title varchar(80), href varchar(25))"
     # cursor.execute(sql)
     #插入数据库
-    for i in range(2,4):
-        print '线程采集中-------------',i
-        #thread.start_new_thread(insert_db,(i,))
-        insert_db(i)
+    for i in range(1,3):
+        print('线程采集中-------------',i)
+        threading._start_new_thread(insert_db,(i,))
+
     time.sleep(3)
     #关闭数据库
-    # cursor.close()
-    # conn.close()
+    #conn.close()
