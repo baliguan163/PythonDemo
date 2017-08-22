@@ -41,24 +41,33 @@ def get_article_urls(req, timeout=10):
         urls = [article.get('article_url') for article in d if article.get('article_url')]
         #print('urls:',urls)
         return urls
-        
-        
+
 #获取所有url内照片的url
 def get_photo_urls(req, timeout=10):
 	with request.urlopen(req, timeout=timeout) as res:
-		soup = BeautifulSoup(res.read().decode(errors='ignore'), 'html.parser')
-		article_main=soup.find('div', id='article-main')
-		if not article_main:
-			#print("无法定位到文章主体...")
-			return
-		heading = article_main.h1.string
-		if '街拍' not in heading:
-			print("这不是街拍的文章！！！")
-			return
-		img_list = [img.get('src') for img in article_main.find_all('img') if img.get('src')]
+		#soup = BeautifulSoup(res.read().decode(errors='ignore'), 'html.parser')
+		soup = BeautifulSoup(res.read().decode(errors='ignore'),'lxml')
+		print("文章主体:",soup)
+
+		#find = soup.find('tr')
+		#print("find's Tag Name is ", find.name)  #输出标签的名字
+
+		# article_main=soup.find('div', id='tr')
+		# print("article_main:",article_main)
+		# if not article_main:
+		# 	print("无法定位到文章主体...")
+		# 	return
+
+		# heading = article_main.h1.string
+		# if '街拍' not in headingheading:
+		# 	print("这不是街拍的文章！！！")
+		# 	return
+
+		#img_list = [img.get('src') for img in soup.find_all('img') if img.get('src')]
 		#print('heading:',heading)
 		#print('img_list:',img_list)
-		return heading,img_list
+		#return heading,img_list
+		#return img_list
         
 def save_photo(photo_url, save_dir, timeout=10):
 	photo_name = photo_url.rsplit('/', 1)[-1] + '.jpg'
@@ -92,6 +101,7 @@ if __name__ == '__main__':
     
 	while ongoing:
 		timestamp = get_timestamp()
+		print("---------------------------------------------------------")
 		print("timestamp",timestamp)
 		query_data = {
 	            'offset': offset,
@@ -102,7 +112,7 @@ if __name__ == '__main__':
 	            '_': timestamp
 	        }
 		query_url = 'http://www.toutiao.com/search_content/' + '?' + get_query_string(query_data)
-		print('地址：',query_url)
+		print('query_url：',query_url)
 		#http://www.toutiao.com/search_content/?offset=0&format=json&keyword=%E8%A1%97%E6%8B%8D&autoload=true&count=20&_=1500555889386
 		#https://temai.snssdk.com/article/feed/index/?id=11480258&source_type=12&content_type=2&adid=__AID__&tt_group_id=6444654558073749774
 		
@@ -111,7 +121,8 @@ if __name__ == '__main__':
 
 		#获取地址内容的所有url
 		article_urls = get_article_urls(article_req)
-		print('地址url个数：',len(article_urls))
+		print('url个数：',len(article_urls))
+
 		#遍历地址url
 		for a_url in article_urls:
 	            # 请求文章时可能返回两个异常，一个是连接超时 socket_timeout，
@@ -119,14 +130,17 @@ if __name__ == '__main__':
 	            # 连接超时我们便休息一下，HTTPError 便直接跳过。
 	            try:
 	                photo_req = request.Request(a_url, headers=request_headers)
+	                print("get_photo_urls:",a_url)
+
 	                #获取所有图片的url
 	                photo_urls = get_photo_urls(photo_req)
 	
 	                # 文章中没有图片？跳到下一篇文章
 	                if photo_urls is None:
-	                    continue
+	                        continue
 	
 	                article_heading, photo_urls = photo_urls
+
 	                print('a_url:',a_url)
 	                print('article_heading:',article_heading,' 个数：',len(photo_urls))
 

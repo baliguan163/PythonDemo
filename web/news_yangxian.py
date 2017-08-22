@@ -66,8 +66,8 @@ def insert_db(page):
     #执行抓取函数
     vid_date = fetch(page,True)
     sql = "insert into yangxian_news(title,tag,new_url,new_date) values (%s,%s,%s,%s)"
-    print('sql:',sql)
-
+    #print('sql:',sql)
+    print('页数:',page,' ',len(vid_date))
     #插入数据，一页20条
     for i in range(0,len(vid_date)):
         param = (vid_date[i]['title'],vid_date[i]['tag'],vid_date[i]['new_url'],vid_date[i]['new_date'])

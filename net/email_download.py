@@ -71,7 +71,7 @@ def print_info(msg, indent = 0):
 #下载原始邮件
 server = poplib.POP3(pop3_server)
 server.set_debuglevel(0)
-print(server.getwelcome().decode('utf-8'))
+print('server:',server.getwelcome().decode('utf-8'))
 server.user(email)
 server.pass_(password)
 

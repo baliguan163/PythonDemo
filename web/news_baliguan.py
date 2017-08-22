@@ -41,16 +41,28 @@ def insert_db(page):
     #执行抓取函数
     vid_date = fetch(page,True)
     sql = "insert into baliguan_news(title,tag,new_url,new_date) values (%s,%s,%s,%s)"
-    print('sql:',sql)
+    #print('sql:',sql)
+    print('页数:',page,' ',len(vid_date))
 
     #插入数据，一页20条
     for i in range(0,len(vid_date)):
         param = (vid_date[i]['title'],vid_date[i]['tag'],vid_date[i]['new_url'],vid_date[i]['new_date'])
         lock.acquire() #创建锁
-        print('数据保存到数据库:',page,i+1)
-        cursor.execute(sql,param)
-        conn.commit()
-        lock.release() #释放锁
+        #print('数据保存到数据库:',page,i+1)
+
+        #查询数据中是否存在
+        title = vid_date[i]['title']
+        sql2 = "select title from  baliguan_news where  title='%s'" % (title)
+        #print('查询数据中是否存在sql:',sql)
+        cursor.execute(sql2)
+        results=cursor.fetchall()
+        if len(results) > 0:
+            print('数据中已经存在:',page,i+1,' ',title)
+        else:
+            print('数据保存到数据库:',page,i+1)
+            cursor.execute(sql,param)
+            conn.commit()
+            lock.release() #释放锁
 
 #下载page内容
 def  get_page(url):

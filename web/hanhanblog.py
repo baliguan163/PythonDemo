@@ -31,7 +31,8 @@ def htmlContentMark(conTent):
     conTent = conTent.replace('STYLE="TexT-ALiGn: justify Line-HeiGHT: 17.25pt MArGin-Top: 0pt MArGin-BoTToM: 0pt"> STYLE="FonT-FAMiLY: Arial FonT-siZe: 10.5pt">', "");
     conTent = conTent.replace('STYLE="FonT-FAMiLY: Arial FonT-siZe: 10.5pt"> STYLE="FonT-FAMiLY: Arial FonT-siZe: 10.5pt">', "");
     conTent = conTent.replace('STYLE="FonT-FAMiLY: Arial FonT-siZe: 10.5pt">', "");
-    conTent = conTent.replace('<font FACE="Arial">Z</FONT><font FACE="宋体">', "");
+    conTent = conTent.replace('<font FACE="Arial">Z</FONT><font FACE="宋'
+                              '体">', "");
     conTent = conTent.replace('STYLE="FonT-FAMiLY: 宋体 FonT-siZe: 10.5pt">， STYLE="FonT-FAMiLY: Arial FonT-siZe: 10.5pt">', "");
     conTent = conTent.replace(' STYLE="FonT-FAMiLY: 宋体 FonT-siZe: 10.5pt">， ', "");
     conTent = conTent.replace(' STYLE="FonT-FAMiLY: 宋体 FonT-siZe: 10.5pt">', "");
@@ -62,8 +63,6 @@ while page <= 1:
         print link,i,title,url[i]
 
         article =  urllib.urlopen(url[i]).read()
-
-
         print 'download',i,url[i]
         f =open(r'hanhanBlog/' + url[i][-26:],'w+').write(article)
 
