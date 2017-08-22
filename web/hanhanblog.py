@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import  urllib
+from  urllib import request
 import time
 
 url=['']*350
@@ -50,7 +50,10 @@ def htmlContentMark(conTent):
 link = 1
 while page <= 1:
     blogurl='http://blog.sina.com.cn/s/articlelist_1191258123_0_'+ str(page)+'.html'
-    content = urllib.urlopen(blogurl).read()
+    req = request.Request(blogurl)
+    page = request.urlopen(req).read()
+    content = page.decode('utf-8','ignore')
+
     title= content.find(r'<a title=')
     href= content.find(r'href=',title)
     html= content.find(r'.html',href)
@@ -60,17 +63,21 @@ while page <= 1:
     while title != -1 and href != -1 and i < 50:
         title= content[html+7: titleindex]
         url[i]= content[href+6:html+5]
-        print link,i,title,url[i]
+        print(link,i,title,url[i])
 
-        article =  urllib.urlopen(url[i]).read()
-        print 'download',i,url[i]
-        f =open(r'hanhanBlog/' + url[i][-26:],'w+').write(article)
+        req = request.Request(url[i])
+        page = request.urlopen(req).read()
+        article = page.decode('utf-8','ignore')
+
+        #article =  urllib.urlopen(url[i]).read()
+        print('download',i,url[i])
+        f =open(r'hanhan_blog/' + url[i][-26:],'w+').write(article)
 
         #<h2 id="t_4701280b01000d2i" class="titName SG_txta">咨询&nbsp;2</h2>
         titleBegin = article.find(r'titName SG_txta">');
         titleEnd = article.find(r'</h2>');
         artTitle= article[titleBegin+17:titleEnd]
-        print 'arcTitle:',artTitle
+        print('arcTitle:',artTitle)
 
         #<div id="sina_keyword_ad_area2" class="articalContent   ">
         #<div id="share" class="shareUp">
@@ -79,7 +86,7 @@ while page <= 1:
         conTent= article[conTentBegin+27:conTentEnd-16]
 
         conTent =  htmlContentMark(conTent)
-        print 'arcContent:',conTent
+        print('arcContent:',conTent)
 
         title= content.find(r'<a title=',html)
         href= content.find(r'href=',title)
@@ -89,10 +96,10 @@ while page <= 1:
         i = i + 1
         link = link + 1
     else:
-        print page,"find end!"
+        print(page,"find end!")
     page = page + 1
 else:
-    print 'page find end!'
+    print('page find end!')
 
 j = 0
 while j < 350:
@@ -102,7 +109,7 @@ while j < 350:
     j = j + 1
     time.sleep(1)
 else:
-    print 'download article finished!'
+    print('download article finished!')
 
 
 
