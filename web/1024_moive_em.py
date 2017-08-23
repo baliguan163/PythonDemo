@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 #coding=utf-8
-import urllib2
-import urllib
+from urllib  import request
+from urllib  import parse
 import re
 import MySQLdb
-import thread
+import threading
 import time
 
 
@@ -13,6 +13,7 @@ import time
 # http://w3.afulyu.rocks/pw/thread.php?fid=7&page=2
 # http://w3.afulyu.rocks/pw/thread.php?fid=14
 
+sumCount = 0
 
 #伪装浏览器头
 headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20171201 Firefox/3.5.6'}
@@ -29,47 +30,55 @@ headers = { 'User-Agent' : user_agent }
 # response = urllib2.urlopen(req)
 # the_page = response.read()
 
+headers2 = {
+     'User-Agent': r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  r'Chrome/45.0.2454.85 Safari/537.36 115Browser/6.0.3',
+    'Referer': r'http://www.lagou.com/zhaopin/Python/?labelWords=label',
+     'Connection': 'keep-alive'
+}
+
 #创建锁，用于访问数据库
-lock = thread.allocate_lock()
+lock = threading._allocate_lock()
+
+
+def  get_query_string(data):
+    return parse.urlencode(data)
+
 
 #抓取函数
 def fetch(id=1,debug=False):
-    urlbase = 'http://w3.afulyu.rocks/pw/thread.php?fid=7'
-    url = urlbase + '&page=' + str(id)
-    #print url
-    #request = urllib2.Request(url='http://w3.afulyu.rocks/pw/thread.php?fid=7&page=2',headers = headers)
-    request = urllib2.Request(url='http://w3.afulyu.rocks/pw/thread.php?fid=7' + '&page=' + str(id) + '/',headers = headers)
-    res = urllib2.urlopen(request).read()
+    query_data = {'fid': 7,'page': id}
+    url = 'http://w3.afulyu.rocks/pw/thread.php' + '?' + get_query_string(query_data)
+    print('url:',url)
 
-    # data = urllib.urlencode(values)
-    # req = urllib2.Request(url,data, headers)
-    # res = urllib2.urlopen(req).read()
+    req = request.Request(url,headers = headers)
+    page = request.urlopen(req).read()
+    page = page.decode('utf-8','ignore')
+    #print('page:',page)
 
-    # opener = urllib2.build_opener()
-    # res = opener.open(request).read()
-    # print feeddata.decode('u8')
     #findall函数返回的总是正则表达式在字符串中所有匹配结果的列表list
-    abstarct = re.compile(r't_one"(.*?)"f10',re.DOTALL).findall(res)
+    abstarct = re.compile(r't_one"(.*?)"f10',re.DOTALL).findall(page)
     #print abstarct
+
     vid_list = []
     for i in range(0,len(abstarct)):
         titleBegin= abstarct[i].find(r'a_ajax_')
         titleEnd= abstarct[i].find(r'</a>',titleBegin)
         titlename= abstarct[i][titleBegin+15:titleEnd]
         #print titlename
-        #src = re.compile(r'src="(.*?)"',re.DOTALL).findall(abstarct[i])
-        #title = re.compile(r'title="(.*?)"',re.DOTALL).findall(abstarct[i])
+
         href = re.compile(r'href="(.*?)"',re.DOTALL).findall(abstarct[i])
-        #date = re.compile(r'<span>(.*?)</span>',re.DOTALL).findall(abstarct[i])
         #print 'abstarct:',abstarct[i]
         if debug == True:
+
 	        #http://w3.afulyu.rocks/pw/
             url = 'http://w3.afulyu.rocks/pw/' + href[0]
-            print '---------------------------',id, i+1,'-----------------------------------------'
-            print 'title',titlename
-            print 'href:',url
+            global sumCount
+            sumCount += 1
+            print('---------------------------页数:',id,'  第几个:',i+1,' 总和:',sumCount,'--------------------------------')
+            print('title',titlename)
+            print('href:',url)
             #print date[0]
-
 
         vid = {
             'src' : '',
@@ -79,34 +88,38 @@ def fetch(id=1,debug=False):
         vid_list.append(vid)
     #print thread.get_ident()
     return vid_list
+
+
 #插入数据库
 def insert_db(page):
     global lock
     #执行抓取函数
     vid_date = fetch(page,True)
-    #print vid_date
+    print("vid_date:",len(vid_date))
+    # global sumCount
+    # sumCount += len(vid_date)
+
     # sql = "insert into mygame (src,title,href) values (%s,%s,%s)"
     # print 'page:',page,sql
-    # #插入数据，一页20条
+    # #插入数据
     for i in range(0,len(vid_date)):
         param = (vid_date[i]['src'],vid_date[i]['title'],vid_date[i]['href'])
         #print param
         url=vid_date[i]['href']
         #print url
-        # data = urllib.urlencode(values)
-        # req = urllib2.Request(url, data, headers)
-        # res = urllib2.urlopen(req).read()
 
-        request = urllib2.Request(url,headers = headers)
-        res = urllib2.urlopen(request).read()
 
-        urldownArr = re.compile(r'read_tpc"(.*?)"w_tpc',re.DOTALL).findall(res)
-        print urldownArr
+        req = request.Request(url,headers = headers)
+        page = request.urlopen(req).read()
+        page = page.decode('utf-8','ignore')
+
+        urldownArr = re.compile(r'read_tpc"(.*?)"w_tpc',re.DOTALL).findall(page)
+        print(urldownArr)
         usrcs= re.compile(r'src="(.*?)"',re.DOTALL).findall(urldownArr[i])
         urldown= re.compile(r'href="(.*?)"',re.DOTALL).findall(urldownArr[i])
-        print urldown
+        print(urldown)
         for i in range(0,len(vid_date)):
-            print usrcs[i]
+            print(usrcs[i])
 
     #     lock.acquire() #创建锁
     #     print 'page insert:',page,i
@@ -125,9 +138,9 @@ if __name__ == "__main__":
     #     title varchar(80), href varchar(25))"
     # cursor.execute(sql)
     #插入数据库
-    for i in range(2,5):
-        print '线程采集中-------------',i
-        thread.start_new_thread(insert_db,(i,))
+    for i in range(1,3):
+        print('线程采集中-------------',i)
+        threading._start_new_thread(insert_db,(i,))
         #insert_db(i)
     time.sleep(3)
     #关闭数据库

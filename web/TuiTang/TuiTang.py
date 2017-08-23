@@ -20,7 +20,6 @@ def pages_from_duitang(label):
     pages = []
     url = 'https://www.duitang.com/napi/blog/list/by_search/?kw={}&start={}&limit=100'
     label = urllib.parse.quote(label)
-    #
     for index in range(0,3600,100):
         u=url.format(label, index)
         #print('url',u)

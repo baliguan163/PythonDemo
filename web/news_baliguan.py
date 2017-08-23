@@ -172,9 +172,9 @@ if __name__ == "__main__":
     #连接数据库
     connnect_db()
     #创建表
-    # sql = "CREATE TABLE IF NOT EXISTS baliguan_news(id int PRIMARY KEY AUTO_INCREMENT, \
-    #       title varchar(128), tag varchar(16),new_url varchar(256),new_date varchar(32))"
-    # cursor.execute(sql)
+    sql = "CREATE TABLE IF NOT EXISTS baliguan_news(id int PRIMARY KEY AUTO_INCREMENT, \
+          title varchar(128), tag varchar(16),new_url varchar(256),new_date varchar(32))"
+    cursor.execute(sql)
     #插入数据库
     for i in range(1,10): #第一页开始
         print('-------------开始爬取页数:',i)
