@@ -33,7 +33,7 @@ def connnect_db():
     global cursor
     conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='data',charset='utf8')
     cursor = conn.cursor()
-    conn.select_db('data')
+    conn.select_db('data·')
 
 #一页数据，插入数据库
 def insert_db(page):
