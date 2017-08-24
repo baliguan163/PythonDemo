@@ -30,7 +30,7 @@ def test_alive(proxy):
     proxies = {'http': proxy}
     print('正在测试：{}'.format(proxies))
     try:
-        r = requests.get('http://www.baidu.com', proxies=proxies, timeout=3)
+        r = requests.get('http://www.baidu.com', proxies=proxies, timeout=5)
         if r.status_code == 200:
             print('该代理：{}成功存活'.format(proxy))
             alive_ip.append(proxy)
@@ -44,7 +44,7 @@ def Out_file(alive_ip=[]):
     global dir_path
     with open(dir_path + 'alive_ip.txt', 'a+') as f:
         for ip in alive_ip:
-            f.write(ip + '\n')
+            f.write("'" + ip + "'," + '\n')
         print('所有存活ip都已经写入文件！')
 
 def test(filename='blank.txt'):
