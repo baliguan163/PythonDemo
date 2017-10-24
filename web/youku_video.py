@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #coding=utf-8
+#auth:ado
 from urllib import request
 import re
 import pymysql
@@ -63,7 +64,7 @@ def insert_db(page):
 
 if __name__ == "__main__":
     #连接数据库
-    conn = pymysql.connect(host="localhost",user="root",passwd="123456",db="test",charset="utf8")
+    conn = pymysql.connect(host="localhost",user="root",passwd="root",db="test",charset="utf8")
     cursor = conn.cursor()
     conn.select_db('test')
     #创建表
