@@ -1,13 +1,13 @@
 #coding:utf-8
-import urllib2
+import urllib3
 import json
 
 def xiaohuangji(ask):
     ask = ask.encode('UTF-8')
-    enask = urllib2.quote(ask)
+    enask = urllib3.quote(ask)
     baseurl = r'http://www.simsimi.com/func/req?msg='
     url = baseurl+enask+'&lc=ch&ft=0.0'
-    resp = urllib2.urlopen(url)
+    resp = urllib3.urlopen(url)
     reson = json.loads(resp.read())
     return resondef
 

@@ -1,6 +1,4 @@
 #coding:utf-8
-
-
 '''
 获取12306城市名和城市代码的数据
 文件名： parse_station.py
