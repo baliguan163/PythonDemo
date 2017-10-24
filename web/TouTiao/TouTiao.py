@@ -1,4 +1,5 @@
 # coding:utf-8
+#auto:ado
 import re
 import json
 import time
