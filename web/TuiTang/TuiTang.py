@@ -51,7 +51,7 @@ def pic_url_from_pages(pages):
 #下载图片，并写入文件
 def download_pics(url,n):
     r=requests.get(url)
-    path = 'pics/'+str(n)+'.jpg'
+    path = 'chemo/'+str(n)+'.jpg'
     with open(path,'wb') as f:
         f.write(r.content)
     #解锁 
@@ -60,7 +60,7 @@ def download_pics(url,n):
 
 
 def main(label):
-    pages = pages_from_duitang(label)
+    pages     = pages_from_duitang(label)
     pic_urls  = pic_url_from_pages(pages)
     n = 0
     pic_count = len(pic_urls)
@@ -75,10 +75,12 @@ def main(label):
 
 #--------------------------------------------------------------
 #输入关键词，进行搜索下载：漂亮，性感
-main('性感')       
-        
-        
-        
+#main('性感')
+#main('漂亮')
+#下载关键词‘漂亮’的图，一共2768张图片，正在下载522张图片
+main('车模')
+
+
         
         
         
