@@ -29,6 +29,7 @@ def get_content(url):
     movies = movies_list.find_all('li')
     count=0
     for top in movies:
+        print(top)
         #找到图片连接，
         img_url=top.find('img')['src']
 
@@ -43,7 +44,7 @@ def get_content(url):
         try:
             actors = top.find('p',class_='pActor')
             #print('actors:',actors)
-            actor= ''
+            actor=''
             for act in actors.contents:
                 actor = actor + act.string +'  '
         except:
@@ -54,13 +55,13 @@ def get_content(url):
 
         count +=1
         print('--------------------------------------------------------------')
-        print("片名：{}\t{}\n{}\n{}\n ".format(name,time,actor,intro) )
-        print(count,' url:',img_url)
+        print("片名:{}\t{}\n{}\n{}\n ".format(name,time,actor,intro) )
+        #print(count,'url:', img_url)
+        print(count, 'url:'.join(img_url))
 
         #我们来吧图片下载下来：
-        with open('dianying_img/'+name+'.png','wb+') as f:
-            f.write(requests.get(img_url).content)
-
+        #with open('dianying_img/'+name+'.png','wb+') as f:
+        #   f.write(requests.get(img_url).content)
 
 def main():
     url = 'http://dianying.2345.com/top/'
