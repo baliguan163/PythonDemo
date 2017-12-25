@@ -91,7 +91,6 @@ def main():
     suffix = ['ML','HT','US','JP','KR']
     for suff in suffix:
         url = base_url+suff
-        print()
         get_content(url)
 
 

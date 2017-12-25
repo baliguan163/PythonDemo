@@ -2,11 +2,12 @@
 #coding=utf-8
 
 import hashlib
-import urllib2
+import urllib
+from urllib import  parse
 
 def  get_query_string(data):
     #return parse.urlencode(data)
-    return urllib2.quote(data)
+    return parse.quote(data)
 
 # http://www.yangxian.gov.cn/search/searchResult.jsp?t_id=178&site_id=CMSyx&q=八里关&btn_search=搜索&p=1
 # http://www.yangxian.gov.cn/search/searchResult.jsp?t_id=178&site_id=CMSyx&q=八里关&btn_search=搜索&p=2
@@ -17,7 +18,7 @@ def get_yangxian_new(id=1,debug=False):
     url = 'http://www.yangxian.gov.cn/search/searchResult.jsp' + '?' + get_query_string(query_data)
     #print('url:',url)
     #page = get_page(url)
-    page = urllib2.urlopen(url)
+    page = parse.urlparse(url)
     #print('page:',page)
 
     index1  = page.find(r'font-size:15px')

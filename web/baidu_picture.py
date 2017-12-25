@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import  time,math,os,re,urllib,urllib2,cookielib 
+import  time,math,os,re,urllib
 from    bs4 import BeautifulSoup
 
 import  time     
@@ -134,7 +134,7 @@ class BaiduImage:
             os.makedirs(new_path)
         self.current_page = start_page
         while True:
-            # 获取后下载首页图片
+            #获取后下载首页图片
             self.get_image_links()
             self.download()
             if self.get_next_page()!=False:
