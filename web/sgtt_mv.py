@@ -6,6 +6,11 @@ import re
 import threading
 import time
 
+import MySQLdb
+import pymysql
+
+
+# 搜狗图拍
 #http://pic.sogou.com/pics/recompic/detail.jsp?category=美女&tag=风情#0%265202109
 
 #伪装浏览器头
@@ -18,6 +23,7 @@ values = {'name' : 'Michael Foord',
           'location' : 'Northampton',
           'language' : 'zh-cn' }
 headers = { 'User-Agent' : user_agent }
+
 
 #创建锁，用于访问数据库
 lock = threading._allocate_lock()
@@ -76,30 +82,44 @@ def fetch(id=1,debug=False):
 
         vid = {
             'ori_pic_url' : ori_pic_url,
-            'page_url': page_url
+            'page_url': page_url,
+            'pic_url': pic_url,
+            'sthumbUrl': sthumbUrl,
+            'bthumbUrl': bthumbUrl
         }
-
         vid_list.append(vid)
     #print thread.get_ident()
     return vid_list
+
+
 #插入数据库
 def insert_db(page):
     global lock
     #执行抓取函数
     vid_date = fetch(page,True)
-    #print vid_date
-    # sql = "insert into mygame (src,title,href) values (%s,%s,%s)"
-    # print 'page:',page,sql
-    # #插入数据，一页20条
-    #for i in range(0,len(vid_date)):
-        #param = (vid_date[i]['src'],vid_date[i]['title'],vid_date[i]['href'])
-        #print param
-        #url=vid_date[i]['href']
-        #print url
+    # print(vid_date)
+
+    print('------------------------------------------------------------------------------------------------------------')
+    sql = "insert into sougou_pic(ori_pic_url,page_url,pic_url,sthumbUrl,bthumbUrl,get_date) values (%s,%s,%s,%s,%s,%s)"
+    print('sql:',page,sql)
+
+    #插入数据，一页20条
+    for i in range(0,len(vid_date)):
+        # # 获得当前时间时间戳
+        # now = int(time.time())
+        # # 转换为其他日期格式,如:"%Y-%m-%d %H:%M:%S"
+        # timeArray = time.localtime(timeStamp)
+        # otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+
+        param = (vid_date[i]['ori_pic_url'],vid_date[i]['page_url'],vid_date[i]['pic_url'],vid_date[i]['sthumbUrl'],vid_date[i]['bthumbUrl'],time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))  )
+        print("param:",param)
+
+        # url=vid_date[i]['href']
+        # print url
         # data = urllib.urlencode(values)
         # req = urllib2.Request(url, data, headers)
         # res = urllib2.urlopen(req).read()
-
+        #
         # req = request.Request(url,headers = headers)
         # res = request.urlopen(req).read()
         # print(res)
@@ -113,24 +133,32 @@ def insert_db(page):
         # for i in range(0,len(vid_date)):
         #     print(usrcs[i])
 
-    #     lock.acquire() #创建锁
-    #     print 'page insert:',page,i
-    #     cursor.execute(sql,param)
-    #     conn.commit()
-    #     lock.release() #释放锁
+        lock.acquire() #创建锁
+        print('page insert:',page,i)
+        cursor.execute(sql,param)
+        conn.commit()
+        lock.release() #释放锁
 
 if __name__ == "__main__":
-    #连接数据库
-    # conn = MySQLdb.connect(host="localhost",user="root",passwd="123456",db="test",charset="utf8")
-    # cursor = conn.cursor()
-    # conn.select_db('test')
-    #创建表
-    # sql = "CREATE TABLE IF NOT EXISTS \
-    #     mygame(id int PRIMARY KEY AUTO_INCREMENT, src varchar(80), \
-    #     title varchar(80), href varchar(25))"
-    # cursor.execute(sql)
+    # 连接数据库
+    conn = MySQLdb.connect(host="localhost",user="root",passwd="123456",db="python",charset="utf8")
+    cursor = conn.cursor()
+    conn.select_db('python')
+    # 创建表
+
+
+    sql = "CREATE TABLE IF NOT EXISTS sougou_pic(  \
+           `id` int(11) NOT NULL AUTO_INCREMENT, \
+              `ori_pic_url` varchar(128) DEFAULT NULL,\
+              `page_url` varchar(128) DEFAULT NULL,\
+              `pic_url`  varchar(128) DEFAULT NULL,\
+              `sthumbUrl`   varchar(128) DEFAULT NULL,\
+              `bthumbUrl`   varchar(128) DEFAULT NULL,\
+              `get_date`   datetime DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(`id`) \
+           ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8"
+    cursor.execute(sql)
     #插入数据库
-    for i in range(1,3):
+    for i in range(1,2):
         print('线程采集中-------------',i)
         threading._start_new_thread(insert_db,(i,))
 

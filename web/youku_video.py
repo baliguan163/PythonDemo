@@ -30,7 +30,7 @@ def fetch(id=1,debug=False):
         href = re.compile(r'href="(.*?)"',re.DOTALL).findall(abstarct[i])
         #date = re.compile(r'<span>(.*?)</span>',re.DOTALL).findall(abstarct[i])
         if debug == True:
-            print('---------------------------',id, i+1,'---------------------------')
+            print('---------------------------页数：',id, i+1,'---------------------------')
             print('src:',src[0])
             print('title:',title[0])
             print('href:',href[0])
@@ -43,40 +43,43 @@ def fetch(id=1,debug=False):
         vid_list.append(vid)
     #print thread.get_ident()
     return vid_list
+
+
 #插入数据库
 def insert_db(page):
     global lock
+    sql = "insert into youku_game_video(src,title,href) values (%s,%s,%s)"
+    # print('page:', page, sql)
 
     #执行抓取函数
     vid_date = fetch(page,True)
-    sql = "insert into youku_game_video(src,title,href) values (%s,%s,%s)"
-    print('page:',page,sql)
-
     #插入数据，一页20条
     for i in range(0,len(vid_date)):
         param = (vid_date[i]['src'],vid_date[i]['title'],vid_date[i]['href'])
         lock.acquire() #创建锁
-
         print('page insert:',page,i)
         cursor.execute(sql,param)
         conn.commit()
         lock.release() #释放锁
+
+
+
 
 if __name__ == "__main__":
     #连接数据库
     conn = pymysql.connect(host="localhost",user="root",passwd="123456",db="test",charset="utf8")
     cursor = conn.cursor()
     conn.select_db('test')
+
     #创建表
-    sql = "CREATE TABLE IF NOT EXISTS \
-        youku_game_video(id int PRIMARY KEY AUTO_INCREMENT, src varchar(128), \
-        title varchar(128), href varchar(256))"
+    sql = "CREATE TABLE IF NOT EXISTS youku_game_video(id int PRIMARY KEY AUTO_INCREMENT, src varchar(128), title varchar(128), href varchar(256))"
     cursor.execute(sql)
 
     #插入数据库
     for i in range(1,50):
+        print('采集中页数', i)
         threading._start_new_thread(insert_db,(i,))
-        print('采集中...',i)
+
 
 
     time.sleep(3)

@@ -1,6 +1,7 @@
 #coding=utf-8
 number = 23
 guess = 22
+
 if guess == number:
 	print('true')
 elif guess > number:
