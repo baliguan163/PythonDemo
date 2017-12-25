@@ -1,6 +1,7 @@
 #coding=utf-8
 import threading
 
+
 #该程序可实现延迟5秒后调用func方法的功能
 def sayhello():
         print("hello world")
