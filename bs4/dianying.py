@@ -17,7 +17,7 @@ def get_html(url):
         r.encoding = 'gbk'
         return r.text
     except:
-        return "someting wrong"
+        return "get_html someting wrong"
 
 
 def get_content(url):
@@ -32,6 +32,8 @@ def get_content(url):
         # print(top)
         #找到图片连接，
         img_url=top.find('img')['src']
+        href = top.find('a')['href']
+
 
         name = top.find('span',class_='sTit').a.text
         #这里做一个异常捕获，防止没有上映时间的出现
@@ -51,12 +53,14 @@ def get_content(url):
             actor = "暂无导演"
 
         #找到影片简介
-        intro = top.find('p',class_='pTxt pIntroShow').text
+        intro = top.find('p',class_='pTxt pIntroShow').text.replace('\n', '')
+        # intro = top.find('p', class_='pTxt pIntroHide').text
 
         count +=1
         print('--------------------------------------------------------------')
+        print(count, '图片连接:', img_url)
         print("片名:{}\n{}\n{}\n{}\n ".format(name,time,actor,intro) )
-        print(count,'图片地址:', img_url)
+        print('影片地址:', href)
         #print(count, 'url:'.join(img_url))
 
         #我们来吧图片下载下来：
