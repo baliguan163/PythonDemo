@@ -31,9 +31,9 @@ def get_md5(src):
 def connnect_db():
     global conn
     global cursor
-    conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='python',charset='utf8')
+    conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8')
     cursor = conn.cursor()
-    conn.select_db('python')
+    conn.select_db('test')
 
 #一页数据，插入数据库
 def insert_db(page):
