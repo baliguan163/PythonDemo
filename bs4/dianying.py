@@ -6,7 +6,7 @@ Python版本： 3.6
 '''
 
 import requests
-import bs4
+from bs4 import  BeautifulSoup
 
 
 def get_html(url):
@@ -17,21 +17,23 @@ def get_html(url):
         r.encoding = 'gbk'
         return r.text
     except:
-        return "someting wrong"
+        return "get_html someting wrong"
 
 
 def get_content(url):
     html = get_html(url)
-    soup = bs4.BeautifulSoup(html, 'lxml')
+    soup = BeautifulSoup(html, 'lxml')
     
     # 找到电影排行榜的ul列表
     movies_list = soup.find('ul', class_='picList clearfix')
     movies = movies_list.find_all('li')
     count=0
     for top in movies:
-        print(top)
+        # print(top)
         #找到图片连接，
         img_url=top.find('img')['src']
+        href = top.find('a')['href']
+
 
         name = top.find('span',class_='sTit').a.text
         #这里做一个异常捕获，防止没有上映时间的出现
@@ -46,23 +48,24 @@ def get_content(url):
             #print('actors:',actors)
             actor=''
             for act in actors.contents:
-                actor = actor + act.string +'  '
+                actor = actor + act.string +' '
         except:
             actor = "暂无导演"
 
         #找到影片简介
-        intro = top.find('p',class_='pTxt pIntroShow').text
+        intro = top.find('p',class_='pTxt pIntroShow').text.replace('\n', '')
+        # intro = top.find('p', class_='pTxt pIntroHide').text
 
         count +=1
         print('--------------------------------------------------------------')
-        print("片名:{}\t{}\n{}\n{}\n ".format(name,time,actor,intro) )
-        #print(count,'url:', img_url)
-        print(count, 'url:'.join(img_url))
+        print(count, '图片连接:', img_url)
+        print("片名:{}\n{}\n{}\n{}\n ".format(name,time,actor,intro) )
+        print('影片地址:', href)
+        #print(count, 'url:'.join(img_url))
 
         #我们来吧图片下载下来：
         #with open('dianying_img/'+name+'.png','wb+') as f:
         #   f.write(requests.get(img_url).content)
-
 def main():
     url = 'http://dianying.2345.com/top/'
     get_content(url)

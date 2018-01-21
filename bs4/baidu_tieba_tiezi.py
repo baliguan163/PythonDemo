@@ -39,7 +39,7 @@ def get_content(url):
     soup = BeautifulSoup(html, 'lxml')
     #按照之前的分析，我们找到所有具有‘ j_thread_list clearfix’属性的li标签。返回一个列表类型。
     liTags= soup.find_all('li', attrs={'class': ' j_thread_list clearfix'})
-    print('liTags len:',len(liTags))
+    print('需要分析帖子个数:',len(liTags))
 
     # 通过循环找到每个帖子里的我们需要的信息：
     for li in liTags:
@@ -55,12 +55,14 @@ def get_content(url):
             comment['replyNum'] = li.find('span', attrs={'class': 'threadlist_rep_num center_text'}).text.strip()
             comments.append(comment)
         except:
-            print('出了点小问题')
+            # print('异常，继续下一个')
+            ""
     return comments
 
 
 # 将爬取到的文件写入到本地,保存到当前目录的 tieba_tiezi.txt文件中
 def Out2File(dict):
+    print('写入文件baidu_tieba_tiezi.txt')
     with open('baidu_tieba_tiezi.txt', 'a+',encoding='utf-8') as f:
         for comment in dict:
             f.write('标题： {} \t 链接：{} \t 发帖人：{} \t 发帖时间：{} \t 回复数量： {} \n'.format(
@@ -71,15 +73,17 @@ def main(base_url, deep):
     url_list = []
     # 将所有需要爬去的url存入列表
     for i in range(0, deep):
-        url_list.append(base_url + '&pn=' + str(50 * i))
+        path = base_url + '&pn=' + str(50 * i)
+        print('add:', path)
+        url_list.append(path)
 
-    print('url_list:',url_list)
     print('所有的网页地址已经存储完毕，开始下载筛选信息......')
 
     #循环写入所有的数据
     for url in url_list:
         content = get_content(url)
-        print('content len:',len(content))
+        print('分析完帖子数量:',len(content))
+        print("--------------------------------------")
         Out2File(content)
     print('所有的信息都已经保存完毕！')
 
