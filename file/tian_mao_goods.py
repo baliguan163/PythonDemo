@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     #插入数据库
     # 打开一个workbook
-    workbook = xlrd.open_workbook('D:\\tian_mao\\2018-01-23\\2018天猫年货节12018-01-23.xls')
+    workbook = xlrd.open_workbook('D:\\tian_mao\\2018-01-23\\2018天猫年货节52018-01-23.xls')
     # 抓取所有sheet页的名称
     worksheets = workbook.sheet_names()
     # print('worksheets is %s' %worksheets)
