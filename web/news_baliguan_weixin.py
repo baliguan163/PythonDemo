@@ -16,7 +16,7 @@ def get_yangxian_new(id=1,debug=False):
     key='八里关'
     query_data = {'t_id': 178,'site_id': 'CMSyx','q': key,'btn_search': '搜索','p': id}
     url = 'http://www.yangxian.gov.cn/search/searchResult.jsp' + '?' + get_query_string(query_data)
-    #print('url:',url)
+    print('url:',url)
     #page = get_page(url)
     page = parse.urlparse(url)
     #print('page:',page)
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     #vid_date = get_yangxian_new(1,False)
     #print('vid_date:', vid_date)
 
-    blg_new_list = get_yangxian_new(1,False)
+    blg_new_list = get_yangxian_new(1,)
     #book = json.loads(blg_new_list)
     #print('book:', book)
 

@@ -31,7 +31,7 @@ def get_md5(src):
 def connnect_db():
     global conn
     global cursor
-    conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8')
+    conn = pymysql.connect(host='192.168.1.111',user='root',passwd='123456',db='test',charset='utf8')
     cursor = conn.cursor()
     conn.select_db('test')
 
@@ -52,7 +52,7 @@ def insert_db(page):
 
         #查询数据中是否存在
         title = vid_date[i]['title']
-        sql2 = "select title from  baliguan_news where  title='%s'" % (title)
+        sql2 = "select * from  baliguan_news where  title='%s'" % (title)
         #print('查询数据中是否存在sql:',sql)
         cursor.execute(sql2)
         results=cursor.fetchall()
@@ -140,14 +140,14 @@ def fetch(id=1,debug=False):
 
         new_url = 'http://www.yangxian.gov.cn'+url
         i=i+1;
-        # if debug == True:
-        #     print('-----------------爬取第',id,'页第',i,'条新闻-----------------')
-        #     print('title:',title)
-        #     print('tag:',tag)
-        #     print('new_date:',new_date)
-        #     print('url:',url)
-        #     print('new_url:',new_url)
-        #     print('new_desc:',new_desc)
+        if debug == True:
+            print('-----------------爬取第',id,'页第',i,'条新闻-----------------')
+            print('title:',title)
+            print('tag:',tag)
+            print('new_date:',new_date)
+            print('url:',url)
+            print('new_url:',new_url)
+            print('new_desc:',new_desc)
         vid = {
             'title'  : title,
             'tag'  : tag,
@@ -182,6 +182,7 @@ if __name__ == "__main__":
 
     time.sleep(3)
     #关闭数据库
+    print('-----------关闭数据库---------')
     cursor.close()
     conn.close()
 

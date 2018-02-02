@@ -56,9 +56,9 @@ def htmlContentMark(conTent):
 def connnect_db():
     global conn
     global cursor
-    conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='',charset='utf8')
+    conn = pymysql.connect(host='192.168.1.111',user='root',passwd='123456',db='test',charset='utf8')
     cursor = conn.cursor()
-    conn.select_db('')
+    conn.select_db('test')
 
 #一页数据，插入数据库
 def insert_db(page):
@@ -147,9 +147,9 @@ if __name__ == "__main__":
     #连接数据库
     connnect_db()
     #创建表
-    sql = "CREATE TABLE IF NOT EXISTS yangxian_news(id int PRIMARY KEY AUTO_INCREMENT, \
-          title varchar(128), tag varchar(16),new_url varchar(256),new_date varchar(32))"
-    cursor.execute(sql)
+    # sql = "CREATE TABLE IF NOT EXISTS yangxian_news(id int PRIMARY KEY AUTO_INCREMENT, \
+    #       title varchar(128), tag varchar(16),new_url varchar(256),new_date varchar(32))"
+    # cursor.execute(sql)
     #插入数据库
     for i in range(1,30): #第一页开始
         print('-------------开始采页数:',i)
