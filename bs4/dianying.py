@@ -58,9 +58,11 @@ def get_content(url):
 
         count +=1
         print('--------------------------------------------------------------')
-        print(count, '图片连接:', img_url)
-        print("片名:{}\n{}\n{}\n{}\n ".format(name,time,actor,intro) )
+        print(count)
         print('影片地址:', href)
+        print('图片连接:', img_url)
+        print("片名:{}\n{}\n{}\n{}\n ".format(name,time,actor,intro) )
+
         #print(count, 'url:'.join(img_url))
 
         #我们来吧图片下载下来：
