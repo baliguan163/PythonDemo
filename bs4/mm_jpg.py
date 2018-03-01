@@ -1,12 +1,31 @@
 # -*- coding: utf-8 -*-
 _author__ = 'Administrator'
 
-
+import os
+import urllib
 import requests
 from bs4 import BeautifulSoup
 
 # https://www.cnblogs.com/kmust/p/7113150.html
+def Schedule(a, b, c):
+    '''''
+    a:已经下载的数据块
+    b:数据块的大小
+    c:远程文件的大小
+   '''
+    per = 100.0 * a * b / c
+    if per > 100:
+        per = 100
+    print('%.2f%%' % per)
 
+def auto_down(url, filename):
+    file_dir = os.path.split(filename)[0]
+    print('file_dir:', file_dir)
+    if os.path.isdir(file_dir):
+        pass
+    else:
+        os.makedirs(file_dir)
+    urllib.urlretrieve(url, filename, Schedule)
 
 def get_html(url):
     try:
@@ -47,10 +66,32 @@ def get_content(url):
         pichtml = get_html(picurl)
         soup = BeautifulSoup(pichtml, 'lxml')
         piclist = soup.find('div', class_='page')
-        print('piclist:', piclist)
+        # print('piclist:', piclist)
 
-        for myimg in piclist.find_all('a'):
-            print('myimg:', myimg.text)
+        # 统计一共多少张图片
+        # myimg: 上一篇
+        # myimg: 2
+        # myimg: 3
+        # myimg: 4
+        # myimg: 5
+        # myimg: 6
+        # myimg: 38
+        # myimg: 下一张
+        piclist = piclist.find_all('a')
+        pic_len = len(piclist)
+        pic_index = piclist[pic_len-2].text
+        print('图集张数:',pic_index)
+        # for myimg in piclist.find_all('a'):
+        #     print('myimg:', myimg.text)
+        for i in range(1,int(pic_index)+1):
+            mypicurl = picurl + '/' + str(i)
+            savepath = 'D:\\' + str(i)
+            print('mypicurl:', mypicurl)
+            print('savepath:', savepath)
+            auto_down(mypicurl,savepath)
+
+
+
 
         # print('mylist3:', mylist.find('span').text)
         # print('mylist3:', mylist.find('span').a['href'])
