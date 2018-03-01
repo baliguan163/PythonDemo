@@ -10,9 +10,6 @@ Python版本： 3.6
 
 
 
-
-
-
 import requests
 from bs4 import BeautifulSoup
 
@@ -23,7 +20,7 @@ def get_html(url):
         r.raise_for_status
         # 该网站采用gbk编码！
         r.encoding = 'utf8'
-        return r.text
+        return r.tex
     except:
         return "get_html someting wrong"
 
