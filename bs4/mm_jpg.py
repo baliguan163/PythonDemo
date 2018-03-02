@@ -47,7 +47,7 @@ def download_pics(n,i,url,root,name):
     # else:
     #     print('下载ng:', n, ' ', i, '', path)
 
-    if  isExists:
+    if not isExists:
         ir = session.get(url, headers=headers)
         if ir.status_code == 200:
             print('下载ok:', n, ' ', i, '', path)
