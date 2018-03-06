@@ -15,18 +15,83 @@ session = requests.Session()
 #设置最大线程锁
 thread_lock = threading.BoundedSemaphore(value=10)
 
-def download_list_pics(n,piclist,root):
+def get_html(url):
+    try:
+        r = session.get(url, timeout=30)
+        r.raise_for_status
+        #该网站采用gbk编码！
+        r.encoding = 'utf8'
+        return r.text
+    except:
+        return "get_html someting wrong"
+
+# 一页图片地址
+def get_page_pic_all_url(url):
+    # print('get_page_pic_all_url:', url)
+    html = get_html(url)
+    soup = BeautifulSoup(html, 'lxml')
+    piclist = soup.find('div', class_='picbox')
+    # print('piclist:', piclist)
+    piclist = piclist.find_all('a')
+    # print('piclist:', piclist)
+    list = []
     for i in range(0, len(piclist)):
-        # print(len(piclist),'-',i+1,'  图集title:',piclist[i]['title'])
+        picurl = piclist[i].find('img')['src']
+        # print(len(piclist),'-',i+1,'  src:',picurl)
+        list.append(picurl)
+    return list
+
+
+# 一个图集有多g
+def get_page_pic_href(page,url,dir):
+    print('开始下载图集:', page, ' ', url, ' dir',dir)
+    html = get_html(url)
+    soup = BeautifulSoup(html, 'lxml')
+    pagelist = soup.find('div', class_='pages')
+    pagelist = pagelist.find_all('li')
+    # print('li:', pagelist)
+    # for i in range(0, len(pagelist)):
+    #     print('src:',pagelist[i].find('a').text)
+
+    pagecount0 = pagelist[0].find('a').text
+    # pagecount3= pagelist[3].find('a')['href']
+    pagecount0 = pagecount0[1:len(pagecount0)-3]
+    # pagecount3 = pagecount3[0:len(pagecount3) - 7]
+    pagecounturl = url[0:len(url)-5]
+    # print('页数:', pagecount0,' ', pagecounturl)
+
+    #一个图集有多少页地址
+    list = []
+    list.append(url)
+    for i in range(2, int(pagecount0) + 1):
+        href = pagecounturl + '_'+ str(i) + '.html'
+        # print('href:', i, '', href)
+        list.append(href)
+
+    print('图集页数:', len(list))
+
+    # 一个图集所有页图片地址
+    allpiclist = []
+    for i in range(0, len(list)):
+        piclist = get_page_pic_all_url(list[i])
+        allpiclist = allpiclist + piclist
+    print('图集页图片数量:', len(allpiclist))
+
+    # 开始下载
+    for i in range(0, len(allpiclist)):
+        print('下载:', i+1, '', list[i])
+        download_pics(page,i+1,list[i],dir,i+1)
+
+        # print(len(pagelist), '-', i + 1, '  src:', pagelist[i].find('a')['href'])
         # print('图集src:', piclist[i]['src'])
         # print('图集alt:', piclist[i]['alt'])
-        download_pics(n,i+1,piclist[i]['src'], root, piclist[i]['alt'])
+    #     download_pics(n,i+1,piclist[i]['src'], root, piclist[i]['alt'])
     # 解锁
-    thread_lock.release()
+    # thread_lock.release()
 
 
 #下载图片，并写入文件
-def download_pics(n,i,url,root,name):
+def download_pics(page,i,url,root,name):
     offset = url
     # 请求头
     headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -40,7 +105,7 @@ def download_pics(n,i,url,root,name):
 
 
     path = root + '\\'+str(name)+'.jpg'
-    # print('下载:', url)
+    print('下载:', url)
     isExists = os.path.exists(path)
     # ir = session.get(url, headers=headers)
     # if ir.status_code == 200:
@@ -51,119 +116,17 @@ def download_pics(n,i,url,root,name):
     #     print('下载ng:', n, ' ', i, '', path)
 
     if not isExists:
-        ir = session.get(url, headers=headers)
+        # ir = session.get(url, headers=headers)
+        ir = session.get(url)
         if ir.status_code == 200:
-            print('下载ok:', n, ' ', i, '',url,' ', path)
+            print('下载ok:', page, ' ', i, '',url,' ', path)
             with open(path, 'wb') as f:
                 f.write(ir.content)
         else:
-            print('下载ng:', n, ' ', i, '',url,' ', path)
+            print('下载ng:', page, ' ', i, '',url,' ', path)
     else:
-        print('文件存在不下载:', n, ' ', i, '',url,' ', path)
+        print('文件存在不下载:', page, ' ', i, '',url,' ', path)
 
-
-
-def get_html(url):
-    try:
-        r = session.get(url, timeout=30)
-        r.raise_for_status
-        #该网站采用gbk编码！
-        r.encoding = 'utf8'
-        return r.text
-    except:
-        return "get_html someting wrong"
-
-def get_ji_page_content(url):
-
-    html = get_html(url)
-    soup = BeautifulSoup(html, 'lxml')
-    yilist = soup.find('div', class_= 'pic')
-    title_list = yilist.find_all('li')
-    count = 0
-    list=[]
-    for mylist in  title_list:
-        name = mylist.find('a').img['alt']
-        picurl = mylist.find('a')['href']
-        count = count + 1
-        # print('----------------------------------------')
-        # print('图集名称:',count,' ',name )
-        # print('首图地址:', mylist.find('a').img['src'])
-        # print('图集地址:', picurl)
-        vid = {
-            'title': name,
-            'href': picurl,
-        }
-        list.append(vid)
-    # print('图集:', url,' ',count)
-    return list
-
-def get_content(url):
-    html = get_html(url)
-    soup = BeautifulSoup(html, 'lxml')
-    pagelist = soup.find('div', class_='page')
-
-    page_list = pagelist.find_all('em')
-    tt = page_list[0].text
-    count = tt[1:len(tt)-1]
-    print('下载图集页数:', tt,' ',count,' ',url)
-
-    downpagelist = []
-    for i in range(1,int(count)+1):
-      mypicurl = url + '/' + str(i)
-      # print('下载图集地址:', mypicurl)
-      downpagelist.append(mypicurl)
-    tag_list = []
-    for i  in range(0,len(downpagelist)):
-        list = get_ji_page_content(downpagelist[i]);
-        tag_list = tag_list + list
-    print('下载图集总数:', len(tag_list))
-    return tag_list
-
-def get_page_content(url):
-    pichtml = get_html(url)
-    soup = BeautifulSoup(pichtml, 'lxml')
-    piclist = soup.find('div', class_='page')
-    # print('piclist:', piclist)
-    # 统计一共多少张图片
-    # myimg: 上一篇
-    # myimg: 2
-    # myimg: 3
-    # myimg: 4
-    # myimg: 5
-    # myimg: 6
-    # myimg: 38
-    # myimg: 下一张
-    piclist = piclist.find_all('a')
-    pic_len = len(piclist)
-    pic_index = piclist[pic_len - 2].text
-    # print('图集张数:', pic_index,'  图集地址:',url)
-    # for myimg in piclist.find_all('a'):
-    #     print('myimg:', myimg.text)
-    listpic = []
-    for i in range(1, int(pic_index) + 1):
-        mypicurl = url + '/' + str(i)
-        # print('mypicurl:', mypicurl)
-        # print('savepath:', savepath)
-        listpic.append(mypicurl)
-
-    list = []
-    for i in range(0, len(listpic)):
-        # print('mypicurl:', listpic[i])
-        pichtml = get_html(listpic[i])
-        soup = BeautifulSoup(pichtml, 'lxml')
-
-        title = soup.find('div', class_='article').find('h2').text
-        downpath = soup.find('div', class_='content').find('a').find('img')['src']
-        alt = soup.find('div', class_='content').find('a').find('img')['alt']
-        # print('title:', title)
-        # print('src:', downpath, ' alt:', alt)
-        vid = {
-            'title': title,
-            'src': downpath,
-            'alt': alt,
-        }
-        list.append(vid)
-    return list
 
 
 def create_dir(directory):
@@ -172,48 +135,74 @@ def create_dir(directory):
 		os.makedirs(directory)
 	return directory
 
-def get_all_tag(url):
+# 获取总页数地址
+def get_page_pages(url):
     pichtml = get_html(url)
     soup = BeautifulSoup(pichtml, 'lxml')
     piclist = soup.find_all('div', class_='title')
+    list = []
+    pageNumList = soup.find_all('div', id='pageNum')
+    # print('pageNumList:', pageNumList)
+    for i in range(0, len(pageNumList)):
+        taglist = pageNumList[i].find_all('a')
+        # for i in range(0, len(taglist)):
+        #     print('taglist:', taglist[i]['href'])
+        tagstr = taglist[len(taglist) - 1]['href']
+        pages = tagstr[5:len(tagstr) - 5]
+        # print('总页数:',pages )
+        for i in range(1,int(pages) + 1):
+            href = 'http://www.youwu.cc/guonei/list_' + str(i) + '.html'
+            # print('href:', i, '', href)
+            vid = {
+                'href': href,
+            }
+            list.append(vid)
+    return list
 
+# 获取每一页图集地址信息
+def get_page_tag_info(url):
+    pichtml = get_html(url)
 
+    soup = BeautifulSoup(pichtml, 'lxml')
+    piclist = soup.find_all('div', class_='img')
     # print('piclist:', piclist)
-    list=[]
+
+    list = []
     for i in range(0,len(piclist)):
         href = 'http://www.youwu.cc' +  piclist[i].find('a')['href']
-        text = piclist[i].find('a').text
-        print('href:', href,' ',text)
+        title = piclist[i].find('img')['title']
+        src = piclist[i].find('img')['src']
+        # print('href:',i,' ', href,' ',title,' ',src)
+        vid = {
+            'title': title,
+            'href': href,
+            'src': src,
+        }
+        list.append(vid)
 
-    pageNumList = soup.find_all('div', id='pageNum')
-    for i in range(0, len(pageNumList)):
-        print('pageNumList:', pageNumList[i])
-
-        # vid = {
-        #     'title': piclist[i].text,
-        #     'href': piclist[i]['href'],
-        # }
-        # list.append(vid)
+    # print('地址:', url ,' 图集:',len(list))
     return list
 
 def main():
     root_dir = create_dir('D:\\www.youwu.cc\\')  # 绝对路径
     url = 'http://www.youwu.cc/guonei'
-    taglist = get_all_tag(url)
-    # for i in range(0,len(taglist)):
-    #     # print('title:', taglist[i]['title'])
-    #     root_dir_2 = create_dir(root_dir +  taglist[i]['title']+ '\\') # 绝对路径
-    #     list = get_content(taglist[i]['href'])
-    #     # print('图集个数:',len(list))
-    #     for i in range(0,len(list)):
-    #         print('下载图集:',i+1,' ', list[i]['title'],list[i]['href'])
-    #         piclist = get_page_content(list[i]['href'])
-    #         print('下载数量:', len(piclist))
-    #         root_dir_3 = create_dir(root_dir_2 + list[i]['title'])  # 绝对路径
-    #         #上锁
-    #         thread_lock.acquire()
-    #         t = threading.Thread(target=download_list_pics, args=(i+1,piclist,root_dir_3))
-    #         t.start()
+    pagelist = get_page_pages(url)  # 获取总页数地址
+    print('总页数:', len(pagelist))
+
+    tujilist = []
+    for i in range(0,len(pagelist)):
+        # print('href:',i,' ',pagelist[i]['href'])
+        pagetujilist = get_page_tag_info(pagelist[i]['href']);
+        tujilist =  tujilist + pagetujilist
+    print('图集总集数:', len(tujilist))
+
+    for i in range(0, len(tujilist)):
+        # print('开始下载图集:', i+1, ' ', tujilist[i]['title'], tujilist[i]['href'])
+        root_dir_2 = create_dir(root_dir + tujilist[i]['title'] + '\\')  # 绝对路径
+        get_page_pic_href(i+1,tujilist[i]['href'],root_dir_2)
+        # thread_lock.acquire()
+        # t = threading.Thread(target=get_page_pic_href, args=(i+1,tujilist[i]['href'],root_dir))
+        # t.start()
 
 if __name__ == "__main__":
     main()

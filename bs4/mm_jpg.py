@@ -30,7 +30,8 @@ def download_pics(n,i,url,root,name):
                'Accept-Encoding': 'gzip, deflate, sdch',
                'Accept-Language': 'zh-CN,zh;q=0.8',
                'Connection': 'keep-alive',
-               'Host': 'www.mmjpg.com',
+               # 'Host': 'www.mmjpg.com',
+               'Host':'img.mmjpg.com',
                'Referer': offset,
                'Upgrade-Insecure-Requests': '1',
                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
@@ -50,13 +51,13 @@ def download_pics(n,i,url,root,name):
     if not isExists:
         ir = session.get(url, headers=headers)
         if ir.status_code == 200:
-            print('下载ok:', n, ' ', i, '', path)
+            print('下载ok:', n, ' ', i, '',url,' ', path)
             with open(path, 'wb') as f:
                 f.write(ir.content)
         else:
-            print('下载ng:', n, ' ', i, '', path)
+            print('下载ng:', n, ' ', i, '',url,' ', path)
     else:
-        print('文件存在不下载:', n, ' ', i, '', path)
+        print('文件存在不下载:', n, ' ', i, '',url,' ', path)
 
 
 
