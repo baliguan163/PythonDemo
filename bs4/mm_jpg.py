@@ -10,20 +10,20 @@ from bs4 import BeautifulSoup
 
 session = requests.Session()
 #设置最大线程锁
-thread_lock = threading.BoundedSemaphore(value=10)
+thread_lock = threading.BoundedSemaphore(value=20)
 
-def download_list_pics(n,piclist,root):
+def download_list_pics(count,n,piclist,root):
     for i in range(0, len(piclist)):
         # print(len(piclist),'-',i+1,'  图集title:',piclist[i]['title'])
         # print('图集src:', piclist[i]['src'])
         # print('图集alt:', piclist[i]['alt'])
-        download_pics(n,i+1,piclist[i]['src'], root, piclist[i]['alt'])
+        download_pics(count,n,i+1,piclist[i]['src'], root, piclist[i]['alt'])
     # 解锁
     thread_lock.release()
 
 
 #下载图片，并写入文件
-def download_pics(n,i,url,root,name):
+def download_pics(count,n,i,url,root,name):
     offset = url
     # 请求头
     headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -51,13 +51,13 @@ def download_pics(n,i,url,root,name):
     if not isExists:
         ir = session.get(url, headers=headers)
         if ir.status_code == 200:
-            print('下载ok:', n, ' ', i, '',url,' ', path)
+            print('  图片不存在下载ok:',count,'-', n, ' ', i, '',url,' ', path)
             with open(path, 'wb') as f:
                 f.write(ir.content)
         else:
-            print('下载ng:', n, ' ', i, '',url,' ', path)
+            print('  图片不存在下载ng:',count,'-', n, ' ', i, '',url,' ', path)
     else:
-        print('文件存在不下载:', n, ' ', i, '',url,' ', path)
+        print('  存在不下载:', count,'-',n, ' ', i, '',url,' ', path)
 
 
 
@@ -103,7 +103,7 @@ def get_content(url):
     page_list = pagelist.find_all('em')
     tt = page_list[0].text
     count = tt[1:len(tt)-1]
-    print('下载图集页数:', tt,' ',count,' ',url)
+
 
     downpagelist = []
     for i in range(1,int(count)+1):
@@ -114,7 +114,9 @@ def get_content(url):
     for i  in range(0,len(downpagelist)):
         list = get_ji_page_content(downpagelist[i]);
         tag_list = tag_list + list
-    print('下载图集总数:', len(tag_list))
+
+    # print('图集页数:',count, ' ', url)
+    # print('图集总数:', len(tag_list))
     return tag_list
 
 def get_page_content(url):
@@ -176,7 +178,7 @@ def get_all_tag(url):
     piclist = soup.find('div', class_='subnav').find_all('a')
     list=[]
     for i in range(1,len(piclist)):
-        print('href:', piclist[i]['href'],' ',piclist[i].text)
+        print('分类地址:', piclist[i]['href'],' ',piclist[i].text)
         vid = {
             'title': piclist[i].text,
             'href': piclist[i]['href'],
@@ -188,19 +190,23 @@ def main():
     root_dir = create_dir('D:\\www.mmjpg.com\\')  # 绝对路径
     url = 'http://www.mmjpg.com/top'
     taglist = get_all_tag(url)
+
     for i in range(0,len(taglist)):
-        # print('title:', taglist[i]['title'])
+
         root_dir_2 = create_dir(root_dir +  taglist[i]['title']+ '\\') # 绝对路径
+        print('创建分类目录:', taglist[i]['title'],' ',root_dir_2)
+
+        # 每一个类别图集个数
         list = get_content(taglist[i]['href'])
         # print('图集个数:',len(list))
-        for i in range(0,len(list)):
-            print('下载图集:',i+1,' ', list[i]['title'],list[i]['href'])
+        lenlist = len(list)
+        for i in range(0,lenlist):
             piclist = get_page_content(list[i]['href'])
-            print('下载数量:', len(piclist))
+            print('  下载图集:', lenlist, '-', i+1, ' ',len(piclist),' ', list[i]['title'], list[i]['href'])
             root_dir_3 = create_dir(root_dir_2 + list[i]['title'])  # 绝对路径
             #上锁
             thread_lock.acquire()
-            t = threading.Thread(target=download_list_pics, args=(i+1,piclist,root_dir_3))
+            t = threading.Thread(target=download_list_pics, args=(lenlist,i+1,piclist,root_dir_3))
             t.start()
 
 if __name__ == "__main__":

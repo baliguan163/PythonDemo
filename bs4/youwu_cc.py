@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 
 session = requests.Session()
 #设置最大线程锁
-thread_lock = threading.BoundedSemaphore(value=10)
+thread_lock = threading.BoundedSemaphore(value=20)
 
 def get_html(url):
     try:
@@ -43,8 +43,8 @@ def get_page_pic_all_url(url):
 
 
 # 一个图集有多g
-def get_page_pic_href(page,url,dir):
-    print('开始下载图集:', page, ' ', url, ' dir',dir)
+def get_page_pic_href(sum,page,url,dir):
+
     html = get_html(url)
     soup = BeautifulSoup(html, 'lxml')
     pagelist = soup.find('div', class_='pages')
@@ -68,44 +68,45 @@ def get_page_pic_href(page,url,dir):
         # print('href:', i, '', href)
         list.append(href)
 
-    print('图集页数:', len(list))
+    print('  下载图集:',sum,'-', page, ' ',len(list),'页  ', url, ' 目录:', dir)
+
 
     # 一个图集所有页图片地址
     allpiclist = []
     for i in range(0, len(list)):
         piclist = get_page_pic_all_url(list[i])
         allpiclist = allpiclist + piclist
-    print('图集页图片数量:', len(allpiclist))
+    # print('  图集图片数量:', len(allpiclist))
 
     # 开始下载
     for i in range(0, len(allpiclist)):
-        print('下载:', i+1, '', list[i])
-        download_pics(page,i+1,list[i],dir,i+1)
+        # print('  下载图片:',sum,'-', page,' ',len(allpiclist),'-',i+1, '', allpiclist[i])
+        download_pics(sum,page,len(allpiclist),i+1,allpiclist[i],dir,i+1)
 
         # print(len(pagelist), '-', i + 1, '  src:', pagelist[i].find('a')['href'])
         # print('图集src:', piclist[i]['src'])
         # print('图集alt:', piclist[i]['alt'])
     #     download_pics(n,i+1,piclist[i]['src'], root, piclist[i]['alt'])
     # 解锁
-    # thread_lock.release()
+    thread_lock.release()
 
 
 #下载图片，并写入文件
-def download_pics(page,i,url,root,name):
+def download_pics(sum,page,pagesum,i,url,root,name):
     offset = url
     # 请求头
-    headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    headers = {'Accept': '*/*',
                'Accept-Encoding': 'gzip, deflate, sdch',
                'Accept-Language': 'zh-CN,zh;q=0.8',
                'Connection': 'keep-alive',
-               'Host': 'www.mmjpg.com',
+               'Host': 'www.youwu.cc',
                'Referer': offset,
-               'Upgrade-Insecure-Requests': '1',
+               'Cookie':'UM_distinctid=161fbe7e02c4fb-007b245a4ffbc18-17357940-13c680-161fbe7e02d610; CNZZDATA1256181055=1554824440-1520345597-%7C1520345597; Hm_lvt_ecf0502609cf895cbe057f7979b317bc=1520349733; Hm_lpvt_ecf0502609cf895cbe057f7979b317bc=1520349898',
                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
 
 
     path = root + '\\'+str(name)+'.jpg'
-    print('下载:', url)
+    # print('下载:', url)
     isExists = os.path.exists(path)
     # ir = session.get(url, headers=headers)
     # if ir.status_code == 200:
@@ -116,16 +117,17 @@ def download_pics(page,i,url,root,name):
     #     print('下载ng:', n, ' ', i, '', path)
 
     if not isExists:
-        # ir = session.get(url, headers=headers)
-        ir = session.get(url)
+        # print('  不存在不下载:', sum, '-', page, ' ', pagesum, '-', i, '', url, ' ', path)
+        ir = session.get(url, headers=headers)
+        # ir = session.get(url)
         if ir.status_code == 200:
-            print('下载ok:', page, ' ', i, '',url,' ', path)
+            print('  下载ok:',sum,'-',page, ' ',pagesum,'-',i, '',url,' ', path)
             with open(path, 'wb') as f:
                 f.write(ir.content)
         else:
-            print('下载ng:', page, ' ', i, '',url,' ', path)
+            print('  下载ng:',sum,'-',page, ' ',pagesum,'-', i, '',url,' ', path)
     else:
-        print('文件存在不下载:', page, ' ', i, '',url,' ', path)
+        print('  存在不下载:',sum,'-',page, ' ',pagesum,'-', i, '',url,' ', path)
 
 
 
@@ -194,15 +196,14 @@ def main():
         # print('href:',i,' ',pagelist[i]['href'])
         pagetujilist = get_page_tag_info(pagelist[i]['href']);
         tujilist =  tujilist + pagetujilist
-    print('图集总集数:', len(tujilist))
-
+    print('图集总数:', len(tujilist))
     for i in range(0, len(tujilist)):
         # print('开始下载图集:', i+1, ' ', tujilist[i]['title'], tujilist[i]['href'])
         root_dir_2 = create_dir(root_dir + tujilist[i]['title'] + '\\')  # 绝对路径
-        get_page_pic_href(i+1,tujilist[i]['href'],root_dir_2)
-        # thread_lock.acquire()
-        # t = threading.Thread(target=get_page_pic_href, args=(i+1,tujilist[i]['href'],root_dir))
-        # t.start()
+        # get_page_pic_href(len(tujilist),i+1,tujilist[i]['href'],root_dir_2)
+        thread_lock.acquire()
+        t = threading.Thread(target=get_page_pic_href, args=(len(tujilist),i+1,tujilist[i]['href'],root_dir_2))
+        t.start()
 
 if __name__ == "__main__":
     main()

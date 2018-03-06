@@ -79,13 +79,13 @@ def  get_query_string(data):
 # http://www.yangxian.gov.cn/search/searchResult.jsp?t_id=178&site_id=CMSyx&q=八里关&btn_search=搜索&p=1
 # http://www.yangxian.gov.cn/search/searchResult.jsp?t_id=178&site_id=CMSyx&q=八里关&btn_search=搜索&p=2
 #抓取一页数据
-def fetch(id=1,debug=False):
+def fetch(id=1,debug=True):
     key='八里关'
     query_data = {'t_id': 178,'site_id': 'CMSyx','q': key,'btn_search': '搜索','p': id}
     url = 'http://www.yangxian.gov.cn/search/searchResult.jsp' + '?' + get_query_string(query_data)
     #urlbase = r'http://www.yangxian.gov.cn/search/searchResult.jsp?t_id=178&site_id=CMSyx&q=八里关&btn_search=搜索&p='
     #url = urlbase + str(id)
-    print('url:',url)
+    print('获取地址:',url)
 
     # #编码,用于发送请求
     # actual_url = url[0:76] + urllib.request.quote(url[76:80].encode('gbk')) + url[79:91] \
@@ -171,14 +171,17 @@ def fetch(id=1,debug=False):
 if __name__ == "__main__":
     #连接数据库
     connnect_db()
+
     #创建表
     sql = "CREATE TABLE IF NOT EXISTS baliguan_news(id int PRIMARY KEY AUTO_INCREMENT, \
-          title varchar(128), tag varchar(16),new_url varchar(256),new_date varchar(32))"
+          title varchar(128), tag varchar(16),new_url varchar(256),new_date varchar(32))ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8"
     cursor.execute(sql)
+
     #插入数据库
     for i in range(1,10): #第一页开始
-        print('-------------开始爬取页数:',i)
-        threading._start_new_thread(insert_db,(i,))
+        # print('-------------开始爬取页数:',i)
+        # threading._start_new_thread(insert_db,(i,))
+        insert_db(i)
 
     time.sleep(3)
     #关闭数据库

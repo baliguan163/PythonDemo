@@ -67,15 +67,31 @@ def insert_db(page):
     vid_date = fetch(page,True)
     sql = "insert into yangxian_news(title,tag,new_url,new_date) values (%s,%s,%s,%s)"
     #print('sql:',sql)
-    print('页数:',page,' ',len(vid_date))
+    # print('页数:',page,' ',len(vid_date))
     #插入数据，一页20条
     for i in range(0,len(vid_date)):
         param = (vid_date[i]['title'],vid_date[i]['tag'],vid_date[i]['new_url'],vid_date[i]['new_date'])
         lock.acquire() #创建锁
-        print('new  insert:',page,i+1)
-        cursor.execute(sql,param)
-        conn.commit()
-        lock.release() #释放锁
+        # print('页数插入:',page,)
+        print('页数:', page, ' ', len(vid_date),' ',i+1)
+
+
+        # 查询数据中是否存在
+        title = vid_date[i]['title']
+        print('title:', title)
+
+        sql2 = "select * from  yangxian_news where  title='%s'" % (title)
+        # print('查询数据中是否存在sql:',sql)
+        cursor.execute(sql2)
+        results = cursor.fetchall()
+        if len(results) > 0:
+            print('数据中已经存在:', page, i + 1, ' ', title)
+            lock.release()  # 释放锁
+        else:
+            print('数据保存到数据库:', page, i + 1)
+            cursor.execute(sql, param)
+            conn.commit()
+            lock.release()  # 释放锁
 
 #下载page内容
 def  get_page(url):
@@ -88,7 +104,7 @@ def  get_page(url):
 def fetch(id=1,debug=False):
     urlbase = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10802&cur_page='
     url = urlbase + str(id)
-    print('url:',url)
+    print('页数:',id,'  url:',url)
     page = get_page(url)
     #print('page:',page)
 
@@ -146,14 +162,14 @@ def fetch(id=1,debug=False):
 if __name__ == "__main__":
     #连接数据库
     connnect_db()
-    #创建表
-    # sql = "CREATE TABLE IF NOT EXISTS yangxian_news(id int PRIMARY KEY AUTO_INCREMENT, \
-    #       title varchar(128), tag varchar(16),new_url varchar(256),new_date varchar(32))"
-    # cursor.execute(sql)
+    # 创建表
+    sql = "CREATE TABLE IF NOT EXISTS yangxian_news(id int PRIMARY KEY AUTO_INCREMENT, \
+          title varchar(128), tag varchar(16),new_url varchar(256),new_date varchar(32))ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8"
+    cursor.execute(sql)
     #插入数据库
-    for i in range(1,30): #第一页开始
-        print('-------------开始采页数:',i)
-        threading._start_new_thread(insert_db,(i,))
+    for i in range(1,119): #第一页开始
+        # threading._start_new_thread(insert_db,(i,))
+        insert_db(i)
 
     time.sleep(3)
     #关闭数据库
