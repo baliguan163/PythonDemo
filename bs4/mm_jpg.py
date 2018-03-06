@@ -201,9 +201,11 @@ def main():
         # print('图集个数:',len(list))
         lenlist = len(list)
         for i in range(0,lenlist):
+            print('  下载图集href:', list[i]['href'])
             piclist = get_page_content(list[i]['href'])
-            print('  下载图集:', lenlist, '-', i+1, ' ',len(piclist),' ', list[i]['title'], list[i]['href'])
             root_dir_3 = create_dir(root_dir_2 + list[i]['title'])  # 绝对路径
+            print('  下载图集:', lenlist, '-', i + 1, ' ', len(piclist), ' ', list[i]['title'], list[i]['href'])
+
             #上锁
             thread_lock.acquire()
             t = threading.Thread(target=download_list_pics, args=(lenlist,i+1,piclist,root_dir_3))
