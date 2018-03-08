@@ -16,7 +16,6 @@ def get_html(url):
     try:
         r = requests.get(url, timeout=30)
         r.raise_for_status
-        # 该网站采用gbk编码！
         r.encoding = 'utf8'
         return r.text
     except:
@@ -39,7 +38,6 @@ def get_content(url):
     # print('url_list :', url_list,' len:',len(url_list))
 
     for i in range(0, len(title_list)):
-
         bu_men = title_list[i].find('span',class_ ='red').contents
         time = title_list[i].find('span', class_ ='goRight').contents
         href = title_list[i].find('a')['href']
@@ -59,9 +57,7 @@ def get_content(url):
 
         # print('新闻标题:', soupHtml.find('h1').text)
 
-        for myimg in news_list.find_all('img'):
-            img_src = myimg.get('src')
-            print('图片地址:', img_src)
+
 
         spanTemp = ''
         for myspan in news_list.find_all('span'):
@@ -72,6 +68,9 @@ def get_content(url):
         info = soupHtml.find('div', class_='info').get_text().strip().replace('\n', '')
         print('新闻内容:\n',info)
 
+        for myimg in news_list.find_all('img'):
+            img_src = myimg.get('src')
+            print('新闻图片地址:', img_src)
 
 
         # for i in range(0, len(imgs)):

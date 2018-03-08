@@ -16,8 +16,9 @@ session = requests.Session()
 
 # 定义一个爬虫
 class spider(object):
+    url = 'http://www.qqretu.com/'
     def __init__(self):
-        print('开始爬取内容。。。')
+        print('开始爬取内容....................')
 
     def create_dir(self,directory):
         isExists = os.path.exists(directory)
@@ -85,8 +86,8 @@ class spider(object):
         try:
             # r = session.get(url, headers=headers)
             # r = requests.get(url,timeout=3)
-            r = requests.get(url)
-            # r.raise_for_status
+            r = session.get(url, timeout=30)
+            r.raise_for_status
             r.encoding = 'utf8'
             return r.text
         except:
@@ -134,7 +135,7 @@ class spider(object):
                 pagecount0 = textlist[len(textlist) - 1]['href']
                 # print('  图集页数pagecount0:',pagecount0)
                 sum = pagecount0[0:len(pagecount0) - 5]
-                print('  图集总页数:', url,' ', sum )
+                print('  图集总页数:',sum,'页  ', url)
 
                 # 一个图集有多少页地址
                 pages_list = []
@@ -339,16 +340,16 @@ if __name__ == '__main__':
     start = time.time()
     picspider = spider()
     root_dir = picspider.create_dir('D:\\www.qqretu.com\\')
+
     # 获取分类标签
-    url = 'http://www.qqretu.com/'
-    list_1 = picspider.get_1_tags(url)
+    list_1 = picspider.get_1_tags(picspider.url)
     # print('1:', list_1)
 
     for i in range(0,len(list_1)):
         text = list_1[i]['text']
         href = list_1[i]['href']
         root_dir_1 = picspider.create_dir(root_dir + text + '\\')
-        print('分类:', text, ' ', href,'   save:',root_dir_1)
+        print('图集分类:', text, ' ', href,'   save:',root_dir_1)
 
         #获取所有图集信息
         tuji_list = picspider.get_tuji_urls(text,href)
