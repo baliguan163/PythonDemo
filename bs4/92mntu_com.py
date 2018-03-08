@@ -1,6 +1,3 @@
-
-
-
 # -*- coding: utf-8 -*-
 import threading
 
@@ -10,6 +7,7 @@ import os
 import urllib
 import requests
 from bs4 import BeautifulSoup
+import chardet
 
 session = requests.Session()
 #设置最大线程锁
@@ -174,22 +172,35 @@ def download_pics(sum,page,pagesum,i,url,root,name):
                'Cookie': 'a9449_times=2; aa=123; a9449_pages=6; __tins__19179449={"sid": 1520414864125, "vd": 5, "expires": 1520417480260}; __51cke__=; __51laig__=6',
                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0'
                }
-
-    headers = ('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36')
-
-
-    path = root + '\\'+str(name)+'.jpg'
-    print('下载:', url)
+    path = root + '\\'+str(name)+ '.jpg'
+    # print('下载:', url)
     isExists = os.path.exists(path)
     if not isExists:
         # print('  不存在不下载:', sum, '-', page, ' ', pagesum, '-', i, '', url, ' ', path)
+        # gb2312_utf8 = unicode_gb2312.decode('gb2312').encode('utf-8'
+        # chardet.detect(url)
+        url = url[0:len(url)-1]
+        # print('下载:', url)
         ir = session.get(url, headers=headers)
         # ir = session.get(url)
-        print('  cookies:', session.cookies)
+        # print('   cookies:', ir.cookies)
+        # print('  encoding:', ir.encoding)
+        #
+        # try:
+        #     response = requests.get("http://httpbin.org/get", timeout=0.5)
+        #     print(response.status_code)
+        # except ReadTimeout:
+        #     print('Timeout')
+        # except ConnectionError:
+        #     print('Connection error')
+        # except RequestException:
+        #     print('Error')
+
         if ir.status_code == 200:
             print('  下载ok:',sum,'-',page, ' ',pagesum,'-',i, '',url,' ', path)
             with open(path, 'wb') as f:
                 f.write(ir.content)
+                f.close()
         else:
             print('  下载ng:',ir.status_code,' ',sum,'-',page, ' ',pagesum,'-', i, '',url,' ', path)
     else:
@@ -231,7 +242,8 @@ def main():
 
         for i in range(0, len(tags_list)):
             # 创建图集信息目录，下载图集下面的所有图片信息
-            root_dir_3 = create_dir(root_dir_2 + tags_list[i]['text'] + '\\')  # 绝对路径
+            pic_name = tags_list[i]['text']
+            root_dir_3 = create_dir(root_dir_2 + pic_name + '\\')  # 绝对路径
             pages_list = get_tujipa_pages(len(tags_list), i+1, tags_list[i]['href'], root_dir_3) #一个图集有多少页地址
 
             #获取图集的所有图片地址
@@ -242,11 +254,11 @@ def main():
             print(category, '：图集:', len(tags_list), '-', i + 1, ' 页数:', len(pages_list), ' 图片总数:',len(urls_list),' ', tags_list[i]['text'],tags_list[i]['href'])
 
             for k in range(0, len(urls_list)):
-                root_dir_4 = create_dir(root_dir_3 + tags_list[i]['text'] + '\\')  # 绝对路径
                 path = urls_list[k]
-                # download_pics(len(tags_list),i+1,len(urls_list),k+1,path,root_dir_4,k+1)
+                # download_pics(len(tags_list),i+1,len(urls_list),k+1,path,root_dir_3,k+1)
+                name = pic_name + '-' + str(k+1)
                 thread_lock.acquire(),
-                t = threading.Thread(target=download_pics, args=(len(tags_list),i+1,len(urls_list),k+1,path,root_dir_4,k+1))
+                t = threading.Thread(target=download_pics, args=(len(tags_list),i+1,len(urls_list),k+1,path,root_dir_3,name))
                 t.start()
 
 if __name__ == "__main__":
