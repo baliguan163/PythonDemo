@@ -114,7 +114,7 @@ class spider(object):
         return list
 
     #获取二级分类所有页的url信息
-    def get_tuji_urls(self,url):
+    def get_tuji_urls(self,text,url):
         # print('get_tuji_urls:', url)
         html = picspider.get_html(url)
         soup = BeautifulSoup(html, 'lxml')
@@ -148,23 +148,21 @@ class spider(object):
                     html = picspider.get_html(pages_list[j])
                     soup = BeautifulSoup(html, 'lxml')
                     try:
-                        pagelist = soup.find('div', class_='ImagesList ImagesList6')
-                        pagelist = pagelist.find_all('li')
+                        page = soup.find('div', class_='ImagesList ImagesList6')
+                        page = pagelist.find_all('li')
                         # print('  pagelist:', pagelist)
                         p = 0
-                        for k in range(0, len(pagelist)):
-                            href = pagelist[k].find('a')['href']
-                            title = pagelist[k].find('a')['title']
+                        for k in range(0, len(page)):
+                            href = page[k].find('a')['href']
+                            title = page[k].find('a')['title']
                             # print('  图集:',sum,'',title,' ',href)
                             vid3 = {'title': title, 'href': href}
                             tuji_list.append(vid3)
-
-                            print('  sum:', sum, '-', j + 1, pages_list[j], ' ', p, ' ', sumcount)
-                            picspider.get_page_pic_urls(sum,k+1,href)
-
                             sumcount = sumcount + 1
                             p = p + 1
 
+                            print('  类别:',text,'  页码总数:', sum, '-',len(page),'-', j+1, href, ' ', p, ' ', sumcount)
+                            # picspider.get_page_pic_urls(sum,k+1,href)
                         # print('  sum:',sum,'-',j+1, pages_list[j],' ', p,' ',sumcount)
                     except:
                         print('  获取图集总数异常：', pages_list[j])
@@ -353,7 +351,7 @@ if __name__ == '__main__':
         print('分类:', text, ' ', href,'   save:',root_dir_1)
 
         #获取所有图集信息
-        tuji_list = picspider.get_tuji_urls(href)
+        tuji_list = picspider.get_tuji_urls(text,href)
         # print('分类:', text, ' ', href, ' 图集数:', len(tuji_list))
         time.sleep(1)
 
