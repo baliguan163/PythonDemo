@@ -201,8 +201,7 @@ class spider(object):
             else:
                 print('    下载ng:', ir.status_code, ' ', sum, '-', i, '', url, ' ', path)
         else:
-            print('    存在不下载:', sum, '-', i, '', url, ' ', path)
-
+            print('  存在不下载:', sum, '-', i, '', url, ' ', path)
 
     def get_tuji_page_sum(self,url):
         # print('get_tuji_urls:', url)
@@ -419,6 +418,5 @@ if __name__ == '__main__':
         #     for k in range(0, len(pic_list)):
         #         # 保存
         #         picspider.download_pics( len(pic_list), k+1, pic_list[k]['src'], root_dir_2, pic_list[k]['title'])
-
     end = time.time()
     print('耗时:{}'.format(end  - start))

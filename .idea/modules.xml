@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../FlaskDemo/.idea/FlaskDemo.iml" filepath="$PROJECT_DIR$/../FlaskDemo/.idea/FlaskDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/PythonDemo.iml" filepath="$PROJECT_DIR$/.idea/PythonDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ScrapyDemo/.idea/ScrapyDemo.iml" filepath="$PROJECT_DIR$/../ScrapyDemo/.idea/ScrapyDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../wenda-helper/.idea/wenda-helper.iml" filepath="$PROJECT_DIR$/../wenda-helper/.idea/wenda-helper.iml" />
     </modules>
   </component>
 </project>
