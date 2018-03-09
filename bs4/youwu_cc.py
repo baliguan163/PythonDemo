@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 
 session = requests.Session()
 #设置最大线程锁
-thread_lock = threading.BoundedSemaphore(value=20)
+thread_lock = threading.BoundedSemaphore(value=1)
 
 def get_html(url):
     try:
