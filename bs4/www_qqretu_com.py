@@ -109,7 +109,7 @@ class spider(object):
             dl_list = taglist[i].find_all('a')
             # print('dl_list:',dl_list)
             for j in range(1, len(dl_list)):
-                print('  分类:', dl_list[j].text,' ',dl_list[j]['href'])
+                print('  分类:',i+1,'', dl_list[j].text,' ',dl_list[j]['href'])
                 vid3 = {'text': dl_list[j].text, 'href': dl_list[j]['href']}
                 list.append(vid3)
         return list
@@ -185,7 +185,7 @@ class spider(object):
                    }
 
         path = root  + name + '.jpg'
-        # print('下载:', url)
+        print('    开始下载:',sum, '-', i, '', url,'',path)
         isExists = os.path.exists(path)
         if not isExists:
             # url = url[0:len(url) - 1]
@@ -201,7 +201,7 @@ class spider(object):
             else:
                 print('    下载ng:', ir.status_code, ' ', sum, '-', i, '', url, ' ', path)
         else:
-            print('  存在不下载:', sum, '-', i, '', url, ' ', path)
+            print('    存在不下载:', sum, '-', i, '', url, ' ', path)
 
     def get_tuji_page_sum(self,url):
         # print('get_tuji_urls:', url)
@@ -325,54 +325,55 @@ class spider(object):
 
     #获取每一个图集页码数
     def get_all(self,text,fl_sum,i,href,root_dir_1):
-
-        # 获取所有图集信息: 图集页多少
+        #分类的一个图集的页数
         tuji_list = picspider.get_tuji_urls(href)
         # print('分类:', text, ' ', href, ' 图集数:', len(tuji_list))
-        time.sleep(1)
+        # time.sleep(1)
 
-        # 获取所有图集的所有图集信息: 多少个图集
+        #分类的一个图集的页数的所有图集信息
         tuji_all_info = []
         for j in range(0, len(tuji_list)):
         # for j in range(0, 3):
             pic_list = picspider.get_tuji_all_tu_info(tuji_list[j])
             tuji_all_info = tuji_all_info + pic_list
-            print('  图集分类:', text,'', fl_sum, '-', i, ' 图集总页数:', len(tuji_list), '-', j + 1, '已经获取图集总数',len(tuji_all_info), ' ', tuji_list[j])
-            # time.sleep(1)
-        print('图集分类:',text,'', fl_sum, '-', i + 1, ' 图集总页数:', len(tuji_list), '已经获取图集总数', len(tuji_all_info), '',
-              href)
+            print('  图集分类:', text,'', fl_sum, '-',i, '图集页数:',len(tuji_list), '-', j+1, '图集数',len(pic_list),'',len(tuji_all_info), '', tuji_list[j])
+            #time.sleep(1)
+        print('图集分类:',text,'', fl_sum,'-', i+1, '图集页数:', len(tuji_list), '图集总数', len(tuji_all_info), '',href)
 
-        # 获取一个图集有多少页: 页多少
+        #获取一个图集有多少页，多少图片，下载图片
         for m in range(0, len(tuji_all_info)):
             title = tuji_all_info[m]['title']
             title2 = title.replace(':', '')
-            print('title:', title,'',title2)
-
+            # print('title:', title,'',title2)
             root_dir_2 = picspider.create_dir(root_dir_1 + title2 + '\\')
-            print('root_dir_2:', root_dir_2)
+            # print('root_dir_2:', root_dir_2)
 
+            #单个图集页数
             page_sum_list = picspider.get_tuji_page_sum(tuji_all_info[m]['href'])
-
             # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'图集页码总数', len(page_sum_list),'',tuji_all_info[m]['href'])
-            # time.sleep(1)
+            time.sleep(1)
 
-            # 下载图集信息
-            pic_list = []
+            #单个图集所有图片信息
+            all_pic_list = []
             for n in range(0, len(page_sum_list)):
                 page_pic_info_list = picspider.get_tuji_page_all_pic_info(page_sum_list[n])
-                pic_list = pic_list + page_pic_info_list
+                all_pic_list = all_pic_list + page_pic_info_list
+
             # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'需要下载图片数量', len(pic_list))
-            print('图集分类:', text, ' ', fl_sum, '-', i + 1, '  图集:', title2, '图集页码总数',
-                  len(page_sum_list), '需要下载图片数量', len(pic_list), '', tuji_all_info[m]['href'])
-            # 下载图片
-            for k in range(0, len(pic_list)):
+            print('图集分类:', text, ' ', fl_sum, '-', i + 1,'',len(tuji_all_info),'-',m+1, '图集:', title2, '图集页码总数',len(page_sum_list), '需要下载图片数量', len(all_pic_list), '', tuji_all_info[m]['href'])
+
+            title3 = all_pic_list[k]['title']
+            src3   = all_pic_list[k]['src']
+            #下载图片
+            for k in range(0, len(all_pic_list)):
                 # 保存
-                picspider.download_pics(len(pic_list), k+1, pic_list[k]['src'], root_dir_2, pic_list[k]['title'])
+                picspider.download_pics(len(all_pic_list), k+1, src3, root_dir_2, title3)
         # 解锁
         thread_lock.release()
 
 if __name__ == '__main__':
     start = time.time()
+
     picspider = spider()
     root_dir = picspider.create_dir('D:\\www.qqretu.com\\')
     # 获取分类标签
@@ -384,49 +385,13 @@ if __name__ == '__main__':
     # text555555 = 'LIN138美女图片: 南韩健身女神文世琳魔鬼身材'
     # text6666 = text555555.replace(':', '')
     # print('text555555:', text555555, ' ', text6666)
-
     for i in range(0,len(list_1)):
         text = list_1[i]['text']
         href = list_1[i]['href']
         root_dir_1 = picspider.create_dir(root_dir + text + '\\')
-
         # print('图集分类:', text, ' ', href,'   save:',root_dir_1)
         thread_lock.acquire(),
-        t = threading.Thread(target=picspider.get_all, args=(text,fl_sum, i + 1, href, root_dir_1))
+        t = threading.Thread(target=picspider.get_all, args=(text,fl_sum, i+1,href,root_dir_1))
         t.start()
-
-        # #获取所有图集信息: 图集页多少
-        # tuji_list = picspider.get_tuji_urls(href)
-        # # print('分类:', text, ' ', href, ' 图集数:', len(tuji_list))
-        # time.sleep(1)
-        #
-        # #获取所有图集的所有图集信息: 多少个图集
-        # tuji_all_info = []
-        # for j in range(200, len(tuji_list)):
-        #     pic_list = picspider.get_tuji_all_tu_info(tuji_list[j])
-        #     tuji_all_info = tuji_all_info + pic_list
-        #     print('  图集分类:', text,'',fl_sum,'-',i+1,' 图集总页数:', len(tuji_list),'-',j+1,'已经获取图集总数', len(tuji_all_info),' ',tuji_list[j])
-        #     # time.sleep(1)
-        # print('图集分类:', text, ' ',fl_sum,'-',i+1, ' 图集总页数:', len(tuji_list),'已经获取图集总数', len(tuji_all_info),'',href)
-        #
-        # #获取一个图集有多少页: 页多少
-        # for m in range(0,len(tuji_all_info)):
-        #     root_dir_2 = picspider.create_dir(root_dir_1 + tuji_all_info[m]['title'] + text + '\\')
-        #     page_sum_list = picspider.get_tuji_page_sum(tuji_all_info[m]['href'])
-        #
-        #     # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'图集页码总数', len(page_sum_list),'',tuji_all_info[m]['href'])
-        #     # time.sleep(1)
-        #
-        #     # 下载图集信息
-        #     pic_list = []
-        #     for n in range(0, len(page_sum_list)):
-        #         page_pic_info_list = picspider.get_tuji_page_all_pic_info(page_sum_list[n])
-        #         pic_list = pic_list + page_pic_info_list
-        #     # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'需要下载图片数量', len(pic_list))
-        #     print('图集分类:', text, ' ', fl_sum, '-', i + 1, '  图集:', tuji_all_info[m]['title'], '图集页码总数',len(page_sum_list),'需要下载图片数量', len(pic_list),'', tuji_all_info[m]['href'])
-        #     # 下载图片
-        #     for k in range(0, len(pic_list)):
-        #         # 保存
-        #         picspider.download_pics( len(pic_list), k+1, pic_list[k]['src'], root_dir_2, pic_list[k]['title'])
     end = time.time()
     print('耗时:{}'.format(end  - start))
