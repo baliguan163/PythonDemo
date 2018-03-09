@@ -26,50 +26,6 @@ class spider(object):
             os.makedirs(directory)
         return directory
 
-    # # getsource用来获取网页源代码
-    # def getsource(self, url):
-    #     html = requests.get(url)
-    #     return html.text
-    #
-    # # changepage用来生产不同页数的链接
-    # def changepage(self, url, total_page):
-    #     if re.search('index_(\d+)', url, re.S):
-    #         now_page = int(re.search('index_(\d+)', url, re.S).group(1))  # 可修改
-    #     else:
-    #         now_page = 0
-    #     page_group = []
-    #     for i in range(now_page, total_page + 1):
-    #         link = re.sub('index_\d+', 'index_%s' % i, url, re.S)  # 可修改
-    #         print('link:',link)
-    #         page_group.append(link)
-    #     return page_group
-    #
-    # # getpic用来爬取一个网页图片
-    # def getpic(self, source):
-    #     selector = etree.HTML(source)
-    #     pic_url = selector.xpath('//ul[@class="ali"]/li/div/a/img/@src')  # 可修改
-    #     return pic_url
-    #
-    # # savepic用来保存结果到pic文件夹中
-    # def savepic(self, pic_url):
-    #     picname = re.findall('(\d+)', link, re.S)  # 可修改
-    #     picnamestr = ''.join(picname)
-    #     i = 0
-    #     for each in pic_url:
-    #         print('now downloading:{}'.format(each))
-    #         pic = requests.get(each)
-    #         fp = open('pic\\' + picnamestr + '-' + str(i) + '.jpg', 'wb')
-    #         fp.write(pic.content)
-    #         fp.close()
-    #         i += 1
-    #
-    # # ppic集合类的方法
-    # def ppic(self, link):
-    #     print('正在处理页面：{}'.format(link))
-    #     html = picspider.getsource(link)
-    #     pic_url = picspider.getpic(html)
-    #     picspider.savepic(pic_url)
-    #
     def get_html(self,url):
         # 请求头
         headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -92,8 +48,6 @@ class spider(object):
             return r.text
         except:
             return "get_html someting wrong"
-
-
 
     def get_1_tags(self,url):
         # print('get_1_tags:', url)
@@ -362,10 +316,11 @@ class spider(object):
             # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'需要下载图片数量', len(pic_list))
             print('图集分类:', text, ' ', fl_sum, '-', i + 1,'',len(tuji_all_info),'-',m+1, '图集:', title2, '图集页码总数',len(page_sum_list), '需要下载图片数量', len(all_pic_list), '', tuji_all_info[m]['href'])
 
-            title3 = all_pic_list[k]['title']
-            src3   = all_pic_list[k]['src']
+
             #下载图片
             for k in range(0, len(all_pic_list)):
+                title3 = all_pic_list[k]['title']
+                src3 = all_pic_list[k]['src']
                 # 保存
                 picspider.download_pics(len(all_pic_list), k+1, src3, root_dir_2, title3)
         # 解锁
