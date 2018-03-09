@@ -184,7 +184,7 @@ class spider(object):
                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0'
                    }
 
-        path = root + '\\' + name + '.jpg'
+        path = root  + name + '.jpg'
         # print('下载:', url)
         isExists = os.path.exists(path)
         if not isExists:
@@ -324,7 +324,7 @@ class spider(object):
 
 
     #获取每一个图集页码数
-    def get_all(self,fl_sum,i,href,root_dir_1):
+    def get_all(self,text,fl_sum,i,href,root_dir_1):
 
         # 获取所有图集信息: 图集页多少
         tuji_list = picspider.get_tuji_urls(href)
@@ -333,18 +333,24 @@ class spider(object):
 
         # 获取所有图集的所有图集信息: 多少个图集
         tuji_all_info = []
-        for j in range(200, len(tuji_list)):
+        for j in range(0, len(tuji_list)):
+        # for j in range(0, 3):
             pic_list = picspider.get_tuji_all_tu_info(tuji_list[j])
             tuji_all_info = tuji_all_info + pic_list
-            print('  图集分类:', text, '', fl_sum, '-', i, ' 图集总页数:', len(tuji_list), '-', j + 1, '已经获取图集总数',
-                  len(tuji_all_info), ' ', tuji_list[j])
+            print('  图集分类:', text,'', fl_sum, '-', i, ' 图集总页数:', len(tuji_list), '-', j + 1, '已经获取图集总数',len(tuji_all_info), ' ', tuji_list[j])
             # time.sleep(1)
-        print('图集分类:', text, ' ', fl_sum, '-', i + 1, ' 图集总页数:', len(tuji_list), '已经获取图集总数', len(tuji_all_info), '',
+        print('图集分类:',text,'', fl_sum, '-', i + 1, ' 图集总页数:', len(tuji_list), '已经获取图集总数', len(tuji_all_info), '',
               href)
 
         # 获取一个图集有多少页: 页多少
         for m in range(0, len(tuji_all_info)):
-            root_dir_2 = picspider.create_dir(root_dir_1 + tuji_all_info[m]['title'] + text + '\\')
+            title = tuji_all_info[m]['title']
+            title2 = title.replace(':', '')
+            print('title:', title,'',title2)
+
+            root_dir_2 = picspider.create_dir(root_dir_1 + title2 + '\\')
+            print('root_dir_2:', root_dir_2)
+
             page_sum_list = picspider.get_tuji_page_sum(tuji_all_info[m]['href'])
 
             # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'图集页码总数', len(page_sum_list),'',tuji_all_info[m]['href'])
@@ -356,12 +362,12 @@ class spider(object):
                 page_pic_info_list = picspider.get_tuji_page_all_pic_info(page_sum_list[n])
                 pic_list = pic_list + page_pic_info_list
             # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'需要下载图片数量', len(pic_list))
-            print('图集分类:', text, ' ', fl_sum, '-', i + 1, '  图集:', tuji_all_info[m]['title'], '图集页码总数',
+            print('图集分类:', text, ' ', fl_sum, '-', i + 1, '  图集:', title2, '图集页码总数',
                   len(page_sum_list), '需要下载图片数量', len(pic_list), '', tuji_all_info[m]['href'])
             # 下载图片
             for k in range(0, len(pic_list)):
                 # 保存
-                picspider.download_pics(len(pic_list), k + 1, pic_list[k]['src'], root_dir_2, pic_list[k]['title'])
+                picspider.download_pics(len(pic_list), k+1, pic_list[k]['src'], root_dir_2, pic_list[k]['title'])
         # 解锁
         thread_lock.release()
 
@@ -375,6 +381,10 @@ if __name__ == '__main__':
     # print('1:', list_1)
     fl_sum = len(list_1)
 
+    # text555555 = 'LIN138美女图片: 南韩健身女神文世琳魔鬼身材'
+    # text6666 = text555555.replace(':', '')
+    # print('text555555:', text555555, ' ', text6666)
+
     for i in range(0,len(list_1)):
         text = list_1[i]['text']
         href = list_1[i]['href']
@@ -382,7 +392,7 @@ if __name__ == '__main__':
 
         # print('图集分类:', text, ' ', href,'   save:',root_dir_1)
         thread_lock.acquire(),
-        t = threading.Thread(target=picspider.get_all, args=(fl_sum, i + 1, href, root_dir_1))
+        t = threading.Thread(target=picspider.get_all, args=(text,fl_sum, i + 1, href, root_dir_1))
         t.start()
 
         # #获取所有图集信息: 图集页多少
