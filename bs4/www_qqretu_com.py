@@ -393,5 +393,6 @@ if __name__ == '__main__':
         thread_lock.acquire(),
         t = threading.Thread(target=picspider.get_all, args=(text,fl_sum, i+1,href,root_dir_1))
         t.start()
+
     end = time.time()
     print('耗时:{}'.format(end  - start))
