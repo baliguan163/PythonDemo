@@ -142,6 +142,65 @@ def download_pics(fl_sum,j,sum,i,url,root,name):
     # print('  下载状态:',pic_ok, '-', pic_ng, '-', pic_ng)
     return pic_ok,pic_ng,pic_exist
 
+
+
+def download_jing_xiang(url):
+    newHtml = get_html(url)
+    soupHtml = BeautifulSoup(newHtml, 'lxml')
+    news_list = soupHtml.find('form')
+    news_list = news_list.find_all('input')
+
+    type = news_list[0]['value']
+    id = news_list[1]['value']
+    name = news_list[2]['value']
+    submit = news_list[3]['value']
+
+    print('submit:', type,'',id,'',name,'',submit)
+
+    # for i in range(0,len(news_list)):
+    #     print('news_list:', news_list[i])
+
+    # 设置要请求的头，让服务器不会以为你是机器人
+    # headers = {'UserAgent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'};
+    # 请求头
+    headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+               'Accept-Encoding': 'gzip, deflate',
+               'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+               'Connection': 'keep-alive',
+               'Host': 'www3.uptorrentfilespacedownhostabc.com',
+               'Upgrade-Insecure-Requests': '1',
+               'Referer': url,
+               'Cookie': ' __cfduid=dec54a3b4bc38d7ead3df4c357ee64f991520932029; a4184_pages=1; a4184_times=1; __tins__18654184=%7B%22sid%22%3A%201520932029798%2C%20%22vd%22%3A%201%2C%20%22expires%22%3A%201520933829798%7D; __51cke__=; __51laig__=1',
+               'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0'
+               }
+    # post方式时候要发送的数据
+    values = {'name': 'admin', 'password': '123456'};
+    path =  '1.jpg'
+    print('    下载url:', url)
+    ir = session.get(url, timeout=3)
+    if ir.status_code == 200:
+        with open(path, 'wb') as f:
+            f.write(ir.content)
+            f.close()
+            print('    图片下载ok:', url, ' ',path)
+    else:
+        print('    图片下载ng:', ir.status_code,'', url, ' ', path)
+
+
+
+# 'Host: www3.uptorrentfilespacedownhostabc.com
+# User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0
+# Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+# Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+# Accept-Encoding: gzip, deflate
+# Referer: http://www3.uptorrentfilespacedownhostabc.com/updowm/file.php/P5DN9Ym.html
+# Content-Type: application/x-www-form-urlencoded
+# Content-Length: 79
+# Cookie: __cfduid=dec54a3b4bc38d7ead3df4c357ee64f991520932029; a4184_pages=1; a4184_times=1; __tins__18654184=%7B%22sid%22%3A%201520932029798%2C%20%22vd%22%3A%201%2C%20%22expires%22%3A%201520933829798%7D; __51cke__=; __51laig__=1
+# Connection: keep-alive
+# Upgrade-Insecure-Requests: 1
+# '
+
 def get_content(url,sum,index):
     newHtml = get_html(url)
     soupHtml = BeautifulSoup(newHtml, 'lxml')
@@ -215,92 +274,25 @@ def get_content(url,sum,index):
        # print('')
     return list
 
-
-def get_content_info(url,sum,index):
-    newHtml = get_html(url)
-    soupHtml = BeautifulSoup(newHtml, 'lxml')
-    list = []
-    try:
-        news_list = soupHtml.find('th', id='td_tpc',class_='r_one')
-        title = news_list.find('h1',id='subject_tpc').text
-        # down_url = urls[len(urls) - 1].text
-        print(' title:', title)
-
-
-        # attr =  news_list.text
-        # # print(' 属性:', attr)
-        # attr2 = attr.split('◎')
-        # # for i in range(0,len(attr2)):
-        # #     print(' str:', attr2[i])
-        # # print(' attr2:', len(attr2))
-        #
-        # vid3 = {'title': attr2[0],
-        #         'yi_ming': attr2[1],
-        #         'pian_ming': attr2[2],
-        #         'nian_dai': attr2[3],
-        #         'chan_di': attr2[4],
-        #         'lei_bie': attr2[5],
-        #         'yu_yan': attr2[6],
-        #         'date': attr2[7],
-        #         'imdb_ping_fen': attr2[8],
-        #         'imdb_url': attr2[9],
-        #         'dou_ban_ping_fen': attr2[10],
-        #         'dou_ban_url': attr2[11],
-        #         'pian_chang': attr2[12],
-        #         'dao_yan': attr2[13],
-        #         'zhu_yan': attr2[14],
-        #         'jain_jie': attr2[15],
-        #          'down_url': down_url}
-        # list.append(vid3)
-        # print('sum:', sum, '-', index, '',attr2[0], '镜像地址:',down_url )
-
-        # for tag in news_list.find_all(re.compile("^b")):
-        #     print('name:',tag.name)
-
-
-        # for m in  news_list.find_all('br'):
-        #     print('  m:',m.text)
-# ' str: [2017][欧美][剧情][BT下载][第48号交接点 Junction 48][HD-MP4/1.04G][中文字幕][720P]
-#  str: 译　　名　第48号交接点/唱出我自由（港）
-#  str: 片　　名　Junction 48
-#  str: 年　　代　2015
-#  str: 产　　地　以色列
-#  str: 类　　别　传记/动作/犯罪
-#  str: 语　　言　阿拉伯语
-#  str: 上映日期　2016-02-13(柏林电影节)
-#  str: IMDb评分  6.8/10 from 491 users
-#  str: IMDb链接  http://www.imdb.com/title/tt5140182/
-#  str: 豆瓣评分　6.7/10 from 34 users
-#  str: 豆瓣链接　https://movie.douban.com/subject/26667514/
-#  str: 片　　长　95分钟
-#  str: 导　　演　Udi Aloni
-#  str: 主　　演　Tamer Nafar　　　　　　Samar Qupty　　　　　　Salwa Nakkara　　　　　　Saeed Dassuki　　　　　　Adeeb Safadi
-#  str: 简　　介　'
-
-        # # # pic_list = news_list.find('div', class_='tpc_content')
-        # pic_list = news_list.find_all('img')
-        # # print(' img:', pic_list)
-        # for k in range(0,len(pic_list)):
-        #     src = pic_list[k]['src']
-        #     print('  图片:',k+1,'',src)
-
-
-    except:
-        ''
-       # print('get_content异常',url)
-       # print('')
-    return list
-
-
 def get_pic_all_content(page_sum,index,all_url_list,root_dir):
     #获取每一页图集地址信息,并下载图片
     pic_sum = 0;
     for i in range(0,len(all_url_list)):
         # print('图集标题:', all_news_url[i]['title'],'',all_news_url[i]['href'])
-        # list = get_content(all_url_list[i]['href'],len(all_url_list),i+1)
-        list = get_content_info(all_url_list[i]['href'], len(all_url_list), i + 1)
+        list = get_content(all_url_list[i]['href'],len(all_url_list),i+1)
         pic_sum = pic_sum + len(list)
-        # print('下载分类电影:',len(all_url_list),'-',i+1,'电影总数',pic_sum, '镜像地址:', len(list))
+        # print('下载分类电影:',len(all_url_list),'-',i+1,'电影总数',pic_sum)
+
+        for j in range(0,len(list)):
+            print('down_url',list[0]['down_url'])
+            download_jing_xiang(list[0]['down_url'])
+
+        # for j in range(0,len(list)):
+        #     for m in range(0,list[i]['list_jpg'])
+        #         print('list_jpg:', list[i][m])
+        #     for n in range(0,list[i]['list_url']):
+        #         print('list_url:', list[i][n])
+
         # print('list:',list)
         #下载图片
         # (???)
@@ -328,11 +320,9 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
 def main():
     root  = create_dir('D:\\w3.afulyu.rocks\\')
      # 分类地址
-    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=83', '正片大片']
-    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=81', '怪蜀黍区']
-
-
+    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=83', '正片大片']
     root_dir = create_dir(root + url[1] + '\\')
+
     # 分类的分页地址
     pages_url_list = get_pages_url_count(url[0])
     print('分类分页数:',url[1],'',len(pages_url_list), '',url[0],'',root_dir)

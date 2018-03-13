@@ -180,9 +180,9 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
 def main():
     root  = create_dir('D:\\w3.afulyu.rocks\\')
      # 分类地址
-    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=14','唯美写真'] #11
+    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=14','唯美写真'] #11
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=15', '网友自拍']
-    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
+    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
 
     root_dir = create_dir(root + url[1] + '\\')
@@ -192,7 +192,7 @@ def main():
 
     # 分类的所有页数据信息
     all_news_url = []
-    for j in range(0,len(pages_url_list)):
+    for j in range(100,len(pages_url_list)):
         pages_list = get_pages_per_url_info(pages_url_list[j])
         all_news_url = all_news_url + pages_list
         # print('分类总页数:', len(pages_url_list),'-',j+1,'当前页图集数',len(pages_list),'','图集总数',len(all_news_url),'',pages_url_list[j])
