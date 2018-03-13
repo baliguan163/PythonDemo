@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+#
+# sqlalchemy
+# SQLAlchemy是Python编程语言下的一款ORM框架，该框架建立在数据库API之上，使用关系对象映射进行数据库操作，简言之便是：将对象转换成SQL，
+# 然后使用数据API执行SQL并获取执行结果
+
+# pandas
+# Pandas 纳入了大量库和一些标准的数据模型，提供了高效地操作大型数据集所需的工具。pandas提供了大量能使我们快速便捷地处理数据的函数和方法。
+# 你很快就会发现，它是使Python成为强大而高效的数据分析环境的重要因素之一
 
 import os
 import inspect
@@ -28,8 +36,8 @@ cur=conn.cursor()
 query = 'select URL from basic_information'
 alreadylist = list(pd.read_sql(query, conn)['URL'])
 fullset = list(set(fullset).union(set(alreadylist)).difference(set(alreadylist))) #注1
-errorlist = [] #创建一个存放错误的列表
 
+errorlist = [] #创建一个存放错误的列表
 engine = create_engine('sqlite:///%s' %'SHRENT.db', echo = False)
 
 def read_url(url):
@@ -106,6 +114,7 @@ pool = ThreadPool(4)
 pool.map(save, fullset) #将所有的链接送入save函数来获取信息并存入sqlite
 pool.close()
 pool.join()
+
 print('--------------open--------------')
 f = open('Notsaved.txt', 'w')
 print(errorlist, file = f)
