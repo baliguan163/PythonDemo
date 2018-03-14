@@ -155,7 +155,7 @@ def get_page_pic_all_url(url):
         # print('图集alt:', piclist[i]['alt'])
     #     download_pics(n,i+1,piclist[i]['src'], root, piclist[i]['alt'])
     # 解锁
-    # thread_lock.release()
+    #thread_lock.release()
 
 
 #下载图片，并写入文件

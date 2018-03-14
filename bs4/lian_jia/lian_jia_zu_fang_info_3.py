@@ -22,6 +22,7 @@ try:
     alreadylist = list(pd.read_sql(query2, conn)['URL']) #在price_temp表中的表
 except:
     alreadylist = []
+
 #basic和price表的差
 urlist2 = list(set(urlist_basic).union(set(alreadylist)).difference(set(alreadylist)))
 
