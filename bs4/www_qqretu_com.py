@@ -10,6 +10,7 @@ import importlib
 import os
 from bs4 import BeautifulSoup
 import threading
+import inspect
 
 session = requests.Session()
 #设置最大线程锁
@@ -49,12 +50,25 @@ class spider(object):
         except:
             return "get_html someting wrong"
 
+    def read_url(self, url):
+        # req = get_html(url)
+        # print('url:', url)
+        fails = 0
+        while fails < 5:
+            try:
+                # content = urllib.request.urlopen(req, timeout=20).read()
+                content = picspider.get_html(url)
+                break
+            except:
+                fails += 1
+            print(inspect.stack()[1][3] + ' occused error')
+            # raise
+        soup = BeautifulSoup(content, "lxml")
+        return soup
+
     def get_1_tags(self,url):
         # print('get_1_tags:', url)
-        pichtml = picspider.get_html(url)
-        # print('pichtml:', pichtml)
-
-        soup = BeautifulSoup(pichtml, 'lxml')
+        soup = picspider.read_url(url)
         taglist = soup.find_all('li', class_='NenuLi')
         # print('taglist:', taglist)
 
@@ -71,8 +85,7 @@ class spider(object):
     #获取二级分类所有页的url信息
     def get_tuji_urls(self,url):
         # print('get_tuji_urls:', url)
-        html = picspider.get_html(url)
-        soup = BeautifulSoup(html, 'lxml')
+        soup = picspider.read_url(url)
 
         pages_list = []
         try:
@@ -95,9 +108,7 @@ class spider(object):
         # 获取二级分类所有页的url信息
     def get_tuji_all_tu_info(self, url):
         # print('get_tuji_all_tu_info:', url)
-        html = picspider.get_html(url)
-        # print('  html:', html)
-        soup = BeautifulSoup(html, 'lxml')
+        soup = picspider.read_url(url)
 
         tuji_list=[]
         try:
@@ -152,8 +163,7 @@ class spider(object):
 
     def get_tuji_page_sum(self,url):
         # print('get_tuji_urls:', url)
-        html = picspider.get_html(url)
-        soup = BeautifulSoup(html, 'lxml')
+        soup = picspider.read_url(url)
         list = []
 
         try:
@@ -191,8 +201,7 @@ class spider(object):
 
     def get_tuji_page_all_pic_info(self,url):
         # print('get_tuji_page_all_pic_info:', url)
-        html = picspider.get_html(url)
-        soup = BeautifulSoup(html, 'lxml')
+        soup = picspider.read_url(url)
         pic_list = []
         try:
             title = soup.find('div', class_='articleV3Title').find('h1').get_text()
@@ -212,8 +221,7 @@ class spider(object):
 
     #获取每一个图集页码数
     def get_tuji_pages(self,url):
-        html = picspider.get_html(url)
-        soup = BeautifulSoup(html, 'lxml')
+        soup = picspider.read_url(url)
         pagelist = soup.find('div', class_='pages')
         pagelist = pagelist.find_all('ul')
         # print('pagelist:', pagelist)
@@ -239,8 +247,7 @@ class spider(object):
 
     # 获取每一个图集所有图片信息
     def get_tuji_pages_urls(self, url):
-        html = picspider.get_html(url)
-        soup = BeautifulSoup(html, 'lxml')
+        soup = picspider.read_url(url)
         pagelist = soup.find('div', class_='pages')
         pagelist = pagelist.find_all('ul')
         # print('pagelist:', pagelist)

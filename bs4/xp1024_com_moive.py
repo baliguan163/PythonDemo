@@ -155,7 +155,7 @@ def download_jing_xiang(url):
     name = news_list[2]['value']
     submit = news_list[3]['value']
 
-    print('submit:', type,'',id,'',name,'',submit)
+    # print('submit:', type,'',id,'',name,'',submit)
 
     # for i in range(0,len(news_list)):
     #     print('news_list:', news_list[i])
@@ -284,7 +284,7 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
         # print('下载分类电影:',len(all_url_list),'-',i+1,'电影总数',pic_sum)
 
         for j in range(0,len(list)):
-            print('down_url',list[0]['down_url'])
+            # print('down_url',list[0]['down_url'])
             download_jing_xiang(list[0]['down_url'])
 
         # for j in range(0,len(list)):

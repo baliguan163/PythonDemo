@@ -150,7 +150,7 @@ def get_content(url):
 
 
 
-def get_pic_all_content(page_sum,index,all_url_list,root_dir):
+def get_pic_all_content(tag,page_sum,index,all_url_list,root_dir):
     #获取每一页图集地址信息,并下载图片
     pic_sum = 0;
     for i in range(0,len(all_url_list)):
@@ -175,7 +175,7 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
             # print('  下载状态:', len(all_url_list), '-', i+1, '',k+1,'-pic_sum',len(list), '=', pic_status[0], '-', pic_status[1], '-',pic_status[2])
             # time.sleep(1)
 
-        print('下载分类图集:',page_sum,'-',index,'', len(all_url_list), '-', i+1, '', len(list), '=', pic_ok_sum[0], '-',
+        print('下载分类图集:',tag,'',page_sum,'-',index,'', len(all_url_list), '-', i+1, '', len(list), '=', pic_ok_sum[0], '-',
               pic_ok_sum[1], '-',pic_ok_sum[2],'标题:', all_url_list[i]['title'], '',all_url_list[i]['href'])
         time.sleep(1)
     thread_lock.release()# 解锁
@@ -185,8 +185,8 @@ def main():
      # 分类地址
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=14','唯美写真'] #11
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=15', '网友自拍']
-    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
-    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
+    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
+    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
 
     root_dir = create_dir(root + url[1] + '\\')
     # 分类的分页地址
@@ -200,7 +200,7 @@ def main():
         all_news_url = all_news_url + pages_list
         # print('分类总页数:', len(pages_url_list),'-',j+1,'当前页图集数',len(pages_list),'','图集总数',len(all_news_url),'',pages_url_list[j])
         thread_lock.acquire(),
-        t = threading.Thread(target=get_pic_all_content, args=(len(pages_url_list),j+1,pages_list,root_dir))
+        t = threading.Thread(target=get_pic_all_content, args=(url[1],len(pages_url_list),j+1,pages_list,root_dir))
         t.start()
 
 
