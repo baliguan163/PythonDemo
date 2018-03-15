@@ -94,24 +94,27 @@ def download_pics(fl_sum,j,sum,i,url,root,name):
     pic_ng = 0
     pic_exist = 0
     if not isExists:
-        ir = session.get(url,timeout=3)
-        if ir.status_code == 200:
-            with open(path, 'wb') as f:
-                f.write(ir.content)
-                f.close()
-                pic_ok +=1
-                # print('    图片下载ok:', fl_sum, '-', j, '', sum, '-', i, '', url, ' ', path)
-                val = '图片下载ok:%d-%d %d-%d %s %s' % (fl_sum, j, sum, i, url, path)
+        try:
+            ir = session.get(url,timeout=3)
+            if ir.status_code == 200:
+                with open(path, 'wb') as f:
+                    f.write(ir.content)
+                    f.close()
+                    pic_ok +=1
+                    # print('    图片下载ok:', fl_sum, '-', j, '', sum, '-', i, '', url, ' ', path)
+                    val = '图片下载ok:%d-%d %d-%d %s %s' % (fl_sum, j, sum, i, url, path)
+                    savename = root + str(sum) + '.txt'
+                    # print('savename:',savename)
+                    Out2File(val,savename)
+            else:
+                pic_ng +=1
+                # print('    图片下载ng:', ir.status_code,'',fl_sum,'-',j,'', sum, '-', i, '', url, ' ', path)
+                val = '图片下载ng:%s %d-%d %d-%d %s %s' % (ir.status_code,fl_sum, j, sum, i, url, path)
                 savename = root + str(sum) + '.txt'
-                # print('savename:',savename)
-                Out2File(val,savename)
-        else:
-            pic_ng +=1
-            # print('    图片下载ng:', ir.status_code,'',fl_sum,'-',j,'', sum, '-', i, '', url, ' ', path)
-            val = '图片下载ng:%s %d-%d %d-%d %s %s' % (ir.status_code,fl_sum, j, sum, i, url, path)
-            savename = root + str(sum) + '.txt'
-            # print('savename:', savename)
-            Out2File(val, savename)
+                # print('savename:', savename)
+                Out2File(val, savename)
+        except:
+            ''
     else:
         pic_exist+=1
         # print('    图片存在不下载:', fl_sum,'-',j,'',sum, '-', i, '', url, ' ', path)
