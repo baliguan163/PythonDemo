@@ -219,7 +219,7 @@ def create_dir(directory):
 
 
 def main():
-    root_dir = create_dir('D:\\92mntu.com\\')  # 绝对路径
+    root_dir = create_dir('D:\\www.92mntu.com\\')  # 绝对路径
     url = 'http://92mntu.com/'
 
     # 获取首页分类
