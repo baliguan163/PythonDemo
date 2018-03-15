@@ -204,7 +204,8 @@ def download_pics(sum,page,pagesum,i,url,root,name):
         else:
             print('  下载ng:',ir.status_code,' ',sum,'-',page, ' ',pagesum,'-', i, '',url,' ', path)
     else:
-        print('  存在不下载:',sum,'-',page, ' ',pagesum,'-', i, '',url,' ', path)
+        # print('  存在不下载:',sum,'-',page, ' ',pagesum,'-', i, '',url,' ', path)
+        ''
 
     # 解锁
     thread_lock.release()
