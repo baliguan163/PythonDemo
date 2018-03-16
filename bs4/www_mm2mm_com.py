@@ -192,16 +192,17 @@ def get_tags_urls(url):
 def get_page_pic_url(title,url):
     # print('get_1_tags:', url)
     soup = read_url(url)
-    title = soup.find('div', class_='pic-title').find('h2').text
-    # print('title:', title)
-
-    src = soup.find('div', class_='srcPic').find('img')['src']
-    title = soup.find('div', class_='srcPic').find('img')['title']
-    # print('title:', title,src)
-
     list = []
-    vid3 = {'title': title, 'href': src}
-    list.append(vid3)
+    try:
+        title = soup.find('div', class_='pic-title').find('h2').text
+        # print('title:', title)
+        src = soup.find('div', class_='srcPic').find('img')['src']
+        title = soup.find('div', class_='srcPic').find('img')['title']
+        # print('title:', title,src)
+        vid3 = {'title': title, 'href': src}
+        list.append(vid3)
+    except:
+        ''
     return list
 
 
@@ -254,7 +255,7 @@ def main():
     root_url = 'http://www.mm2mm.com/'
     tag_list = get_tags(root_url)
 
-    for j in range(15, len(tag_list)):
+    for j in range(0, len(tag_list)):
         href  = tag_list[j]['href']
         title1 = str(j+1)+ '_' + tag_list[j]['title']
         root_dir_1 = create_dir(root + title1 + '\\')
@@ -274,8 +275,9 @@ def main():
 
                 # 图片
                 pic_list = get_page_pic_url(title,url)
-                # print(pic_list[0]['title']+'_' + str(m), pic_list[0]['href'], root_dir_2)
-                download_pics(title1,len(tag_list),j+1,len(tag_urls_list),i+1,sum,m+1,pic_list[0]['href'], root_dir_2,pic_list[0]['title']+'_' + str(m))
+                for n in range(0,len(pic_list)):
+                    # print(pic_list[0]['title']+'_' + str(m), pic_list[0]['href'], root_dir_2)
+                    download_pics(title1,len(tag_list),j+1,len(tag_urls_list),i+1,sum,m+1,pic_list[n]['href'], root_dir_2,pic_list[n]['title']+'_' + str(m))
         # # 分类的分页地址,
         # pages_url_list = get_pages_url_count(url[0])
         # print('分类分页数:', len(pages_url_list), '',url,'',root_dir)

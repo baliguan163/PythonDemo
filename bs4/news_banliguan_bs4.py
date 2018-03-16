@@ -9,29 +9,27 @@ Python版本： 3.6
 import requests
 from bs4 import BeautifulSoup
 import re
+import os
+from w3lib.html import remove_tags
 
-# def get_html(url):
-#     try:
-#         # 请求头
-#         headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#                    'Accept-Encoding': 'gzip, deflate',
-#                    'Accept-Language': 'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-#                    'Connection': 'keep-alive',
-#                    'Host': 'www.yangxian.gov.cn',
-#                    'Upgrade-Insecure-Requests': '1',
-#                    # 'Referer': '',
-#                    'Cookie': 'JSESSIONID=38EA8D56D0F05271D36F7CEAFAF38F65',
-#                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0'
-#                    }
-#         # session = requests.Session()
-#         # r = requests.get(url, headers=headers,timeout=0.5)
-#         r = requests.get(url)
-#         # r.raise_for_status
-#         # print('status_code:', r.status_code)
-#         r.encoding = 'utf8'
-#         return r.text
-#     except:
-#         return "get_html someting wrong"
+
+
+#下载图片
+def download_pics(url,root,name):
+    path = root + '\\'+str(name)+'.jpg'
+    # print('下载:', url)
+    isExists = os.path.exists(path)
+    if not isExists:
+        ir = requests.get(url)
+        if ir.status_code == 200:
+            print('  下载ok:',url,' ', path)
+            with open(path, 'wb') as f:
+                f.write(ir.content)
+                f.close()
+        else:
+            print('  下载ng:',ir.status_code,url,path)
+    else:
+        print('  不下载:',url,path)
 
 def get_html(url):
     try:
@@ -41,6 +39,19 @@ def get_html(url):
         return r.text
     except:
         return "get_html someting wrong"
+
+def create_dir(directory):
+    isExists = os.path.exists(directory)
+    if not isExists:
+        os.makedirs(directory)
+    return directory
+
+# 将爬取到的文件写入到本地
+def Out2File(path,str):
+    with open(path, 'a+',encoding='utf-8') as f:
+        f.write(str)
+        f.write('\n')
+        f.close()
 
 def get_pages_url_count(url):
     html = get_html(url)
@@ -101,50 +112,86 @@ def get_pages_url(url):
     return pages_list
 
 
-def get_content(url):
+def get_content(url,title,root):
     newHtml = get_html(url)
     soupHtml = BeautifulSoup(newHtml, 'lxml')
     news_list = soupHtml.find('div', class_='contentLeft')
 
+    infoMark  = soupHtml.find('div', class_='infoMark')
+    # print('infoMark:', infoMark.find_all('span'))
+
     # print('news_list:', news_list)
     # print('新闻标题:', soupHtml.find('h1').text)
     spanTemp = ''
-    for myspan in news_list.find_all('span'):
+    for myspan in infoMark.find_all('span'):
         # print('myspan:', myspan.get_text().strip())
-        spanTemp = spanTemp + myspan.get_text().strip() + ''
+        spanTemp = spanTemp + ' ' + myspan.text.strip()
 
-    title = news_list.find('h1').get_text().strip()
+    # print('spanTemp:', spanTemp)
+    # title = news_list.find('h1').get_text().strip()
+
     # 新闻内容
-    info = soupHtml.find('div', class_='info').get_text().strip().replace('\n','').replace(' ','')
+    info =  soupHtml.find('div', class_='info')
+    # print('  dd1:', info)
+    info1 =  info.find_all('p')  #.strip().replace('\n','').replace(' ','')
+    str = ''
+    for k in range(0,len(info1)):
+        str = str + info1[k].text.strip()
+    # print('  str:', str)
+
+    # dd = remove_tags(info)
+    # print('  dd:', info)
     # dr = re.compile(r'<[^>]+>', re.S)
     # dd = dr.sub('', info)
 
-    # print('新闻标题:', title)
-    print('新闻标记:', spanTemp)
-    print('新闻内容:', info)
 
-    for myimg in news_list.find_all('img'):
-        img_src = myimg.get('src')
-        print('新闻图片:', img_src)
+    # dr = re.compile(r'<[^>]+>', re.S)
+    # dd = dr.sub('', info)
+    print('  新闻地址:', url)
+    print('  新闻标题:', title)
+    print('  新闻标记:', spanTemp)
+    print('  新闻内容:', str)
 
+    file = root + title + '.txt'
+    isExists = os.path.exists(file)
+    if isExists:
+        os.remove(file)
+    Out2File(file, title)
+    Out2File(file, spanTemp)
+    Out2File(file, str)
+
+    list_pic = news_list.find_all('img')
+    for i in range(0,len(list_pic)):
+        try:
+            img_src = list_pic[i]['src']
+            print('  新闻图片:', img_src,str(i+1))
+            download_pics(img_src,root,str(i+1))
+        except:
+            continue
     print('\n')
 
-def main():
-     url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  #镇办信息
 
-     # 新闻页数地址
+
+def main():
+     root = create_dir('D:\\洋县\\八里关镇\\新闻\\')
+     url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  #镇办信息
+     # 新闻页数
      pages_url_list = get_pages_url_count(url)
 
+     # 每一页新闻数量
      all_news_url = []
      for j in range(0,len(pages_url_list)):
         pages_list = get_pages_url(pages_url_list[j])
         all_news_url = all_news_url + pages_list
-        print('新闻总页数:', len(pages_url_list),'-',j+1,'新闻数',len(pages_list),'新闻总数',len(all_news_url),'',pages_url_list[j])
-     print('新闻总页数:', len(pages_url_list),'新闻总数', len(all_news_url))
+        # print('新闻总页数:', len(pages_url_list),'-',j+1,'新闻数',len(pages_list),'新闻总数',len(all_news_url),'',pages_url_list[j])
 
-     for i in range(0,len(all_news_url)):
-         print('新闻标题:', all_news_url[i]['title'],'',all_news_url[i]['href'])
-         get_content(all_news_url[i]['href'])
+         #print('新闻总页数:', len(pages_url_list),'新闻总数', len(all_news_url))
+        for i in range(0,len(pages_list)):
+            # print('  下载新闻标题:', pages_list[i]['title'],'',pages_list[i]['href'])
+            # print('  time:',  pages_list[i]['time'])
+            dir_name = pages_list[i]['time']+ '_' + pages_list[i]['title']
+            root_dir_1 = create_dir(root + dir_name + '\\')
+            get_content(pages_list[i]['href'],dir_name,root_dir_1)
 
 if __name__ == "__main__":
     main()
