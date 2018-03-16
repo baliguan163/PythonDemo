@@ -254,7 +254,7 @@ def main():
     root_url = 'http://www.mm2mm.com/'
     tag_list = get_tags(root_url)
 
-    for j in range(0, len(tag_list)):
+    for j in range(15, len(tag_list)):
         href  = tag_list[j]['href']
         title1 = str(j+1)+ '_' + tag_list[j]['title']
         root_dir_1 = create_dir(root + title1 + '\\')
