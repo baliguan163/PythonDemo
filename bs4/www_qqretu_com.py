@@ -72,15 +72,28 @@ class spider(object):
         taglist = soup.find_all('li', class_='NenuLi')
         # print('taglist:', taglist)
 
-        list = []
+        # taglist2 = soup.find_all('li', class_='NenuLi').find('div',class_='ShowNav').find_all('a')
+        # print('taglist2:', taglist2)
+
+        dic_list = {}
         for i in range(1, len(taglist)):
             dl_list = taglist[i].find_all('a')
-            # print('dl_list:',dl_list)
-            for j in range(1, len(dl_list)):
-                print('  分类:',i+1,'', dl_list[j].text,' ',dl_list[j]['href'])
-                vid3 = {'text': dl_list[j].text, 'href': dl_list[j]['href']}
+            tag_1 = dl_list[0].text
+            # print('dl_list:', tag_1)
+
+            nav_list = taglist[i].find('div',class_='ShowNav').find_all('a')
+            # print('nav_list:', nav_list)
+
+            list = []
+            for j in range(0, len(nav_list)):
+                href  = nav_list[j]['href']
+                title = nav_list[j].text
+                # print('title:',title,'href',href)
+                vid3 = {'title': title, 'href':href}
                 list.append(vid3)
-        return list
+            dic_list[tag_1] = list
+            # print('dic_list:',dic_list)
+        return dic_list
 
     #获取二级分类所有页的url信息
     def get_tuji_urls(self,url):
@@ -319,7 +332,7 @@ class spider(object):
                     # 保存
                     picspider.download_pics(len(all_pic_list), k+1, src3, root_dir_2, title3)
             # 解锁
-            thread_lock.release()
+            # thread_lock.release()
 
             #time.sleep(1)
         # print('图集分类:',text,'', fl_sum,'-', i+1, '图集页数:', len(tuji_list), '图集总数', len(tuji_all_info), '',href)
@@ -391,21 +404,23 @@ if __name__ == '__main__':
     # 获取分类标签
     url = 'http://www.qqretu.com/'
     list_1 = picspider.get_1_tags(url)
-    # print('1:', list_1)
     fl_sum = len(list_1)
+    print('总分类:', fl_sum)
 
-    # text555555 = 'LIN138美女图片: 南韩健身女神文世琳魔鬼身材'
-    # text6666 = text555555.replace(':', '')
-    # print('text555555:', text555555, ' ', text6666)
+    for key  in list_1:
+        val = list_1[key]
+        root_dir_11 = picspider.create_dir(root_dir + key + '\\')
 
-    for i in range(1,len(list_1)):
-        text = list_1[i]['text']
-        href = list_1[i]['href']
-        root_dir_1 = picspider.create_dir(root_dir + text + '\\')
-        # print('图集分类:', text, ' ', href,'   save:',root_dir_1)
-        thread_lock.acquire(),
-        t = threading.Thread(target=picspider.get_all, args=(text,fl_sum, i+1,href,root_dir_1))
-        t.start()
+        for i in range(0,len(val)):
+            text = val[i]['title']
+            href = val[i]['href']
+            root_dir_1 = picspider.create_dir(root_dir_11 + text + '\\')
+            # print('key:', key, '', text, href ,root_dir_1)
+            picspider.get_all(text,fl_sum, i+1,href,root_dir_1)
+            # print('图集分类:', text, ' ', href,'   save:',root_dir_1)
+            # thread_lock.acquire(),
+            # t = threading.Thread(target=picspider.get_all, args=(text,fl_sum, i+1,href,root_dir_1))
+            # t.start()
 
     end = time.time()
     print('耗时:{}'.format(end  - start))
