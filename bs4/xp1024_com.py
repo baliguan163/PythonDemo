@@ -187,15 +187,14 @@ def main():
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=15', '网友自拍']
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
     url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
-
     root_dir = create_dir(root + url[1] + '\\')
     # 分类的分页地址
     pages_url_list = get_pages_url_count(url[0])
-    print('分类分页数:', len(pages_url_list), '',url,'',root_dir)
+    print('分类总页数:', len(pages_url_list),url,root_dir)
 
     # 分类的所有页数据信息
     all_news_url = []
-    for j in range(100,len(pages_url_list)):
+    for j in range(0,len(pages_url_list)):
         pages_list = get_pages_per_url_info(pages_url_list[j])
         all_news_url = all_news_url + pages_list
         # print('分类总页数:', len(pages_url_list),'-',j+1,'当前页图集数',len(pages_list),'','图集总数',len(all_news_url),'',pages_url_list[j])

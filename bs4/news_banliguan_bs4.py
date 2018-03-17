@@ -116,17 +116,14 @@ def get_content(url,title,root):
     newHtml = get_html(url)
     soupHtml = BeautifulSoup(newHtml, 'lxml')
 
-
     infoMark  = soupHtml.find('div', class_='infoMark')
     # print('infoMark:', infoMark.find_all('span'))
-
     # print('news_list:', news_list)
     # print('新闻标题:', soupHtml.find('h1').text)
     spanTemp = ''
     for myspan in infoMark.find_all('span'):
         # print('myspan:', myspan.get_text().strip())
         spanTemp = spanTemp + ' ' + myspan.text.strip()
-
     # print('spanTemp:', spanTemp)
     # title = news_list.find('h1').get_text().strip()
 
@@ -138,12 +135,10 @@ def get_content(url,title,root):
     for k in range(0,len(info1)):
         str = str + info1[k].text.strip()
     # print('  str:', str)
-
     # dd = remove_tags(info)
     # print('  dd:', info)
     # dr = re.compile(r'<[^>]+>', re.S)
     # dd = dr.sub('', info)
-
 
     # dr = re.compile(r'<[^>]+>', re.S)
     # dd = dr.sub('', info)
@@ -161,14 +156,20 @@ def get_content(url,title,root):
     Out2File(file, str)
 
     news_list = soupHtml.find('div', class_='contentLeft')
-    list_pic = news_list.find_all('img')
-    for i in range(0,len(list_pic)):
-        try:
-            img_src = list_pic[i]['src']
-            print('  新闻图片:', img_src,str(i+1))
-            download_pics(img_src,root,str(i+1))
-        except:
-            continue
+    list_pics = news_list.find_all('img')
+    # print('  list_pics:', list_pics)
+    try:
+        for y in range(1, len(list_pics)):
+            # print('  list_pic:', list_pics[y]['src'])
+            # alt = list_pics[y]['alt']
+            href = list_pics[y]['src']
+            Out2File(file, href)
+            name = y
+            # print(' 新闻图片:',name, href)
+            download_pics(href,root, name)
+    except:
+        ''
+
     print('\n')
 
 

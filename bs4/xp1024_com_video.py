@@ -181,14 +181,14 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
         # list = get_content(all_url_list[i]['href'],len(all_url_list),i+1)
         list = get_content_info(all_url_list[i]['href'], len(all_url_list), i + 1)
         pic_sum = pic_sum + len(list)
-        print('下载分类电影:',len(all_url_list),'-',i+1,'电影总数',pic_sum, '分类名字:',list[0]['title'], len( list[0]['list_jpg']),'-', len(list[0]['list_url']) )
+        print('下载分类电影:',len(all_url_list),'-',i+1,'电影总数',len(list))
 
         for j in range(0,len(list)):
             title = list[j]['title']
             list_jpg = list[j]['list_jpg']
             list_url = list[j]['list_url']
             root_dir_2 = create_dir(root_dir + title + '\\')
-
+            print(' title:',title,all_url_list[i]['href'],root_dir_2)
             pic_ok_sum = [0, 0, 0]
             for m in range(0,len(list_jpg)):
                 # print('  list_jpg:', list_jpg[m])
@@ -205,7 +205,6 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
 def main():
     root  = create_dir('D:\\w3.afulyu.rocks\\')
      # 分类地址
-    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=83', '正片大片']
     url = ['http://w3.afulyu.rocks/pw/thread.php?fid=81', '怪蜀黍区']
     root_dir = create_dir(root + url[1] + '\\')
 
