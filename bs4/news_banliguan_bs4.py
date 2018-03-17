@@ -115,7 +115,7 @@ def get_pages_url(url):
 def get_content(url,title,root):
     newHtml = get_html(url)
     soupHtml = BeautifulSoup(newHtml, 'lxml')
-    news_list = soupHtml.find('div', class_='contentLeft')
+
 
     infoMark  = soupHtml.find('div', class_='infoMark')
     # print('infoMark:', infoMark.find_all('span'))
@@ -160,6 +160,7 @@ def get_content(url,title,root):
     Out2File(file, spanTemp)
     Out2File(file, str)
 
+    news_list = soupHtml.find('div', class_='contentLeft')
     list_pic = news_list.find_all('img')
     for i in range(0,len(list_pic)):
         try:
