@@ -255,7 +255,7 @@ def main():
      # 每一页新闻数量
      all_news_url = []
      # for j in range(0,len(pages_url_list)):
-     for j in range(0, 7):
+     for j in range(0, 2):
         pages_list = get_pages_url(pages_url_list[j])
         all_news_url = all_news_url + pages_list
         # print('新闻总页数:', len(pages_url_list),'-',j+1,'新闻数',len(pages_list),'新闻总数',len(all_news_url),'',pages_url_list[j])
