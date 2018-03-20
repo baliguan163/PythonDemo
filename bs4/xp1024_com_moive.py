@@ -320,11 +320,7 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
             title = title.strip().replace('　','').replace('　　','')
             # '译　　名　异度山谷'
             root_dir2 = create_dir(root_dir + title + '\\')
-            print('  ',len(all_url_list),'-',i+1,len(list),'-',j+1,'-----------------------------------------')
-            print('   url  :',i+1, all_url_list[i]['href'],url)
-            print('   title:',i+1,title,root_dir2)
-
-
+            print(len(all_url_list),'-',i+1,len(list),'-',j+1,title,url)
 
             tag_list = get_down_info(url)
             type = tag_list[0]['type']
@@ -376,68 +372,6 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
                 for chunk in req.iter_content(chunk_size=1024 * 1024):
                     if chunk:
                         f.write(chunk)
-
-
-
-            # 'Host: www3.uptorrentfilespacedownhostabc.info
-            # User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0
-            # Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-            # Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
-            # Accept-Encoding: gzip, deflate
-            # Referer: http://www3.uptorrentfilespacedownhostabc.info/updowm/file.php/P5QHZWc.html
-            # Content-Type: application/x-www-form-urlencoded
-            # Content-Length: 85
-            # Cookie: __cfduid=d8f70cddf75fd5fdbbf1622b8ef4722cc1521295977; UM_distinctid=162344e77f99-045daad598ec4e8-17357940-13c680-162344e77fa43e; CNZZDATA1273152310=1005962277-1521294396-%7C1521294396; __tins__18654184=%7B%22sid%22%3A%201521295980701%2C%20%22vd%22%3A%202%2C%20%22expires%22%3A%201521297821798%7D; __51cke__=; __51laig__=2
-            # Connection: keep-alive
-            # Upgrade-Insecure-Requests: 1
-            # '
-            # '__51cke__
-            # __51laig__	2
-            # __cfduid	d8f70cddf75fd5fdbbf1622b8ef4722cc1521295977
-            # __tins__18654184	{"sid": 1521295980701, "vd": 2, "expires": 1521297821798}
-            # CNZZDATA1273152310	1005962277-1521294396-|1521294396
-            # UM_distinctid	162344e77f99-045daad598ec4e8-17357940-13c680-162344e77fa43e
-            # '
-            # 'http://www3.uptorrentfilespacedownhostabc.info/updowm/down.php'
-
-
-            # 'id	P5QHZWc
-            # name	Insidious.The.Last.Key.2018.1080p.HC.HDRip.x264.AC3-M2Tv
-            # type	torrent
-            # '
-            #   'type=torrent&id=P5QHZWc&name=Insidious.The.Last.Key.2018.1080p.HC.HDRip.x264.AC3-M2Tv'
-
-
-
-
-        # for j in range(0,len(list)):
-        #     for m in range(0,list[i]['list_jpg'])
-        #         print('list_jpg:', list[i][m])
-        #     for n in range(0,list[i]['list_url']):
-        #         print('list_url:', list[i][n])
-
-        # print('list:',list)
-        #下载图片
-        # (???)
-
-        # title = all_url_list[i]['title'].replace(' ','').replace('(','').replace(')','').replace('?','')
-        # root_dir_2 = create_dir(root_dir + title + '\\')
-        # print(' title',title)
-        #
-        # pic_ok_sum = [0,0,0]
-        # for k in range(0, len(list)):
-        #     src = list[k]['src']
-        #     name = title + '_' + str(k+1)
-        #     pic_status = download_pics(len(all_url_list),i+1,len(list),k+1, src,root_dir_2, name)
-        #     pic_ok_sum[0] = pic_ok_sum[0] + pic_status[0]
-        #     pic_ok_sum[1] = pic_ok_sum[1] + pic_status[1]
-        #     pic_ok_sum[2] = pic_ok_sum[2] + pic_status[2]
-        #     # print('  下载状态:', len(all_url_list), '-', i+1, '',k+1,'-pic_sum',len(list), '=', pic_status[0], '-', pic_status[1], '-',pic_status[2])
-        #     # time.sleep(1)
-        #
-        # print('下载分类图集:',page_sum,'-',index,'', len(all_url_list), '-', i+1, '', len(list), '=', pic_ok_sum[0], '-',
-        #       pic_ok_sum[1], '-',pic_ok_sum[2],'标题:', all_url_list[i]['title'], '',all_url_list[i]['href'])
-        # time.sleep(1)
     thread_lock.release()# 解锁
 
 def main():

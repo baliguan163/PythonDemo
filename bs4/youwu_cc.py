@@ -192,7 +192,7 @@ def main():
     print('总页数:', len(pagelist))
 
     tujilist = []
-    for i in range(0,len(pagelist)):
+    for i in range(14,len(pagelist)):
         # print('href:',i,' ',pagelist[i]['href'])
         pagetujilist = get_page_tag_info(pagelist[i]['href']);
         tujilist =  tujilist + pagetujilist

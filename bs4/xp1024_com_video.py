@@ -172,6 +172,12 @@ def get_content_info(url,sum,index):
        # print('')
     return dy_info
 
+# 去除名字中的非法字符
+def validateTitle(title):
+    rstr = r"[\/\\\:\*\?\"\<\>\|]"  # '/ \ : * ? " < > |'
+    new_title = re.sub(rstr, "_", title)  # 替换为下划线
+    return new_title
+
 
 def get_pic_all_content(page_sum,index,all_url_list,root_dir):
     #获取每一页图集地址信息,并下载图片
@@ -187,6 +193,8 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
             title = list[j]['title']
             list_jpg = list[j]['list_jpg']
             list_url = list[j]['list_url']
+
+            title = validateTitle(title)
             root_dir_2 = create_dir(root_dir + title + '\\')
             print(' title:',title,all_url_list[i]['href'],root_dir_2)
             pic_ok_sum = [0, 0, 0]
@@ -196,7 +204,7 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
                 pic_ok_sum[0] = pic_ok_sum[0] + pic_status[0]
                 pic_ok_sum[1] = pic_ok_sum[1] + pic_status[1]
                 pic_ok_sum[2] = pic_ok_sum[2] + pic_status[2]
-            print('  下载图片状态:', len(all_url_list), '-', i+1, '',m+1,'-pic_sum',len(list_jpg), '=', pic_ok_sum[0], '-', pic_ok_sum[1], '-',pic_ok_sum[2])
+            # print('  下载图片状态:', len(all_url_list), '-', i+1, '',m+1,'-pic_sum',len(list_jpg), '=', pic_ok_sum[0], '-', pic_ok_sum[1], '-',pic_ok_sum[2])
 
             for n in range(0,len(list_url)):
                 print('  下载地址:', list_url[n])
@@ -205,7 +213,8 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
 def main():
     root  = create_dir('D:\\w3.afulyu.rocks\\')
      # 分类地址
-    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=81', '怪蜀黍区']
+    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=81', '怪蜀黍区']
+    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=30', '灣搭专版']
     root_dir = create_dir(root + url[1] + '\\')
 
     # 分类的分页地址

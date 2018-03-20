@@ -108,8 +108,6 @@ def get_one_txt(url, txt_name):
         print('someting wrong')
 
 
-
-
 url = 'http://www.qu.la/paihangbang/'
 if __name__ == "__main__":
     url_list = get_content(url)

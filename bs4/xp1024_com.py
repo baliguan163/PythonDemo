@@ -181,12 +181,13 @@ def get_pic_all_content(tag,page_sum,index,all_url_list,root_dir):
     thread_lock.release()# 解锁
 
 def main():
-    root  = create_dir('D:\\w3.afulyu.rocks\\')
+    root  = create_dir('D:\\w3.afulyu.rocks\\图文欣賞\\')
      # 分类地址
+    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=14','唯美写真'] #11
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=15', '网友自拍']
-    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
-    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
+    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
+
     root_dir = create_dir(root + url[1] + '\\')
     # 分类的分页地址
     pages_url_list = get_pages_url_count(url[0])
