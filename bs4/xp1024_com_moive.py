@@ -303,6 +303,7 @@ def Out2File(path,str):
         f.write(str)
         f.write('\n')
         f.close()
+
 def get_pic_all_content(page_sum,index,all_url_list,root_dir):
     #获取每一页图集地址信息,并下载图片
     pic_sum = 0;
