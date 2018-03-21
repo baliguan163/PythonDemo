@@ -144,7 +144,7 @@ def get_pages_url_count(url):
     pages_list = []
     for i in range(1, int(page_sum) + 1):
         newurl = url + str(i)
-        print('newurl:', newurl)
+        # print('newurl:', newurl)
         pages_list.append(newurl)
     return pages_list
 
@@ -162,15 +162,22 @@ def get_pages_url(url,root_dir_2):
 
     for i in range(0, len(yi_list)):
         content = yi_list[i].find_all('li')
+        print('url:', url)
         for j in range(0, len(content)):
             try:
                 user_name  = content[j].find('div',class_='u-txt').find('a').text
                 user_href  = 'http://www.budejie.com' + content[j].find('div',class_='u-txt').find('a')['href']
+                context_date = content[j].find('div', class_='u-txt').find('span').text
+
+                user_name = context_date + '_'+ user_name
                 user_name = validateTitle(user_name).strip()
-                print('  作者专题:', user_name)
-                print('  作者主页:', user_href)
+                print('  作者专题:', user_name,context_date,'  作者主页:', user_href)
+
+
                 context = content[j].find('div', class_='j-r-list-c-desc').find('a').text
                 context_href = 'http://www.budejie.com' + content[j].find('div', class_='j-r-list-c-desc').find('a')['href']
+
+
                 print('  内容地址:', context_href)
                 print('  内容详细:', context)
                 root_dir_3 = create_dir(root_dir_2 + user_name + '\\')
@@ -195,7 +202,7 @@ def get_pages_url(url,root_dir_2):
                     download_pics(pic_url, root_dir_3,pretemp)
             except:
                 continue
-            print(len(content), j + 1, '----------------------------------------------------------------------------')
+            print(' ',len(content),i+1,j+1, '----------------------------------------------------------------------------')
 
 
 
@@ -293,7 +300,7 @@ def get_content(sum,i,page_sum,j,url,title,root):
 def main():
      root = create_dir('D:\\百思不得姐\\')
      # url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10802&cur_page=1'  #洋县新闻
-     url = ['http://www.budejie.com/','精华2']
+     url = ['http://www.budejie.com/','精华']
      root_dir_2 = create_dir(root + url[1] + '\\')
 
      # # 新闻页数
