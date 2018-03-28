@@ -70,7 +70,7 @@ def get_pages_url_count(url):
     pages_list = []
     for i in range(1, int(page_sum) + 1):
         newurl = url +  '&cur_page='+ str(i)
-        # print('newurl:', newurl)
+        print('newurl:', newurl)
         pages_list.append(newurl)
     return pages_list
 
@@ -154,6 +154,7 @@ def get_content(url,title,root):
     Out2File(file, title)
     Out2File(file, spanTemp)
     Out2File(file, str)
+    Out2File(file, '原文地址：' + url)
 
     news_list = soupHtml.find('div', class_='contentLeft')
     list_pics = news_list.find_all('img')
@@ -189,6 +190,7 @@ def main():
 
          #print('新闻总页数:', len(pages_url_list),'新闻总数', len(all_news_url))
         for i in range(0,len(pages_list)):
+        # for i in range(0, 2):
             # print('  下载新闻标题:', pages_list[i]['title'],'',pages_list[i]['href'])
             # print('  time:',  pages_list[i]['time'])
             dir_name = pages_list[i]['time']+ '_' + pages_list[i]['title']
