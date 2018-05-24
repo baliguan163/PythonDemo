@@ -205,7 +205,7 @@ def get_content(sum,i,page_sum,j,url,title,root):
     info1 =  info.find_all('p')  #.strip().replace('\n','').replace(' ','')
     str = ''
     for k in range(0,len(info1)):
-        str = str + info1[k].text.strip()
+        str = str + info1[k].text.replace('\n','').strip()
     # print('  str:', str)
     # dd = remove_tags(info)
     # print('  dd:', info)

@@ -30,8 +30,8 @@ def get_md5(src):
 #连接数据库
 def connnect_db():
     global conn
-    global cursor
-    conn = pymysql.connect(host='192.168.1.111',user='root',passwd='123456',db='test',charset='utf8')
+    global cursor  #193.112.131.94  192.168.1.110
+    conn = pymysql.connect(host='193.112.131.94',user='root',passwd='123456',db='test',charset='utf8')
     cursor = conn.cursor()
     conn.select_db('test')
 

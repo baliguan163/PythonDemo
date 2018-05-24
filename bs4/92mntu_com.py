@@ -24,6 +24,7 @@ def get_html(url):
     except:
         return "get_html someting wrong"
 
+
 def get_page_tags(url):
     pichtml = get_html(url)
     soup = BeautifulSoup(pichtml, 'lxml')
@@ -220,7 +221,7 @@ def create_dir(directory):
 
 
 def main():
-    root_dir = create_dir('D:\\www.92mntu.com\\')  # 绝对路径
+    root_dir = create_dir('G:\\www.92mntu.com\\')  # 绝对路径
     url = 'http://92mntu.com/'
 
     # 获取首页分类

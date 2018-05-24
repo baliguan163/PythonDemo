@@ -1,18 +1,18 @@
 
 # -*- coding: utf-8 -*-
+# import parser
+import requests
+
 _author__ = 'Administrator'
 
-import requests
 from bs4 import BeautifulSoup
-# import re
 import os
 import threading
-import time
+# import time
 import  inspect
 from urllib import parse
-# from urllib import request
 from datetime import datetime
-import json
+# import json
 
 session = requests.Session()
 #设置最大线程锁
@@ -409,8 +409,6 @@ def main():
     # # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
     #
-
-
 
 if __name__ == "__main__":
     main()

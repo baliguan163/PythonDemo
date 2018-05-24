@@ -8,7 +8,7 @@ Python版本： 3.6
 
 import requests
 from bs4 import BeautifulSoup
-import re
+# import re
 import os
 from w3lib.html import remove_tags
 

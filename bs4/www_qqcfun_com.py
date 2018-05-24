@@ -66,34 +66,26 @@ class spider(object):
         soup = BeautifulSoup(content, "lxml")
         return soup
 
-    def get_1_tags(self,url):
+    def get_tag_url(self,url):
         # print('get_1_tags:', url)
         soup = picspider.read_url(url)
-        taglist = soup.find_all('li', class_='NenuLi')
-        print('taglist:', taglist)
+        taglist = soup.find('ul', class_='hidden-xs nav navbar-nav navbar-navwd')
+        # print('taglist:', taglist)
 
-        # taglist2 = soup.find_all('li', class_='NenuLi').find('div',class_='ShowNav').find_all('a')
+        # taglist2 = taglist.find_all('li', class_='NenuLi').find('div',class_='ShowNav').find_all('a')
+        taglist2 = taglist.find_all('li')
         # print('taglist2:', taglist2)
 
-        dic_list = {}
-        for i in range(1, len(taglist)):
-            dl_list = taglist[i].find_all('a')
-            tag_1 = dl_list[0].text
-            # print('dl_list:', tag_1)
+        list = []
+        for i in range(0, len(taglist2)):
+            text = taglist2[i].find('a').text
+            href = url + taglist2[i].find('a')['href']
+            # tag_1 = dl_list[0].text
+            # print('tag:',i+1, text,href)
+            vid = {'title': text, 'href': href}
+            list.append(vid)
+        return  list
 
-            nav_list = taglist[i].find('div',class_='ShowNav').find_all('a')
-            # print('nav_list:', nav_list)
-
-            list = []
-            for j in range(0, len(nav_list)):
-                href  = nav_list[j]['href']
-                title = nav_list[j].text
-                # print('title:',title,'href',href)
-                vid3 = {'title': title, 'href':href}
-                list.append(vid3)
-            dic_list[tag_1] = list
-            # print('dic_list:',dic_list)
-        return dic_list
 
     #获取二级分类所有页的url信息
     def get_tuji_urls(self,url):
@@ -286,141 +278,79 @@ class spider(object):
 
 
     #获取每一个图集页码数
-    def get_all(self,text,fl_sum,i,href,root_dir_1):
-        #分类的一个图集的页数
-        tuji_list = picspider.get_tuji_urls(href)
+    def get_all(self,sum,i,text,href,root_dir):
+        ''
+        # #分类的一个图集的页数
+        # tuji_list = picspider.get_tuji_urls(href)
         # print('分类:', text, ' ', href, ' 图集数:', len(tuji_list))
         # time.sleep(1)
 
-        #分类的一个图集的页数的所有图集信息
-        tuji_all_info = []
-        for j in range(0, len(tuji_list)):
-        # for j in range(0, 3):
-            pic_list = picspider.get_tuji_all_tu_info(tuji_list[j])
-            tuji_all_info = tuji_all_info + pic_list
-            print('  图集分类:', text,'', fl_sum, '-',i, '图集页数:',len(tuji_list), '-', j+1, '图集数',len(pic_list),'',len(tuji_all_info), '', tuji_list[j])
-
-            # 获取一个图集有多少页，多少图片，下载图片
-            for m in range(0, len(pic_list)):
-                title = pic_list[m]['title']
-                title2 = title.replace(':', '')
-                href = pic_list[m]['href']
-                # print('title:', title,'',title2)
-                root_dir_2 = picspider.create_dir(root_dir_1 + title2 + '\\')
-                # print('root_dir_2:', root_dir_2)
-                # print('href:', href)
-
-                #单个图集页数
-                page_sum_list = picspider.get_tuji_page_sum(href)
-                # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'图集页码总数', len(page_sum_list),'',tuji_all_info[m]['href'])
-                # time.sleep(1)
-
-                # 单个图集所有图片信息
-                all_pic_list = []
-                for n in range(0, len(page_sum_list)):
-                    page_pic_info_list = picspider.get_tuji_page_all_pic_info(page_sum_list[n])
-                    all_pic_list = all_pic_list + page_pic_info_list
-
-                # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'需要下载图片数量', len(pic_list))
-                print('图集分类:', text, ' ', fl_sum, '-', i + 1, '', len(tuji_all_info), '-', m + 1, '图集:', title2, '图集页码总数',
-                      len(page_sum_list), '需要下载图片数量', len(all_pic_list), '', tuji_all_info[m]['href'])
-
-                # 下载图片
-                for k in range(0, len(all_pic_list)):
-                    title3 = all_pic_list[k]['title']
-                    src3   = all_pic_list[k]['src']
-                    # 保存
-                    picspider.download_pics(len(all_pic_list), k+1, src3, root_dir_2, title3)
+        # #分类的一个图集的页数的所有图集信息
+        # tuji_all_info = []
+        # for j in range(0, len(tuji_list)):
+        # # for j in range(0, 3):
+        #     pic_list = picspider.get_tuji_all_tu_info(tuji_list[j])
+        #     tuji_all_info = tuji_all_info + pic_list
+        #     print('  图集分类:', text,'', fl_sum, '-',i, '图集页数:',len(tuji_list), '-', j+1, '图集数',len(pic_list),'',len(tuji_all_info), '', tuji_list[j])
+        #
+        #     # 获取一个图集有多少页，多少图片，下载图片
+        #     for m in range(0, len(pic_list)):
+        #         title = pic_list[m]['title']
+        #         title2 = title.replace(':', '')
+        #         href = pic_list[m]['href']
+        #         # print('title:', title,'',title2)
+        #         root_dir_2 = picspider.create_dir(root_dir_1 + title2 + '\\')
+        #         # print('root_dir_2:', root_dir_2)
+        #         # print('href:', href)
+        #
+        #         #单个图集页数
+        #         page_sum_list = picspider.get_tuji_page_sum(href)
+        #         # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'图集页码总数', len(page_sum_list),'',tuji_all_info[m]['href'])
+        #         # time.sleep(1)
+        #
+        #         # 单个图集所有图片信息
+        #         all_pic_list = []
+        #         for n in range(0, len(page_sum_list)):
+        #             page_pic_info_list = picspider.get_tuji_page_all_pic_info(page_sum_list[n])
+        #             all_pic_list = all_pic_list + page_pic_info_list
+        #
+        #         # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'需要下载图片数量', len(pic_list))
+        #         print('图集分类:', text, ' ', fl_sum, '-', i + 1, '', len(tuji_all_info), '-', m + 1, '图集:', title2, '图集页码总数',
+        #               len(page_sum_list), '需要下载图片数量', len(all_pic_list), '', tuji_all_info[m]['href'])
+        #
+        #         # 下载图片
+        #         for k in range(0, len(all_pic_list)):
+        #             title3 = all_pic_list[k]['title']
+        #             src3   = all_pic_list[k]['src']
+        #             # 保存
+        #             picspider.download_pics(len(all_pic_list), k+1, src3, root_dir_2, title3)
             # 解锁
             # thread_lock.release()
 
-            #time.sleep(1)
-        # print('图集分类:',text,'', fl_sum,'-', i+1, '图集页数:', len(tuji_list), '图集总数', len(tuji_all_info), '',href)
 
-        # #获取一个图集有多少页，多少图片，下载图片
-        # for m in range(0, len(tuji_all_info)):
-        #     title = tuji_all_info[m]['title']
-        #     title2 = title.replace(':', '')
-        #
-        #     # print('title:', title,'',title2)
-        #     root_dir_2 = picspider.create_dir(root_dir_1 + title2 + '\\')
-        #     # print('root_dir_2:', root_dir_2)
-        #
-        #     #单个图集页数
-        #     page_sum_list = picspider.get_tuji_page_sum(tuji_all_info[m]['href'])
-        #     # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'图集页码总数', len(page_sum_list),'',tuji_all_info[m]['href'])
-        #     time.sleep(1)
-        #
-        #     #单个图集所有图片信息
-        #     all_pic_list = []
-        #     for n in range(0, len(page_sum_list)):
-        #         page_pic_info_list = picspider.get_tuji_page_all_pic_info(page_sum_list[n])
-        #         all_pic_list = all_pic_list + page_pic_info_list
-        #
-        #     # print('图集分类:', text, ' ',fl_sum,'-',i+1,'  图集:',tuji_all_info[m]['title'],'需要下载图片数量', len(pic_list))
-        #     print('图集分类:', text, ' ', fl_sum, '-', i + 1,'',len(tuji_all_info),'-',m+1, '图集:', title2, '图集页码总数',len(page_sum_list), '需要下载图片数量', len(all_pic_list), '', tuji_all_info[m]['href'])
-        #
-        #
-        #     #下载图片
-        #     for k in range(0, len(all_pic_list)):
-        #         title3 = all_pic_list[k]['title']
-        #         src3 = all_pic_list[k]['src']
-        #         # 保存
-        #         picspider.download_pics(len(all_pic_list), k+1, src3, root_dir_2, title3)
-        # # 解锁
-        # thread_lock.release()
-# '开始爬取内容。。。
-#   分类: 2  性感美女   http://www.qqretu.com/xingganmeinv/
-#   分类: 2  制服丝袜   http://www.qqretu.com/zhifusiwa/
-#   分类: 2  美女模特   http://www.qqretu.com/meinvmote/ 2
-#   分类: 2  娱乐八卦   http://www.qqretu.com/yulebagua/
-#   分类: 3  爆笑图片   http://www.qqretu.com/baoxiaotupian/
-#   分类: 3  动态图   http://www.qqretu.com/dongtaigaoxiao/
-#   分类: 3  邪恶漫画   http://www.qqretu.com/xiemanhua/
-#   分类: 3  糗事百科   http://www.qqretu.com/qiushibaike/
-#   分类: 4  唯美壁纸   http://www.qqretu.com/weimeibizhi/
-#   分类: 4  非主流   http://www.qqretu.com/feizhuliu/
-#   分类: 4  汽车热图   http://www.qqretu.com/qicheretu/
-#   分类: 4  游戏动漫   http://www.qqretu.com/youxidongman/
-#   分类: 5  风景图片   http://www.qqretu.com/fengjingtupian/
-#   分类: 5  植物动物   http://www.qqretu.com/zhiwudongwu/
-#   分类: 5  实时热点   http://www.qqretu.com/shishiredian/
-#   分类: 5  社会热图   http://www.qqretu.com/shehuiretu/
-#   分类: 6  极品美女   http://www.qqretu.com/topic/jipinmeinv/
-#   分类: 6  秀人网   http://www.qqretu.com/topic/xiurenwang/  17
-#   分类: 6  制服美女   http://www.qqretu.com/topic/zhifumeinv/  18
-#   分类: 6  丝袜美女   http://www.qqretu.com/topic/siwameinv/
-#   分类: 6  内衣美女   http://www.qqretu.com/topic/nayimeinv/
-#   分类: 6  美女私房照   http://www.qqretu.com/topic/meinvsifangzhao/
-#   分类: 6  浴室美女   http://www.qqretu.com/topic/yushimeinv/
-#   分类: 6  美女自拍   http://www.qqretu.com/topic/meinvzipai/
-#   分类: 6  欧美美女   http://www.qqretu.com/topic/oumeimeinv/
-#   分类: 6  比基尼美女   http://www.qqretu.com/topic/bijinimeinv/'
+
 if __name__ == '__main__':
     start = time.time()
-
     picspider = spider()
     root_dir = picspider.create_dir('D:\\www.qqcfun.com\\')
-    # 获取分类标签
-    url = 'http://www.qqcfun.com/'
-    list_1 = picspider.get_1_tags(url)
+
+    #获取分类标签
+    url = 'http://www.qqcfun.com'
+    list_1 = picspider.get_tag_url(url)
     fl_sum = len(list_1)
     print('总分类:', fl_sum)
 
-    for key  in list_1:
-        val = list_1[key]
-        root_dir_11 = picspider.create_dir(root_dir + key + '\\')
+    for i  in range(0,int(fl_sum)):
+        title = list_1[i]['title']
+        href  = list_1[i]['href']
+        print('tag:', i + 1, title, href)
+        root_dir_11 = picspider.create_dir(root_dir + title + '\\')
+        picspider.get_all(fl_sum,i+1,text,href,root_dir_11)
 
-        for i in range(0,len(val)):
-            text = val[i]['title']
-            href = val[i]['href']
-            root_dir_1 = picspider.create_dir(root_dir_11 + text + '\\')
-            # print('key:', key, '', text, href ,root_dir_1)
-            picspider.get_all(text,fl_sum, i+1,href,root_dir_1)
-            # print('图集分类:', text, ' ', href,'   save:',root_dir_1)
-            # thread_lock.acquire(),
-            # t = threading.Thread(target=picspider.get_all, args=(text,fl_sum, i+1,href,root_dir_1))
-            # t.start()
+    #         # print('图集分类:', text, ' ', href,'   save:',root_dir_1)
+    #         # thread_lock.acquire(),
+    #         # t = threading.Thread(target=picspider.get_all, args=(text,fl_sum, i+1,href,root_dir_1))
+    #         # t.start()
 
     end = time.time()
     print('耗时:{}'.format(end  - start))
