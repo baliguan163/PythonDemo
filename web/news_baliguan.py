@@ -31,7 +31,7 @@ def get_md5(src):
 def connnect_db():
     global conn
     global cursor  #193.112.131.94  192.168.1.110
-    conn = pymysql.connect(host='193.112.131.94',user='root',passwd='123456',db='test',charset='utf8')
+    conn = pymysql.connect(host='127.0.0.1',user='root',passwd='123456',db='test',charset='utf8')
     cursor = conn.cursor()
     conn.select_db('test')
 

@@ -1,2 +1,2 @@
 # PythonDemo
-pyhton的基本用法，及一些爬虫实例demo
+基于pyhton的一些小程序和爬虫实例

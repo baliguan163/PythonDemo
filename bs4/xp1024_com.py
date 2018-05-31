@@ -60,7 +60,7 @@ def get_pages_per_url_info(url):
             # time = td_list[4].find('a').text
 
             if '在线播放' != title:
-                href  =  'http://w3.afulyu.rocks/pw/' + td_list[1].find('a')['href']
+                href  =  'http://y3.1024yxy.org/pw/' + td_list[1].find('a')['href']
                 # print('  图集:', i-5, '',title,'',href,'')
                 vid3 = {'title': title, 'href': href}
                 pages_list.append(vid3)
@@ -102,15 +102,17 @@ def download_pics(fl_sum,j,sum,i,url,root,name):
                     f.close()
                     pic_ok +=1
                     # print('    图片下载ok:', fl_sum, '-', j, '', sum, '-', i, '', url, ' ', path)
-                    val = '图片下载ok:%d-%d %d-%d %s %s' % (fl_sum, j, sum, i, url, path)
+                    # val = '图片下载ok:%d-%d %d-%d %s %s' % (fl_sum, j, sum, i, url, path)
+                    val = '图片ok:%s' % (url)
                     savename = root + str(sum) + '.txt'
                     # print('savename:',savename)
                     Out2File(val,savename)
             else:
                 pic_ng +=1
                 # print('    图片下载ng:', ir.status_code,'',fl_sum,'-',j,'', sum, '-', i, '', url, ' ', path)
-                val = '图片下载ng:%s %d-%d %d-%d %s %s' % (ir.status_code,fl_sum, j, sum, i, url, path)
+                # val = '图片下载ng:%s %d-%d %d-%d %s %s' % (ir.status_code,fl_sum, j, sum, i, url, path)
                 savename = root + str(sum) + '.txt'
+                val = '图片ng:%s' % (url)
                 # print('savename:', savename)
                 Out2File(val, savename)
         except:
@@ -181,12 +183,12 @@ def get_pic_all_content(tag,page_sum,index,all_url_list,root_dir):
     thread_lock.release()# 解锁
 
 def main():
-    root  = create_dir('D:\\w3.afulyu.rocks\\图文欣賞\\')
+    root  = create_dir('G:\\www.w3.afulyu.rocks\\图文欣賞\\')
      # 分类地址
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=14','唯美写真'] #11
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=15', '网友自拍']
-    url = ['http://w3.afulyu.rocks/pw/thread.php?fid=16', '露出激情'] #19
+    url = ['http://y3.1024yxy.org/pw/thread.php?fid=16', '露出激情']
 
     root_dir = create_dir(root + url[1] + '\\')
     # 分类的分页地址
