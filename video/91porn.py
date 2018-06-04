@@ -25,7 +25,8 @@ def download_urls(url):
     r = requests.get(url, headers=headers, timeout=30)
     r.encoding = 'utf-8'
     html = r.text
-    # print('html:' + html)
+    print('html:' + html)
+
     obj = bs(html, 'html.parser')
     print('obj:' + obj)
     lists = obj.find_all('div', {'class': re.compile('imagechannel.*?')})

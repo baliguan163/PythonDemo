@@ -1,3 +1,6 @@
+
+
+
 # -*- coding: utf-8 -*-
 import time
 
@@ -35,6 +38,7 @@ def connnect_db():#连接数据库
     conn = pymysql.connect(host='127.0.0.1',user='root',passwd='123456',db='info',charset='utf8')
     cursor = conn.cursor()
     conn.select_db('info')
+    print("")
 
 #一页数据，插入数据库
 def insert_db(vid_date):
@@ -95,7 +99,7 @@ def get_html(url):
     try:
         r = requests.get(url, timeout=30)
         r.raise_for_status
-        r.encoding = 'utf8'
+        r.encoding = 'GBK'
         return r.text
     except:
         return "get_html someting wrong"
@@ -213,85 +217,119 @@ def get_pages_url(url):
     html = get_html(url)
     soup = BeautifulSoup(html, 'lxml')
 
-    yi_list = soup.find('div', class_= 'list_content')
-    # print('yi_list:', yi_list)
-    # 找到列表
-    title_list = yi_list.find_all('li')
-    # print('title_list:', len(title_list), ' ', title_list)
-    # print('time_list:', len(time_list), ' ', time_list)
-    # print('time_list:', time_list)
-    # print('tag_list :', tag_list)
-    # print('url_list :', url_list,' len:',len(url_list))
+    yi_list = soup.find('div', id= 'threadlist').find_all('li')
+    print('yi_list:', yi_list)
+
     pages_list = []
-    for i in range(0, len(title_list)):
-        content = title_list[i].find('a').contents
-        href = title_list[i].find('a')['href']
-        bu_men = title_list[i].find('span', class_='red').contents
-        time = title_list[i].find('span', class_='goRight').contents
+    for i in range(0, len(yi_list)):
+        href = 'http://www.jp95.com/' + yi_list[i].find('a')['href']
+        title = yi_list[i].find('img')['title']
+        src = yi_list[i].find('img')['src']
+        # bu_men = yi_list[i].find('span', class_='red').contents
+        # time = yi_list[i].find('span', class_='goRight').contents
 
-        title = content[0];
-        bumen = bu_men[0][1:len(bu_men[0]) - 1]
-        time = time[0][0:len(time[0])]
-        url = 'http://www.yangxian.gov.cn' + href
+        print('title:', title,src,href)
 
-
-        if bumen == '八里关镇':
-            vid3 = {'title': title,'time': time,'bumen':bumen,'href': url,}
-            pages_list.append(vid3)
-            # print('href:', href)
-            # print('---------------------', i + 1, '---------------------')
-            # print('新闻标题:', title)
-            # print('  发布者:', bumen)
-            # print('发布时间:', time)
-            # print('新闻地址:', url)
+        # title = content[0];
+        # bumen = bu_men[0][1:len(bu_men[0]) - 1]
+        # time = time[0][0:len(time[0])]
+        # url = 'http://www.yangxian.gov.cn' + href
+        #
+        #
+        # if bumen == '八里关镇':
+        #     vid3 = {'title': title,'time': time,'bumen':bumen,'href': url,}
+        #     pages_list.append(vid3)
+        #     # print('href:', href)
+        #     # print('---------------------', i + 1, '---------------------')
+        #     # print('新闻标题:', title)
+        #     # print('  发布者:', bumen)
+        #     # print('发布时间:', time)
+        #     # print('新闻地址:', url)
     return pages_list
 
 #新闻列表页地址
 def get_pages_url_count(url):
     html = get_html(url)
-    soup = BeautifulSoup(html, 'lxml')
-    yi_list = soup.find('div', class_= 'list_page')
-    title_list = yi_list.find_all('span')
-    sum = title_list[0].text
-    sum_news= sum[2:len(sum)-1]
-    print('条数:', sum_news)
+    # print(html)
 
-    sum_page = title_list[1].text
-    index = sum_page.find('/', 0)
-    # print('index:', index)
-    page_sum = sum_page[index +1 :len(sum_page)-1]
-    print('页数:', page_sum)
-    pages_list = []
-    for i in range(1, int(page_sum) + 1):
-        newurl = url +  '&cur_page='+ str(i)
-        #print("新闻列表页地址:%s %3d:%s" %(page_sum,i,newurl))
-        pages_list.append(newurl)
-    return pages_list
+    soup = BeautifulSoup(html, 'lxml')
+    head_list = soup.find_all('div', class_= 'mainbox list')
+    # print(head_list)
+
+    file = 'jie_pai_95_tag.txt'
+    isExists = os.path.exists(file)
+    if isExists:
+        os.remove(file)
+
+
+    tag_dic= {}
+    for i in range(0, len(head_list)):
+        tag_list = head_list[i].find_all('th')
+        for j in range(0, len(tag_list)):
+            tag = tag_list[j].find('a').text
+            # print("tag:" + tag)
+            href = tag_list[j].find('a')['href']
+            save = tag + " " + href
+            Out2File(file, save)
+            # print(save)
+            # print("---------------------------------------")
+            tag_dic[tag] = href
+    # print(tag_dic)
+    return tag_dic
+       # newurl = url +  '&cur_page='+ str(i)
+       # #print("新闻列表页地址:%s %3d:%s" %(page_sum,i,newurl))
+       # pages_list.append(newurl)
+
+    # title_list = head_list.
+    # sum = title_list[0].text
+    # sum_news= sum[2:len(sum)-1]
+    # print('条数:', sum_news)
+	#
+    # sum_page = title_list[1].text
+    # index = sum_page.find('/', 0)
+    # # print('index:', index)
+    # page_sum = sum_page[index +1 :len(sum_page)-1]
+    # print('页数:', page_sum)
+    # pages_list = []
+    # for i in range(1, int(page_sum) + 1):
+    #     newurl = url +  '&cur_page='+ str(i)
+    #     #print("新闻列表页地址:%s %3d:%s" %(page_sum,i,newurl))
+    #     pages_list.append(newurl)
+    # return pages_list
 
 def main():
-     root = create_dir('G:\\洋县\\八里关镇\\新闻\\')
-     url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  #镇办信息
-     connnect_db()  # 连接数据库
-     #新闻列表页数
-     pages_url_list = get_pages_url_count(url)
+     #root = create_dir('G:\\洋县\\八里关镇\\新闻\\')
+     url = 'http://www.jp95.com/' #街拍第一站
+     # connnect_db()  # 连接数据库
 
-     all_news_url = []#所有新闻地址
-     for j in range(0,len(pages_url_list)):
-        pages_list = get_pages_url(pages_url_list[j])# 获取每一页列表中新闻地址
-        all_news_url = all_news_url + pages_list
-        #print('新闻总页数:', len(pages_url_list),'-',j+1,'新闻数',len(pages_list),'新闻总数',len(all_news_url),'',pages_url_list[j])
+     tag_dic = get_pages_url_count(url)
+     print(tag_dic)
+     url = tag_dic['2018年6月街拍精品赛']
+     print('2018年6月街拍精品赛:' + url)
 
-         #print('新闻总页数:', len(pages_url_list),'新闻总数', len(all_news_url))
-        for i in range(0,len(pages_list)):
-         #for i in range(0, 2):
-            # print('  下载新闻标题:', pages_list[i]['title'],'',pages_list[i]['href'])
-            # print('  time:',  pages_list[i]['time'])
-            dir_name = pages_list[i]['time']+ '_' + pages_list[i]['title']
-            root_dir_1 = create_dir(root + dir_name + '\\')
-            dic_info = get_content(pages_list[i]['href'],dir_name,root_dir_1) #获取新闻内容
-            insert_db(dic_info)#插入数据库
+     pages_list = get_pages_url(url)  # 获取每一页列表中新闻地址
+
+     # for j in range(0,len(pages_url_list)):
+     #    pages_list = get_pages_url(pages_url_list[j])# 获取每一页列表中新闻地址
+     #    all_news_url = all_news_url + pages_list
+     #    #print('新闻总页数:', len(pages_url_list),'-',j+1,'新闻数',len(pages_list),'新闻总数',len(all_news_url),'',pages_url_list[j])
+	 #
+     #     #print('新闻总页数:', len(pages_url_list),'新闻总数', len(all_news_url))
+     #    for i in range(0,len(pages_list)):
+     #     #for i in range(0, 2):
+     #        # print('  下载新闻标题:', pages_list[i]['title'],'',pages_list[i]['href'])
+     #        # print('  time:',  pages_list[i]['time'])
+     #        dir_name = pages_list[i]['time']+ '_' + pages_list[i]['title']
+     #        root_dir_1 = create_dir(root + dir_name + '\\')
+     #        dic_info = get_content(pages_list[i]['href'],dir_name,root_dir_1) #获取新闻内容
+     #        insert_db(dic_info)#插入数据库
 
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
 

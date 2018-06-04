@@ -35,6 +35,7 @@ def connnect_db():#连接数据库
     conn = pymysql.connect(host='127.0.0.1',user='root',passwd='123456',db='info',charset='utf8')
     cursor = conn.cursor()
     conn.select_db('info')
+    print("")
 
 #一页数据，插入数据库
 def insert_db(vid_date):
@@ -95,7 +96,7 @@ def get_html(url):
     try:
         r = requests.get(url, timeout=30)
         r.raise_for_status
-        r.encoding = 'utf8'
+        r.encoding = 'GBK'
         return r.text
     except:
         return "get_html someting wrong"
@@ -250,48 +251,68 @@ def get_pages_url(url):
 def get_pages_url_count(url):
     html = get_html(url)
     soup = BeautifulSoup(html, 'lxml')
-    yi_list = soup.find('div', class_= 'list_page')
-    title_list = yi_list.find_all('span')
-    sum = title_list[0].text
-    sum_news= sum[2:len(sum)-1]
-    print('条数:', sum_news)
+    head_list = soup.find('div', class_= 'head_t').find_all('li')
+    # print(head_list)
+    tag_dic= {}
+    for i in range(0, len(head_list)):
+        tag = head_list[i].find('a').text
+        if len(tag) <=0:
+            tag = "首页"
 
-    sum_page = title_list[1].text
-    index = sum_page.find('/', 0)
-    # print('index:', index)
-    page_sum = sum_page[index +1 :len(sum_page)-1]
-    print('页数:', page_sum)
-    pages_list = []
-    for i in range(1, int(page_sum) + 1):
-        newurl = url +  '&cur_page='+ str(i)
-        #print("新闻列表页地址:%s %3d:%s" %(page_sum,i,newurl))
-        pages_list.append(newurl)
-    return pages_list
+        href = head_list[i].find('a')['href']
+        # print(tag + " " + href)
+        tag_dic[tag] = href
+    # print(tag_dic)
+    return tag_dic
+       # newurl = url +  '&cur_page='+ str(i)
+       # #print("新闻列表页地址:%s %3d:%s" %(page_sum,i,newurl))
+       # pages_list.append(newurl)
+
+    # title_list = head_list.
+    # sum = title_list[0].text
+    # sum_news= sum[2:len(sum)-1]
+    # print('条数:', sum_news)
+	#
+    # sum_page = title_list[1].text
+    # index = sum_page.find('/', 0)
+    # # print('index:', index)
+    # page_sum = sum_page[index +1 :len(sum_page)-1]
+    # print('页数:', page_sum)
+    # pages_list = []
+    # for i in range(1, int(page_sum) + 1):
+    #     newurl = url +  '&cur_page='+ str(i)
+    #     #print("新闻列表页地址:%s %3d:%s" %(page_sum,i,newurl))
+    #     pages_list.append(newurl)
+    # return pages_list
 
 def main():
-     root = create_dir('G:\\洋县\\八里关镇\\新闻\\')
-     url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  #镇办信息
-     connnect_db()  # 连接数据库
-     #新闻列表页数
-     pages_url_list = get_pages_url_count(url)
+     #root = create_dir('G:\\洋县\\八里关镇\\新闻\\')
+     url = 'http://www.jiepai999.com/' #街拍VIP
+     # connnect_db()  # 连接数据库
 
-     all_news_url = []#所有新闻地址
-     for j in range(0,len(pages_url_list)):
-        pages_list = get_pages_url(pages_url_list[j])# 获取每一页列表中新闻地址
-        all_news_url = all_news_url + pages_list
-        #print('新闻总页数:', len(pages_url_list),'-',j+1,'新闻数',len(pages_list),'新闻总数',len(all_news_url),'',pages_url_list[j])
+     tag_dic = get_pages_url_count(url)
+     print(tag_dic)
+     print('街拍图片:' + tag_dic['街拍图片'])
 
-         #print('新闻总页数:', len(pages_url_list),'新闻总数', len(all_news_url))
-        for i in range(0,len(pages_list)):
-         #for i in range(0, 2):
-            # print('  下载新闻标题:', pages_list[i]['title'],'',pages_list[i]['href'])
-            # print('  time:',  pages_list[i]['time'])
-            dir_name = pages_list[i]['time']+ '_' + pages_list[i]['title']
-            root_dir_1 = create_dir(root + dir_name + '\\')
-            dic_info = get_content(pages_list[i]['href'],dir_name,root_dir_1) #获取新闻内容
-            insert_db(dic_info)#插入数据库
+     # all_news_url = []#所有新闻地址
+     # for j in range(0,len(pages_url_list)):
+     #    pages_list = get_pages_url(pages_url_list[j])# 获取每一页列表中新闻地址
+     #    all_news_url = all_news_url + pages_list
+     #    #print('新闻总页数:', len(pages_url_list),'-',j+1,'新闻数',len(pages_list),'新闻总数',len(all_news_url),'',pages_url_list[j])
+	 #
+     #     #print('新闻总页数:', len(pages_url_list),'新闻总数', len(all_news_url))
+     #    for i in range(0,len(pages_list)):
+     #     #for i in range(0, 2):
+     #        # print('  下载新闻标题:', pages_list[i]['title'],'',pages_list[i]['href'])
+     #        # print('  time:',  pages_list[i]['time'])
+     #        dir_name = pages_list[i]['time']+ '_' + pages_list[i]['title']
+     #        root_dir_1 = create_dir(root + dir_name + '\\')
+     #        dic_info = get_content(pages_list[i]['href'],dir_name,root_dir_1) #获取新闻内容
+     #        insert_db(dic_info)#插入数据库
 
 
 if __name__ == "__main__":
     main()
+
+
 
