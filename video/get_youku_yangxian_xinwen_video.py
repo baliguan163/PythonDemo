@@ -106,22 +106,25 @@ headers = {'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image
 'Cache-Control':'max-age=0',
 'Connection':'keep-alive',
 'DNT':'1',
-'Host':'http://so.youku.com/',
+'Host':'so.youku.com',
 'Upgrade-Insecure-Requests':'1',
-'User-Agent':'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+'Cookie':'ctoken=G6MUrUQix8BqkG0M-HI7wzJV; __ysuid=1528540847978okG; P_ck_ctl=FD4690FFF12F1A812A27C73CE2B66A74; __ayft=1528540848007; __aysid=1528540848007n54; __ayscnt=1; cna=mjucE0yxllkCAXkjA04b4gL5; juid=01cfi24p7b20ia; seid=01cfi24p7c1d04; _uab_collina=152854085012920921381018; _umdata=65F7F3A2F63DF020F83F73256BFDC8BD9EEE2A718D4DA49E692EE70FA545E5CC4E2701F0357D2AC7CD43AD3E795C914C8F4353C42C7ACAE77B45C9FD84A3B65C; __arycid=cms-00-1519-27244-0; __arcms=cms-00-1519-27244-0; referhost=http%3A%2F%2Fwww.youku.com; ypvid=1528540876435QQ3x8H; yseid=15285408764355kD7sm; ysestep=1; yseidcount=1; yseidtimeout=1528548076435; ycid=0; ystep=1; seidtimeout=1528542679246; __arpvid=1528541694214ve3rLn-1528541694226; __aypstp=9; __ayspstp=9; isg=BPDwL5MXX-gX8wPsNIyZ-XUWwb6CkdWHVVyzZupBvMsepZBPkkmkE0a3-a3FLoxb',
+'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36'}
+
+
 
 
 def get_html(url):
     try:
         # url = requests.quote(url.decode(sys.stdin.encoding).encode('utf8'))
         print("url:" + url)
-        # r = requests.get(url, headers=headers, timeout=30)
-        # r.encoding = 'utf-8'
+        r = requests.get(url, headers=headers, timeout=30)
+        r.encoding = 'utf-8'
         # html = r.text
 
-        r = requests.get(url, timeout=30)
-        r.raise_for_status
-        r.encoding = 'utf8'
+        # r = requests.get(url, timeout=30)
+        # r.raise_for_status
+        # r.encoding = 'utf8'
         return r.text
     except:
         return "get_html someting wrong"
@@ -303,7 +306,8 @@ def main():
      #url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  #镇办信息
      #connnect_db()  # 连接数据库
      #新闻列表页数
-     pages_url_list = get_pages_url_count("http://so.youku.com/search_video/q_洋县新闻?spm=a2h0k.11417342.searcharea.dbutton&_t=1527759714745")
+     #http://so.youku.com/search_video/q_洋县新闻?spm=a2h0k.11417342.filter.dnew&_t=1527759714745&orderfield=createtime
+     pages_url_list = get_pages_url_count("http://so.youku.com/search_video/q_洋县新闻?spm=a2h0k.11417342.filter.dnew&_t=1527759714745&orderfield=createtime")
 
      # all_news_url = []#所有新闻地址
      # for j in range(0,len(pages_url_list)):
