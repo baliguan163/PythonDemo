@@ -2,6 +2,7 @@
 import itchat
 import pyttsx3
 import win32com.client
+import pyttsx3
 from itchat.content import *
 import os
 from PIL import Image
@@ -9,6 +10,7 @@ import io
 import sys
 
 # 利用微信接口itchat写了个电脑读微信的小程序
+# from win32comext.taskscheduler.test.test_addtask import tr
 from win32comext.taskscheduler.test.test_addtask import tr
 from win32netcon import TEXT
 
@@ -18,14 +20,12 @@ if not os.path.exists('chat_temp'):
 
 # pyttsx3这是一个文字转语音的python模块
 engine = pyttsx3.init()#语音模块的初始化
-
 #个人消息提示
 @itchat.msg_register([TEXT,PICTURE,RECORDING])#这个@的用法，我也还不会，看的教程的。
 def get_New_msg(msg):
         #print(msg['Type'])
         if msg['Type'] == TEXT:
                 print(itchat.search_friends(userName = msg['FromUserName'])['NickName'],':', msg['Text'])
-
                 #time.sleep(3)
                 engine.say(itchat.search_friends(userName = msg['FromUserName'])['NickName'] + '说')
                 engine.say(msg['Text'])
@@ -42,7 +42,7 @@ def get_New_msg(msg):
                         if file.endswith('png'):
                                 picture_list.append(file)
                 Current_Pictur = picture_list[-1]
-                img=Image.open('chat_temp/' + tr(Current_Picture))
+                img=Image.open('chat_temp/' + tr(Current_Pictur))
                 img.show()
         elif msg['Type'] == RECORDING:
                 engine.say(itchat.search_friends(userName = msg['FromUserName'])['NickName'] + '发来一段语音')
