@@ -197,7 +197,7 @@ def get_content(url,title111,root):
             Out2File(file, href)
             name = y
             print('图片:',name, href)
-            #download_pics(href,root, name)
+            download_pics(href,root, name)
     except:
         ''
     dic_info = {'title': title, 'url': url, 'sourc_in': sourc_in, 'sourc_time': sourc_time, 'sourc_auth': sourc_auth,
@@ -269,9 +269,9 @@ def get_pages_url_count(url):
     return pages_list
 
 def main():
-     root = create_dir('G:\\洋县\\八里关镇\\新闻\\')
+     root = create_dir('D:\\洋县\\八里关镇\\新闻\\')
      url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  #镇办信息
-     connnect_db()  # 连接数据库
+     # connnect_db()  # 连接数据库
      #新闻列表页数
      pages_url_list = get_pages_url_count(url)
 
@@ -289,7 +289,7 @@ def main():
             dir_name = pages_list[i]['time']+ '_' + pages_list[i]['title']
             root_dir_1 = create_dir(root + dir_name + '\\')
             dic_info = get_content(pages_list[i]['href'],dir_name,root_dir_1) #获取新闻内容
-            insert_db(dic_info)#插入数据库
+            #insert_db(dic_info)#插入数据库
 
 
 if __name__ == "__main__":

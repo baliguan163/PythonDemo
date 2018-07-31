@@ -1,2 +1,2 @@
 # PythonDemo
-基于pyhton的一些小程序和爬虫实例
+python3_demo 是作者学习Python3基础知识做的Demo练习
