@@ -183,7 +183,7 @@ def get_pic_all_content(tag,page_sum,index,all_url_list,root_dir):
     thread_lock.release()# 解锁
 
 def main():
-    root  = create_dir('G:\\www.w3.afulyu.rocks\\图文欣賞\\')
+    root  = create_dir('C:\\www.w3.afulyu.rocks\\图文欣賞\\')
      # 分类地址
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=14','唯美写真'] #11
