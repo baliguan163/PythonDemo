@@ -236,7 +236,7 @@ if __name__ == '__main__':
     url = 'http://www.duotoo.com/'
 
     picspider = spider()
-    root_dir = picspider.create_dir('C:\\www.duotoo.com\\')
+    root_dir = picspider.create_dir('C:\\picture_www.duotoo.com\\')
     # 获取分类标签
     list_1 = picspider.get_1_tags(url)
 

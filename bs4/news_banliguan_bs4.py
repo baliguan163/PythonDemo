@@ -165,7 +165,7 @@ def get_content(url,title111,root):
     Out2File(file, title)
     Out2File(file, sourc_time)
     Out2File(file, content)
-    Out2File(file, '原文地址：' + url)
+    Out2File(file, '来源：洋县人民政府网' + url)
 
 # "CREATE TABLE `yangxian_new` (
 #   `id` int(11) NOT NULL AUTO_INCREMENT,

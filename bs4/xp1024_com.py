@@ -28,17 +28,17 @@ def get_pages_url_count(url):
     soup = BeautifulSoup(html, 'lxml')
     pages_list = []
     try:
-        nav_list = soup.find('div',class_='pages').text
+        nav_list = soup.find('span',class_='pagesone').text
         # print('nav_list:', nav_list)
         index1 = nav_list.find('/')
-        index2 = nav_list.find('t')
+        index2 = nav_list.find('G')
         page_sum = nav_list[index1+1:index2].replace(' ','')
-        # print('page_sum:', page_sum)
+        print('page_sum:', page_sum)
 
 
         for i in range(1, int(page_sum) + 1):
             newurl = url +  'thread.php?fid=14&page='+ str(i)
-            # print('图集地址:',i+1,'' +  newurl)
+            # print('图集地址:',i,'' +  newurl)
             pages_list.append(newurl)
     except:
         print('get_pages_per_url_info异常', url)
@@ -186,14 +186,14 @@ def main():
     root  = create_dir('C:\\www.w3.afulyu.rocks\\图文欣賞\\')
      # 分类地址
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
-    # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=14','唯美写真'] #11
+    url = ['http://y3.1024yxy.org/pw/thread.php?fid=14','唯美写真'] #11
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=15', '网友自拍']
-    url = ['http://y3.1024yxy.org/pw/thread.php?fid=16', '露出激情']
+    # url = ['http://y3.1024yxy.org/pw/thread.php?fid=16', '露出激情']
 
     root_dir = create_dir(root + url[1] + '\\')
     # 分类的分页地址
     pages_url_list = get_pages_url_count(url[0])
-    print('分类总页数:', len(pages_url_list),url,root_dir)
+    print('分类总页数:'+ str(len(pages_url_list)),url,root_dir)
 
     # 分类的所有页数据信息
     all_news_url = []

@@ -221,7 +221,7 @@ def create_dir(directory):
 
 # 92美女图
 def main():
-    root_dir = create_dir('C:\\www.92mntu.com\\')  # 绝对路径
+    root_dir = create_dir('C:\\picture_www.92mntu.com\\')  # 绝对路径
     url = 'http://92mntu.com/'
 
     # 获取首页分类

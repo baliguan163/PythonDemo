@@ -187,7 +187,7 @@ def get_all_tag(url):
     return list
 
 def main():
-    root_dir = create_dir('D:\\www.mmjpg.com\\')  # 绝对路径
+    root_dir = create_dir('C:\\picture_www.mmjpg.com\\')  # 绝对路径
     url = 'http://www.mmjpg.com/top'
     taglist = get_all_tag(url)
 

@@ -17,7 +17,7 @@ soup = BeautifulSoup(getnewsinfo('http://news.sina.com.cn/china/'), 'html.parser
 newsTitlesHtml = soup.select('.news-item')
 print(len(newsTitlesHtml))
 i = 0
-conn = pymysql.connect(host='localhost', user='用户名', passwd='密码', db='数据库名', port=3306, charset='utf8')
+conn = pymysql.connect(host='localhost', user='root', passwd='123456', db='test', port=3306, charset='utf8')
 cur = conn.cursor()
 for newsTitleHtml in newsTitlesHtml:
     i = i + 1

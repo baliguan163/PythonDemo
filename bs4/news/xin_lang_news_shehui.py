@@ -35,6 +35,7 @@ def download(title, url, m):
     return 0
 
 
+# 新浪新闻中心，社会
 if __name__ == '__main__':
     target_url = 'http://news.sina.com.cn/society/'
     req = request.Request(target_url)
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     for tag in listitem2:
         if tag.a != None:
             if len(tag.a.string) > 8:
-                print(tag.a.string, tag.a.get('href'))
+                print("新闻："+tag.a.string, tag.a.get('href'))
                 temp = tag.a.string
                 y += 1
                 download(temp, tag.a.get('href'), y)
