@@ -51,7 +51,10 @@ def connnect_db():
 def create_table():
     global conn
     global cursor
-    sql = """CREATE TABLE IF NOT EXISTS tian_mao_goods(id int PRIMARY KEY AUTO_INCREMENT,
+    sql = """DROP TABLE IF EXISTS `tian_mao_goods`;"""
+    cursor.execute(sql);
+    sql = """CREATE TABLE IF NOT EXISTS tian_mao_goods(
+             id int PRIMARY KEY AUTO_INCREMENT, 
               goods_1_category varchar(32)  NOT  NULL, 
               shop_name       varchar(32)  NOT  NULL,
               platform_type    varchar(8) DEFAULT NULL,
@@ -69,7 +72,7 @@ def create_table():
               discount_coupon_begin_date  varchar(64) DEFAULT NULL,
               discount_coupon_end_date  varchar(64) DEFAULT NULL,
               generalize_url  varchar(1024) DEFAULT NULL,
-              remark  varchar(64) DEFAULT NULL)"""
+              remark  varchar(64) DEFAULT NULL)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8; """
     cursor.execute(sql);
 
 
