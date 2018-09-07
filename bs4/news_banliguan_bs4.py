@@ -115,7 +115,6 @@ def Out2File(path,str):
 
 
 
-
 #获取新闻内容
 def get_content(url,title111,root):
     newHtml = get_html(url)

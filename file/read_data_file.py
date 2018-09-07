@@ -3,7 +3,6 @@ import os
 import struct
 import wave
 import numpy as np
-from comtypes.safearray import numpy as np
 
 
 def save_wave_file(filename,buf):
@@ -30,8 +29,7 @@ def save_wave_file(filename,buf):
 # 640144   110
 # 640288   144
 # 640368   120
-# f=open(r"D:\raw\mydata\tts.data",'rb')
-f=open(r"D:\raw\mydata\tts_en.data",'rb')
+f=open(r"D:\raw\mydata\tts.data",'rb')
 f.seek(640032,0)
 i=0
 while f:
@@ -39,8 +37,7 @@ while f:
     if len(buf) == 0:
         print('-------------------------')
         break;
-    # name = r'D:\raw\mydata\tts\%s.wav' % i
-    name = r'D:\raw\mydata\tts_en\%s.wav' % i
+    name = r'D:\raw\mydata\tts\%s.wav' % i
     print(i,name,len(buf))
     i += 1
     save_wave_file(name,buf)
