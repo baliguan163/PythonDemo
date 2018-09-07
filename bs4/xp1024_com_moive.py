@@ -376,7 +376,7 @@ def get_pic_all_content(page_sum,index,all_url_list,root_dir):
     thread_lock.release()# 解锁
 
 def main():
-    root  = create_dir('D:\\w3.afulyu.rocks\\')
+    root  = create_dir('C:\\w3.afulyu.rocks\\')
      # 分类地址
     url = ['http://w3.afulyu.rocks/pw/thread.php?fid=83', '正片大片']
     root_dir = create_dir(root + url[1] + '\\')

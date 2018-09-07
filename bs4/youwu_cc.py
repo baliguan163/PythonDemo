@@ -186,7 +186,7 @@ def get_page_tag_info(url):
     return list
 
 def main():
-    root_dir = create_dir('D:\\www.youwu.cc\\')  # 绝对路径
+    root_dir = create_dir('C:\\www.youwu.cc\\')  # 绝对路径
     url = 'http://www.youwu.cc/guonei'
     pagelist = get_page_pages(url)  # 获取总页数地址
     print('总页数:', len(pagelist))

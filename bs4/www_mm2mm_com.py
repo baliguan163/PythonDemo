@@ -251,7 +251,7 @@ def download_pics(title1,tags,j,tag_sum,i,sum,index,url,root,name):
 
 
 def main():
-    root  = create_dir('D:\\www.mm2mm.com\\')
+    root  = create_dir('C:\\www.mm2mm.com\\')
     root_url = 'http://www.mm2mm.com/'
     tag_list = get_tags(root_url)
 

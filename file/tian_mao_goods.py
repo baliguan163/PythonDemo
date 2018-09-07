@@ -51,7 +51,10 @@ def connnect_db():
 def create_table():
     global conn
     global cursor
-    sql = """CREATE TABLE IF NOT EXISTS tian_mao_goods(id int PRIMARY KEY AUTO_INCREMENT,
+    sql = """DROP TABLE IF EXISTS `tian_mao_goods`;"""
+    cursor.execute(sql);
+    sql = """CREATE TABLE IF NOT EXISTS tian_mao_goods(
+             id int PRIMARY KEY AUTO_INCREMENT, 
               goods_1_category varchar(32)  NOT  NULL, 
               shop_name       varchar(32)  NOT  NULL,
               platform_type    varchar(8) DEFAULT NULL,
@@ -69,7 +72,7 @@ def create_table():
               discount_coupon_begin_date  varchar(64) DEFAULT NULL,
               discount_coupon_end_date  varchar(64) DEFAULT NULL,
               generalize_url  varchar(1024) DEFAULT NULL,
-              remark  varchar(64) DEFAULT NULL)"""
+              remark  varchar(64) DEFAULT NULL)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8; """
     cursor.execute(sql);
 
 
@@ -82,7 +85,7 @@ if __name__ == "__main__":
 
     #插入数据库
     # 打开一个workbook
-    workbook = xlrd.open_workbook('D:\\tian_mao\\2018-01-23\\2018天猫年货节52018-01-23.xls')
+    workbook = xlrd.open_workbook('2018-01-23\\2018天猫年货节52018-01-23.xls')
     # 抓取所有sheet页的名称
     worksheets = workbook.sheet_names()
     # print('worksheets is %s' %worksheets)
@@ -107,6 +110,7 @@ if __name__ == "__main__":
     num_rows = worksheet1.nrows
     row0=row = worksheet1.row_values(0)
     print('字段名字:%s' % (row0))
+
     for curr_row in range(num_rows):
         row = worksheet1.row_values(curr_row)
         if curr_row !=0:
