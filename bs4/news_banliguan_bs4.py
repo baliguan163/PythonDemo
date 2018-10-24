@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
-
 import threading
-
 import pymysql
 
 _author__ = 'Administrator'
@@ -75,8 +73,8 @@ def insert_db(vid_date):
 
 
 #下载图片
-def download_pics(url,root,name):
-    path = root + '\\'+str(name)+'.jpg'
+def download_pics(url,alt,root,name):
+    path = root + '\\'+ alt +'.jpg'
     # print('下载:', url)
     isExists = os.path.exists(path)
     if not isExists:
@@ -148,13 +146,13 @@ def get_content(url,title111,root):
     for k in range(0,len(info1)):
         content = content + info1[k].text.strip()
 
-    print('------------------------------------------------------')
-    print('地址:'+ url)
+    print('------------------------------------------------------------------------------------------------------------')
     print('标题:'+ title)
     print('来源:' + sourc_in)
     print('时间:' + sourc_time)
     print('作者:' + sourc_auth)
     print('编辑:' + sourc_edit)
+    print('地址:' + url)
     print('内容:'+ content)
 
     file = root + title + '.txt'
@@ -164,8 +162,8 @@ def get_content(url,title111,root):
     Out2File(file, title)
     Out2File(file, sourc_time)
     Out2File(file, content)
-    Out2File(file, '来源：洋县人民政府网' + url)
-
+    Out2File(file, '文章来源于网络：洋县人民政府网，如有侵权，请联系作者删除' )
+    # 文章来源于网络：洋县人民政府网，如有侵权，请联系作者删除
 # "CREATE TABLE `yangxian_new` (
 #   `id` int(11) NOT NULL AUTO_INCREMENT,
 #   `title` varchar(128) COLLATE utf8_bin DEFAULT NULL,
@@ -181,22 +179,25 @@ def get_content(url,title111,root):
 # ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 # "
 
-    #图片地址
+    # 图片地址
     img_list = []
     news_list = soupHtml.find('div', class_='contentLeft')
     list_pics = news_list.find_all('img')
-    # print('  list_pics:', list_pics)
+    #print('图片个数:', list_pics)
     try:
         for y in range(1, len(list_pics)):
             # print('  list_pic:', list_pics[y]['src'])
             # alt = list_pics[y]['alt']
             href = list_pics[y]['src']
-            img_list.append(href)
+            alt  = list_pics[y]['alt']
+            file_href = alt + " " + href;
+            #print(' alt:', y, file_href)
+            temp = {'title': title, 'href': href}
+            img_list.append(temp)
 
-            Out2File(file, href)
-            name = y
-            print('图片:',name, href)
-            download_pics(href,root, name)
+            Out2File(file, file_href)
+            #print('root:', root)
+            download_pics(href,alt,root,y)
     except:
         ''
     dic_info = {'title': title, 'url': url, 'sourc_in': sourc_in, 'sourc_time': sourc_time, 'sourc_auth': sourc_auth,
