@@ -19,13 +19,7 @@ python读Wav文件：
     print('channels:',fp.getnchannels())
     f_len=nf*2#文件长度计算，每个采样2个字节
     audio_data=fp.readframes(nf)
-1
-2
-3
-4
-5
-6
-7
+
 python写Wav文件：
 
 def save_wave_file(filename,data):
