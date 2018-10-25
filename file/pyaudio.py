@@ -20,7 +20,6 @@ python读Wav文件：
     f_len=nf*2#文件长度计算，每个采样2个字节
     audio_data=fp.readframes(nf)
 
-  python写Wav文件：
 
 def save_wave_file(filename,data):
     '''save the date to the wavfile'''
