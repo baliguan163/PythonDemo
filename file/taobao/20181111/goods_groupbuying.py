@@ -188,8 +188,8 @@ if __name__ == "__main__":
                               "primary_categories_name) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
                         # print('sql:',sql)
                         # 插入数据
-                        # cursor.execute(sql, row)
-                        # conn.commit()
+                        cursor.execute(sql, row)
+                        conn.commit()
 
                 # time.sleep(3)
                 #关闭数据库

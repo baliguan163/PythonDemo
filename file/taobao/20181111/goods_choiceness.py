@@ -209,8 +209,8 @@ if __name__ == "__main__":
                     "discount_coupon_generalize_url) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             # print('sql:',sql)
             # 插入数据
-            # cursor.execute(sql, row)
-            # conn.commit()
+            cursor.execute(sql, row)
+            conn.commit()
         #
         # # #遍历sheet1中所有列col
         # num_cols = worksheet1.ncols

@@ -203,4 +203,60 @@ CREATE TABLE `goods_quality` (
 SET FOREIGN_KEY_CHECKS=1;
 
 
+--------------------------------------------------------------------------------------
+
+
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `goods_groupbuying`;
+CREATE TABLE `goods_groupbuying` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `goods_id` varchar(16)  DEFAULT  NULL ,
+              `goods_name` varchar(64)  DEFAULT  NULL ,
+              `goods_price`    varchar(8) DEFAULT NULL,
+              `group_purchase_price`    varchar(8) NOT  NULL ,
+              `group_purchase_number`  varchar(8) DEFAULT NULL ,
+              `goods_url` varchar(1024) DEFAULT NULL,
+              `goods_begin_date`  varchar(1024) DEFAULT NULL,
+              `goods_end_date`    varchar(8) DEFAULT NULL,
+              `inventory_number`     varchar(8) DEFAULT NULL,
+              `sold_number`       varchar(8) DEFAULT NULL,
+              `remain_number`    varchar(8) DEFAULT NULL ,
+              `generalize_long_url`    varchar(1024) DEFAULT NULL,
+              `generalize_short_url`    varchar(1024) DEFAULT NULL,
+              `commission_rate`  varchar(8) DEFAULT NULL,
+              `commission_price`  varchar(8) DEFAULT NULL,
+              `primary_categories_id`  varchar(64) DEFAULT NULL,
+              `primary_categories_name`  varchar(64) DEFAULT NULL,
+              PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+SET FOREIGN_KEY_CHECKS=1;
+
+
+
+
+mysql> SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `goods_quality`;
+CREATE TABLE `goods_quality` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `category_name` varchar(32)  DEFAULT  NULL,
+              `seller_nickname`   varchar(32)  DEFAULT  NULL,
+              `platform_type`    varchar(8) DEFAULT NULL,
+              `goods_id`    varchar(16) NOT  NULL,
+              `goods_name`  varchar(64) DEFAULT NULL,
+              `goods_url`    varchar(1024) DEFAULT NULL,
+              `goods_pic_url`  varchar(1024) DEFAULT NULL,
+              `goods_price`    varchar(8) DEFAULT NULL,
+              `income_rate`     varchar(8) DEFAULT NULL,
+              `discounts_denomination`       varchar(8) DEFAULT NULL,
+              `discounts_sell_price`    varchar(8) DEFAULT NULL,
+              `discounts_number`    varchar(11) DEFAULT NULL,
+              `discounts_remain_number`   varchar(8) DEFAULT NULL,
+              `discounts_begin_date`  varchar(64) DEFAULT NULL,
+              `discounts_end_date`  varchar(64) DEFAULT NULL,
+              `discounts_generalize_url`  varchar(1024) DEFAULT NULL,
+              PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+SET FOREIGN_KEY_CHECKS=1;
+
+
 
