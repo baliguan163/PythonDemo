@@ -191,8 +191,8 @@ if __name__ == "__main__":
 
                         # print('sql:',sql)
                         # 插入数据
-                        cursor.execute(sql, row)
-                        conn.commit()
+                        # cursor.execute(sql, row)
+                        # conn.commit()
 
                 # time.sleep(3)
                 #关闭数据库
