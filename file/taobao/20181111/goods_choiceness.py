@@ -177,14 +177,14 @@ if __name__ == "__main__":
 
     for curr_row in range(num_rows):
         row = worksheet1.row_values(curr_row)
-        if curr_row !=0:
+        if curr_row != 0:
             print('-----------------------------------------------------')
             #print('行%s 列:%s:%s' % (num_rows,curr_row, row))
 
             for i in range(len(row)):
                 print('行%s->%s 列%-2s:%-10s:%s' % ((num_rows,curr_row+1,i+1,row0[i],row[i])))
 
-            sql = "insert into choiceness_goods(" \
+            sql = "insert into goods_choiceness(" \
                   "goods_id," \
                   "goods_name," \
                   "goods_url," \
@@ -209,8 +209,8 @@ if __name__ == "__main__":
                     "discount_coupon_generalize_url) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             # print('sql:',sql)
             # 插入数据
-            cursor.execute(sql, row)
-            conn.commit()
+            # cursor.execute(sql, row)
+            # conn.commit()
         #
         # # #遍历sheet1中所有列col
         # num_cols = worksheet1.ncols

@@ -136,119 +136,68 @@ if __name__ == "__main__":
     #连接数据库
     connnect_db()
     #创建表
-    # create_table()
+    #create_table()
 
     #插入数据库
     # 打开一个workbook
-    workbook = xlrd.open_workbook(r'精选优质商品清单(内含优惠券)-2018-10-24.xls') #22
-    # workbook = xlrd.open_workbook(r'聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls')
+    xls_file = [ # r'精选优质商品清单(内含优惠券)-2018-10-24.xls',
+                # r'聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls',
+                r'超级好货大额券榜2018-10-24.xls',
+                r'双11品牌尖货榜2018-10-24.xls',
+                r'双11好货高佣榜2018-10-24.xls',
+                r'双11预售实时热销榜2018-10-24.xls']
+    for xlsfile in xls_file:
+        # print(xlsfile)
+        workbook = xlrd.open_workbook(xlsfile)
+        # 抓取所有sheet页的名称
+        worksheets = workbook.sheet_names()
+        # print('工作页名字:%s' % worksheets)
+             #定位到sheet1
+        for sheetname in worksheets:
+                print('工作页名字:%s' % sheetname)
+                worksheet1 = workbook.sheet_by_name(sheetname)
+                #遍历sheet1中所有行row
+                rows_num = worksheet1.nrows
+                column_num = worksheet1.row_values(0)
+                print('    行数:' + str(rows_num))
+                print('字段个数:' + str(len(column_num)))
+                print('字段名字:%s' % (column_num))
 
-    # workbook = xlrd.open_workbook(r'超级好货大额券榜2018-10-24.xls')
-    # workbook = xlrd.open_workbook(r'双11品牌尖货榜2018-10-24.xls')
-    # workbook = xlrd.open_workbook(r'双11好货高佣榜2018-10-24.xls')
-    # workbook = xlrd.open_workbook(r'双11预售实时热销榜2018-10-24.xls')
-    # workbook = xlrd.open_workbook(r'聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls')
-    # 抓取所有sheet页的名称
-    worksheets = workbook.sheet_names()
-    print('worksheets is:%s' %worksheets)
+                for curr_row in range(rows_num):
+                    row = worksheet1.row_values(curr_row)
+                    if curr_row != 0:
+                        print('-----------------------------------------------------')
+                        #print('行%s 列:%s:%s' % (num_rows,curr_row, row))
+                        for i in range(len(row)):
+                            print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num,curr_row+1,i+1,column_num[i],row[i])))
 
-    # 定位到sheet1
-    worksheet1 = workbook.sheet_by_name(u'Page1')
+                        sql = "insert into goods_quality(" \
+                              "category_name," \
+                              "seller_nickname," \
+                              "platform_type," \
+                              "goods_id," \
+                              "goods_name," \
+                              "goods_url," \
+                              "goods_pic_url," \
+                              "goods_price," \
+                              "income_rate," \
+                              "discounts_denomination," \
+                              "discounts_sell_price," \
+                              "discounts_number," \
+                              "discounts_remain_number," \
+                              "discounts_begin_date," \
+                              "discounts_end_date," \
+                              "discounts_generalize_url) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
-    """
-    #通过索引顺序获取
-    worksheet1 = workbook.sheets()[0]
-    #或
-    worksheet1 = workbook.sheet_by_index(0)
-    """
+                        # print('sql:',sql)
+                        # 插入数据
+                        cursor.execute(sql, row)
+                        conn.commit()
 
-    """
-    #遍历所有sheet对象
-    for worksheet_name in worksheets:
-    worksheet = workbook.sheet_by_name(worksheet_name)
-    """
-
-    # 遍历sheet1中所有行row
-    num_rows = worksheet1.nrows
-    row0 = worksheet1.row_values(0)
-    print('    行数:%s' % (num_rows))
-    print('字段个数:' + str(len(row0)))
-    print('字段名字:%s' % (row0))
-
-    for curr_row in range(num_rows):
-        row = worksheet1.row_values(curr_row)
-        if curr_row !=0:
-            print('-----------------------------------------------------')
-            #print('行%s 列:%s:%s' % (num_rows,curr_row, row))
-
-            for i in range(len(row)):
-                print('行%s->%s 列%-2s:%-10s:%s' % ((num_rows,curr_row+1,i+1,row0[i],row[i])))
-
-            sql = "insert into choiceness_goods(" \
-                  "goods_id," \
-                  "goods_name," \
-                  "goods_url," \
-                  "goods_detail_url," \
-                  "goods_1_category," \
-                  "tao_bao_ke_url," \
-                  "goods_price," \
-                  "monthl_sales_volume," \
-                  "income_rate," \
-                  "commission," \
-                  "seller_wang_wang," \
-                  "seller_id," \
-                  "shop_name," \
-                  "platform_type," \
-                  "discount_coupon_id," \
-                  "discount_coupon_sum," \
-                  "discount_coupon_residue," \
-                  "denomination," \
-                  "discount_coupon_begin_date," \
-                   "discount_coupon_end_date," \
-                   "generalize_url," \
-                    "discount_coupon_generalize_url) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            # print('sql:',sql)
-            # 插入数据
-            cursor.execute(sql, row)
-            conn.commit()
-        #
-        # # #遍历sheet1中所有列col
-        # num_cols = worksheet1.ncols
-        # # for curr_col in range(num_cols):
-        # #     col = worksheet1.col_values(curr_col)
-        # #     print('---------------------遍历sheet1中所有列--------------------------------')
-        # #     print('tt col:%s' %(curr_col))
-        # #     print('tt  is:%s' % (col))
-        #
-        # # 遍历sheet1中所有单元格cell
-        # for rown in range(num_rows):
-        #     # print('---------------------遍历sheet1中所有单元格--------------------------------')
-        #     row = worksheet1.row_values(0)
-        #     # print('row:%s' % (row))
-        #     for coln in range(num_cols):
-        #         cell = worksheet1.cell_value(rown, coln)
-        #         # ('dd rown:%5s %5s:%-10s:%s' % (rown, coln, row[coln], cell))
-        #
-        #
-
-                # """
-                # #其他写法：
-                # cell = worksheet1.cell(rown,coln).value
-                # print cell
-                # #或
-                # cell = worksheet1.row(rown)[coln].value
-                # print cell
-                # #或
-                # cell = worksheet1.col(coln)[rown].value
-                # print cell
-                # #获取单元格中值的类型，类型 0 empty,1 string, 2 number, 3 date, 4 boolean, 5 error
-                # cell_type = worksheet1.cell_type(rown,coln)
-                # print cell_type
-
-    # time.sleep(3)
-    #关闭数据库
-    cursor.close()
-    conn.close()
+                # time.sleep(3)
+                #关闭数据库
+                cursor.close()
+                conn.close()
 
 
 
