@@ -160,7 +160,7 @@ CREATE TABLE `goods_groupbuying` (
               `goods_price`    varchar(8) DEFAULT NULL comment '一人价（原价）',
               `group_purchase_price`    varchar(8) NOT  NULL comment '拼成价',
               `group_purchase_number`  varchar(8) DEFAULT NULL comment '几人团',
-              `goods_url`    varchar(1024) DEFAULT NULL comment '商品主图',
+              `goods_url` varchar(1024) DEFAULT NULL comment '商品主图',
               `goods_begin_date`  varchar(1024) DEFAULT NULL comment '开始时间',
               `goods_end_date`    varchar(8) DEFAULT NULL comment '结束时间',
               `inventory_number`     varchar(8) DEFAULT NULL comment '库存数量',
@@ -197,7 +197,7 @@ CREATE TABLE `goods_quality` (
               `discounts_remain_number`   varchar(8) DEFAULT NULL comment '优惠券剩余量',
               `discounts_begin_date`  varchar(64) DEFAULT NULL comment '优惠券开始时间',
               `discounts_end_date`  varchar(64) DEFAULT NULL comment '优惠券结束时间',
-              `discounts_generalize_url`  varchar(1024) DEFAULT NULL comment '优惠券推广链接',
+              `discounts_generalize_url`    varchar(1024) DEFAULT NULL comment '优惠券推广链接',
               PRIMARY KEY (`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 SET FOREIGN_KEY_CHECKS=1;
