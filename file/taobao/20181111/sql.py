@@ -203,8 +203,11 @@ CREATE TABLE `goods_quality` (
 SET FOREIGN_KEY_CHECKS=1;
 
 
---------------------------------------------------------------------------------------
 
+
+
+
+--------------------------------------------------------------------------------------
 
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `goods_groupbuying`;
@@ -234,7 +237,7 @@ SET FOREIGN_KEY_CHECKS=1;
 
 
 
-mysql> SET FOREIGN_KEY_CHECKS=0;
+SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `goods_quality`;
 CREATE TABLE `goods_quality` (
               `id` int(11) NOT NULL AUTO_INCREMENT,

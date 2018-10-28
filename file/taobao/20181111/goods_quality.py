@@ -5,6 +5,10 @@
 #date:xxxx-xx-xx
 #function：读excel文件中的数据
 #######################################################
+import datetime
+import string
+
+import requests
 import xlrd
 import  pymysql
 import  time
@@ -17,6 +21,26 @@ global conn
 global cursor
 global count;
 
+
+def get_short_url(url):
+    """
+    获取百度短网址
+    @param url: {str} 需要转换的网址
+    @return: {str} 成功：转换之后的短网址，失败：原网址
+    """
+    api = "http://dwz.cn/admin/create"
+    data = {
+        "url": url
+    }
+    response = requests.post(api, json=data)
+    if response.status_code != 200:
+        return url
+    result = response.json()
+    code = result.get("Code")
+    if code == 0:
+        return result.get("ShortUrl")
+    else:
+        return url
 
 #连接数据库
 def connnect_db():
@@ -131,18 +155,26 @@ def create_table():
     # cursor.execute(sql);
 
 
+# 判断数据是否存在
+def fetchallData(sql,data):
+    try:
+       cursor.execute(sql % data)
+       results = cursor.fetchall()
+       return results
+    except:
+       print ("Error: unable to fetch data")
+       return 0
 
 if __name__ == "__main__":
     #连接数据库
     connnect_db()
     #创建表
     #create_table()
-
     #插入数据库
     # 打开一个workbook
     xls_file = [ # r'精选优质商品清单(内含优惠券)-2018-10-24.xls',
                 # r'聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls',
-                r'超级好货大额券榜2018-10-24.xls',
+                r'超级好货大额券榜2018-10-24.xls', #5327
                 r'双11品牌尖货榜2018-10-24.xls',
                 r'双11好货高佣榜2018-10-24.xls',
                 r'双11预售实时热销榜2018-10-24.xls']
@@ -166,33 +198,62 @@ if __name__ == "__main__":
                 for curr_row in range(rows_num):
                     row = worksheet1.row_values(curr_row)
                     if curr_row != 0:
-                        print('-----------------------------------------------------')
-                        #print('行%s 列:%s:%s' % (num_rows,curr_row, row))
+                        print('------------------------------------------------------' + xlsfile +'----------------------------------------------------')
+                        for y in range(len(row)):
+                            print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num-1, curr_row, y+1, column_num[y], row[y])))
                         for i in range(len(row)):
-                            print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num,curr_row+1,i+1,column_num[i],row[i])))
+                            if  i == 5:  #商品推广链接
+                                row[i] = get_short_url(row[i])
+                                time.sleep(1)
+                                print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num-1, curr_row + 1, i + 1, column_num[i], row[i])))
+                            if i == 15:  # 优惠券推广链接
+                                row[i] = get_short_url(row[i])
+                                # time.sleep(1)
+                                print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num-1, curr_row + 1, i + 1, column_num[i], row[i])))
+                            # if i == 13: #优惠券开始时间   :1540310400000
+                                # timeArray = time.localtime(long(row[i]))
+                                # Localtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(row[i])))
+                                # dt = string.digits(row[i])
+                                # dt = datetime.datetime.fromtimestamp(long(row[i],))
+                                # otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+                                # print(dt);
+                            if i == 3:  # 商品id
+                                # 判断数据是否存在
+                                sql = "SELECT * FROM goods_quality WHERE goods_id='%s'"   #商品id
+                                data = (row[i])
+                                results = fetchallData(sql,data)
+                                # print(data)
+                                # print(len(results))
+                                # print(results)
+                                if len(results) > 0:
+                                    print("这条数据存在，返回继续下一条")
+                                    continue
+                                else:
+                                    print("这条数据不存在，插入数据库")
+                                    sql = "insert into goods_quality(" \
+                                          "category_name," \
+                                          "seller_nickname," \
+                                          "platform_type," \
+                                          "goods_id," \
+                                          "goods_name," \
+                                          "goods_url," \
+                                          "goods_pic_url," \
+                                          "goods_price," \
+                                          "income_rate," \
+                                          "discounts_denomination," \
+                                          "discounts_sell_price," \
+                                          "discounts_number," \
+                                          "discounts_remain_number," \
+                                          "discounts_begin_date," \
+                                          "discounts_end_date," \
+                                          "discounts_generalize_url) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
-                        sql = "insert into goods_quality(" \
-                              "category_name," \
-                              "seller_nickname," \
-                              "platform_type," \
-                              "goods_id," \
-                              "goods_name," \
-                              "goods_url," \
-                              "goods_pic_url," \
-                              "goods_price," \
-                              "income_rate," \
-                              "discounts_denomination," \
-                              "discounts_sell_price," \
-                              "discounts_number," \
-                              "discounts_remain_number," \
-                              "discounts_begin_date," \
-                              "discounts_end_date," \
-                              "discounts_generalize_url) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                                    # print('sql:',sql)
+                                    # print('row:', row)
 
-                        # print('sql:',sql)
-                        # 插入数据
-                        cursor.execute(sql, row)
-                        conn.commit()
+                                    # 插入数据
+                                    cursor.execute(sql, row)
+                                    conn.commit()
 
                 # time.sleep(3)
                 #关闭数据库

@@ -131,6 +131,15 @@ def create_table():
     # cursor.execute(sql);
 
 
+# 判断数据是否存在
+def fetchallData(sql,data):
+    try:
+       cursor.execute(sql % data)
+       results = cursor.fetchall()
+       return results
+    except:
+       print ("Error: unable to fetch data")
+       return 0
 
 if __name__ == "__main__":
     #连接数据库
@@ -140,14 +149,14 @@ if __name__ == "__main__":
 
     #插入数据库
     # 打开一个workbook
-    xls_file = ['聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls']
+    xls_file = ['聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls'] #417
     for xlsfile in xls_file:
         # print(xlsfile)
         workbook = xlrd.open_workbook(xlsfile)
         # 抓取所有sheet页的名称
         worksheets = workbook.sheet_names()
         # print('工作页名字:%s' % worksheets)
-             #定位到sheet1
+        #定位到sheet1
         for sheetname in worksheets:
                 print('工作页名字:%s' % sheetname)
                 worksheet1 = workbook.sheet_by_name(sheetname)
@@ -163,33 +172,46 @@ if __name__ == "__main__":
                     # print('curr_row:%s' % (curr_row))
                     # print('row:%s' % (row))
                     if curr_row != 0:
-                        print('-----------------------------------------------------')
-                        #print('行%s 列:%s:%s' % (num_rows,curr_row, row))
-                        for i in range(len(row)):
-                            print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num,curr_row+1,i+1,column_num[i],row[i])))
+                        print('------------------------------------------------------' + xlsfile + '----------------------------------------------------')
+                        for y in range(len(row)):
+                            print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num - 1, curr_row, y + 1, column_num[y], row[y])))
 
-                        sql = "insert into goods_groupbuying(" \
-                              "goods_id," \
-                              "goods_name," \
-                              "goods_price," \
-                              "group_purchase_price," \
-                              "group_purchase_number," \
-                              "goods_url," \
-                              "goods_begin_date," \
-                              "goods_end_date," \
-                              "inventory_number," \
-                              "sold_number," \
-                              "remain_number," \
-                              "generalize_long_url," \
-                              "generalize_short_url," \
-                              "commission_rate," \
-                              "commission_price," \
-                              "primary_categories_id," \
-                              "primary_categories_name) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-                        # print('sql:',sql)
-                        # 插入数据
-                        cursor.execute(sql, row)
-                        conn.commit()
+                        for i in range(len(row)):
+                            if i == 0:  # 商品id
+                                # 判断数据是否存在
+                                sql = "SELECT goods_id FROM goods_groupbuying WHERE goods_id='%s'"  # 商品id
+                                data = (row[i])
+                                results = fetchallData(sql, data)
+                                # print(data)
+                                # print(len(results))
+                                # print(results)
+                                if len(results) > 0:
+                                    print("这条数据存在，返回继续下一条")
+                                    continue
+                                else:
+                                    print("这条数据不存在，插入数据库")
+                                    sql = "insert into goods_groupbuying(" \
+                                          "goods_id," \
+                                          "goods_name," \
+                                          "goods_price," \
+                                          "group_purchase_price," \
+                                          "group_purchase_number," \
+                                          "goods_url," \
+                                          "goods_begin_date," \
+                                          "goods_end_date," \
+                                          "inventory_number," \
+                                          "sold_number," \
+                                          "remain_number," \
+                                          "generalize_long_url," \
+                                          "generalize_short_url," \
+                                          "commission_rate," \
+                                          "commission_price," \
+                                          "primary_categories_id," \
+                                          "primary_categories_name) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                                    # print('sql:',sql)
+                                    # 插入数据
+                                    # cursor.execute(sql, row)
+                                    # conn.commit()
 
                 # time.sleep(3)
                 #关闭数据库
