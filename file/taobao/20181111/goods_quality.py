@@ -159,8 +159,8 @@ def create_table():
 def fetchallData(sql,data):
     try:
        cursor.execute(sql % data)
-       results = cursor.fetchall()
-       return results
+       # results = cursor.fetchall()
+       return cursor.rowcount
     except:
        print ("Error: unable to fetch data")
        return 0
@@ -170,14 +170,15 @@ if __name__ == "__main__":
     connnect_db()
     #创建表
     #create_table()
+
+    had_insert_count = 0
+    insert_count = 0
     #插入数据库
     # 打开一个workbook
-    xls_file = [ # r'精选优质商品清单(内含优惠券)-2018-10-24.xls',
-                # r'聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls',
-                r'超级好货大额券榜2018-10-24.xls', #5327
-                r'双11品牌尖货榜2018-10-24.xls',
-                r'双11好货高佣榜2018-10-24.xls',
-                r'双11预售实时热销榜2018-10-24.xls']
+    xls_file = [# r'超级好货大额券榜2018-10-24.xls', #5327
+                # r'双11品牌尖货榜2018-10-24.xls',#200
+                # r'双11好货高佣榜2018-10-24.xls', #4836
+                r'双11预售实时热销榜2018-10-24.xls'] #3532      13895
     for xlsfile in xls_file:
         # print(xlsfile)
         workbook = xlrd.open_workbook(xlsfile)
@@ -200,16 +201,16 @@ if __name__ == "__main__":
                     if curr_row != 0:
                         print('------------------------------------------------------' + xlsfile +'----------------------------------------------------')
                         for y in range(len(row)):
-                            print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num-1, curr_row, y+1, column_num[y], row[y])))
+                            print('行%s->%s 列%-2s:%s:%-10s:%s' % ((rows_num-1, curr_row, y+1,len(row[y]),column_num[y], row[y])))
                         for i in range(len(row)):
-                            if  i == 5:  #商品推广链接
-                                row[i] = get_short_url(row[i])
-                                time.sleep(1)
-                                print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num-1, curr_row + 1, i + 1, column_num[i], row[i])))
-                            if i == 15:  # 优惠券推广链接
-                                row[i] = get_short_url(row[i])
-                                # time.sleep(1)
-                                print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num-1, curr_row + 1, i + 1, column_num[i], row[i])))
+                            # if  i == 5:  #商品推广链接
+                            #     row[i] = get_short_url(row[i])
+                            #     time.sleep(1)
+                            #     print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num-1, curr_row + 1, i + 1, column_num[i], row[i])))
+                            # if i == 15:  # 优惠券推广链接
+                            #     row[i] = get_short_url(row[i])
+                            #     # time.sleep(1)
+                            #     print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num-1, curr_row + 1, i + 1, column_num[i], row[i])))
                             # if i == 13: #优惠券开始时间   :1540310400000
                                 # timeArray = time.localtime(long(row[i]))
                                 # Localtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(row[i])))
@@ -221,15 +222,17 @@ if __name__ == "__main__":
                                 # 判断数据是否存在
                                 sql = "SELECT * FROM goods_quality WHERE goods_id='%s'"   #商品id
                                 data = (row[i])
-                                results = fetchallData(sql,data)
+                                rowcount = fetchallData(sql,data)
                                 # print(data)
-                                # print(len(results))
-                                # print(results)
-                                if len(results) > 0:
-                                    print("这条数据存在，返回继续下一条")
-                                    continue
+                                # print(rowcount)
+                                if rowcount > 0:
+                                    had_insert_count += 1;
+                                    print("这条数据存在，返回继续下一条" + str(had_insert_count))
+                                    break
                                 else:
-                                    print("这条数据不存在，插入数据库")
+                                    insert_count += 1;
+                                    print("这条数据不存在，插入数据库" + str(insert_count))
+
                                     sql = "insert into goods_quality(" \
                                           "category_name," \
                                           "seller_nickname," \
@@ -252,8 +255,8 @@ if __name__ == "__main__":
                                     # print('row:', row)
 
                                     # 插入数据
-                                    cursor.execute(sql, row)
-                                    conn.commit()
+                                    # cursor.execute(sql, row)
+                                    # conn.commit()
 
                 # time.sleep(3)
                 #关闭数据库

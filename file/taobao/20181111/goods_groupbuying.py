@@ -135,8 +135,8 @@ def create_table():
 def fetchallData(sql,data):
     try:
        cursor.execute(sql % data)
-       results = cursor.fetchall()
-       return results
+       # results = cursor.fetchall()
+       return cursor.rowcount
     except:
        print ("Error: unable to fetch data")
        return 0
@@ -147,6 +147,8 @@ if __name__ == "__main__":
     #创建表
     #create_table()
 
+    had_insert_count = 0
+    insert_count = 0
     #插入数据库
     # 打开一个workbook
     xls_file = ['聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls'] #417
@@ -174,6 +176,9 @@ if __name__ == "__main__":
                     if curr_row != 0:
                         print('------------------------------------------------------' + xlsfile + '----------------------------------------------------')
                         for y in range(len(row)):
+                            # 商品主图: // gju3.alicdn.com / tps / i4 / 1946733124 / TB21kvkeukJL1JjSZFmXXcw0XXa_!!0 - juitemmedia.jpg
+                            if y == 5:  # 商品主图
+                                row[y] = 'http:' + row[y]
                             print('行%s->%s 列%-2s:%-10s:%s' % ((rows_num - 1, curr_row, y + 1, column_num[y], row[y])))
 
                         for i in range(len(row)):
@@ -181,15 +186,17 @@ if __name__ == "__main__":
                                 # 判断数据是否存在
                                 sql = "SELECT goods_id FROM goods_groupbuying WHERE goods_id='%s'"  # 商品id
                                 data = (row[i])
-                                results = fetchallData(sql, data)
+                                rowcount = fetchallData(sql, data)
                                 # print(data)
-                                # print(len(results))
-                                # print(results)
-                                if len(results) > 0:
-                                    print("这条数据存在，返回继续下一条")
-                                    continue
+                                # print(rowcount)
+                                if rowcount > 0:
+                                    had_insert_count += 1;
+                                    print("这条数据存在，返回继续下一条" + str(had_insert_count))
+                                    break
                                 else:
-                                    print("这条数据不存在，插入数据库")
+                                    insert_count += 1;
+                                    print("这条数据不存在，插入数据库" + str(insert_count))
+
                                     sql = "insert into goods_groupbuying(" \
                                           "goods_id," \
                                           "goods_name," \

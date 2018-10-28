@@ -135,8 +135,8 @@ def create_table():
 def fetchallData(sql,data):
     try:
        cursor.execute(sql % data)
-       results = cursor.fetchall()
-       return results
+       # results = cursor.fetchall()
+       return cursor.rowcount
     except:
        print ("Error: unable to fetch data")
        return 0
@@ -156,6 +156,8 @@ if __name__ == "__main__":
     # workbook = xlrd.open_workbook(r'双11预售实时热销榜2018-10-24.xls')
     # workbook = xlrd.open_workbook(r'聚划算拼团单品（建议转换淘口令传播）2018-10-24.xls')
     # 打开一个workbook
+    had_insert_count = 0
+    insert_count = 0
     xls_file = ['精选优质商品清单(内含优惠券)-2018-10-24.xls']  # 10000
     for xlsfile in xls_file:
         # print(xlsfile)
@@ -200,15 +202,17 @@ if __name__ == "__main__":
                             # 判断数据是否存在
                             sql = "SELECT goods_id FROM goods_choiceness WHERE goods_id='%s'"  # 商品id
                             data = (row[i])
-                            results = fetchallData(sql, data)
+                            rowcount = fetchallData(sql, data)
                             # print(data)
-                            # print(len(results))
-                            # print(results)
-                            if len(results) > 0:
-                                print("这条数据存在，返回继续下一条")
-                                continue
+                            # print(rowcount)
+                            if rowcount > 0:
+                                had_insert_count += 1;
+                                print("这条数据存在，返回继续下一条" + str(had_insert_count))
+                                break
                             else:
-                                print("这条数据不存在，插入数据库")
+                                insert_count += 1;
+                                print("这条数据不存在，插入数据库" + str(insert_count))
+
                                 sql = "insert into goods_choiceness(" \
                                       "goods_id," \
                                       "goods_name," \
