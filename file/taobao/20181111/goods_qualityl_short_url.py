@@ -209,7 +209,7 @@ if __name__ == "__main__":
             if longUrl1Len > 100:
                 shortUrl1 = get_short_url(longUrl1)
                 shortUrl1Len = len(shortUrl1);
-                print(shortUrl1Len, shortUrl1)
+                # print(shortUrl1Len, shortUrl1)
                 # 更新数据库  商品推广链接
                 # sql = "UPDATE  goods_quality SET goods_url='%s' WHERE id='%d'"  # 商品id
                 sql = "UPDATE goods_quality SET goods_url = '%s'  WHERE id = '%s'" % (shortUrl1,i)
@@ -220,14 +220,14 @@ if __name__ == "__main__":
                 # results = cursor.fetchall()
                 # print(results)
                 if cursor.rowcount  == 1:
-                    print('商品推广链接更新ok')
+                    print(str(shortUrl1Len),shortUrl1,'商品推广链接更新ok')
                 else:
-                    print('商品推广链接更新ng')
+                    print(str(shortUrl1Len),shortUrl1,'商品推广链接更新ng')
 
             if longUrl2Len > 100:
                 shortUrl2 = get_short_url(longUrl2)
                 shortUrl2Len = len(shortUrl2);
-                print(shortUrl2Len, shortUrl2)
+                # print(shortUrl2Len, shortUrl2)
                 # 更新数据库  优惠券推广链接
                 sql = "UPDATE goods_quality SET discounts_generalize_url='%s' WHERE id='%s'   "  # 商品id
                 data = (shortUrl2,i)
@@ -236,9 +236,9 @@ if __name__ == "__main__":
                 # results = cursor.fetchall()
                 # print(results)
                 if cursor.rowcount  == 1:
-                    print('优惠券推广链接更新ok')
+                    print(str(shortUrl2Len),shortUrl2,'优惠券推广链接更新ok')
                 else:
-                    print('优惠券推广链接新ng')
+                    print(str(shortUrl2Len),shortUrl2,'优惠券推广链接新ng')
 
 
     # 关闭数据库
