@@ -97,7 +97,7 @@ clsname = win32gui.GetClassName(hwnd)
 print('    title:'+ title);
 print('classname:'+ clsname);
 #设置位置大小
-SetForWin(hwnd,0,10,300,800);
+SetForWin(hwnd,-10,10,300,800);
 
 # 移动到中间联系人，左键单击
 left_click(hwnd,152,210);
@@ -110,14 +110,26 @@ EnumWindows(EnumWindowsProc, 1)
 hds = get_titles();
 print(hds[0]);
 #设置位置大小
-SetForWin(hds[0]['hwnd'],300,0,300,500);
+hwndWind = hds[0]['hwnd']
+SetForWin(hwndWind,300-30,10,100,500);
+
+tid = win32gui.FindWindowEx(hwndWind, None, 'Edit', None)
+print(tid);
+win32gui.SendMessage(tid, win32con.WM_SETTEXT, None, 'suuuu爱仕达无多')
+# 输入中文
+# win32gui.SendMessage(tid, win32con.WM_SETTEXT, None, u'你好'.encode('gbk'))
 
 
 # # 发送回车键
-# win32api.keybd_event(13,0,0,0)
-# win32api.keybd_event(13,0,win32con.KEYEVENTF_KEYUP,0)
+win32api.keybd_event(13,0,0,0)
+win32api.keybd_event(13,0,win32con.KEYEVENTF_KEYUP,0)
 #
 #
-# # 关闭窗口
-# win32gui.PostMessage(win32lib.findWindow(classname, titlename), win32con.WM_CLOSE, 0, 0)
-#
+
+
+sleep(1)
+#关闭窗口
+win32gui.PostMessage(hwndWind,win32con.WM_CLOSE, 0, 0)
+hds = get_titles();
+sleep(1)
+left_click(hwnd,595,310);
