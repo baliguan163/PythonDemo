@@ -8,13 +8,19 @@ from wxpy import *
 
 bot = Bot(cache_path=True)
 # 定位公司群
-company_group = bot.groups().search('公司微信群')[0]
+company_group = bot.groups().search('技术牛人讨论')[0]
+print(company_group)
 # 定位老板
-boss = company_group.search('老板大名')[0]
+boss = company_group.search('杜立群')[0]
+print(boss)
+
 # 将老板的消息转发到文件传输助手
 @bot.register(company_group)
 def forward_boss_message(msg):
+    print(msg.member)
+    print(msg)
     if msg.member == boss:
+        print('消息转发:' + msg['Text'])
         msg.forward(bot.file_helper, prefix='老板发言')
 
 # 堵塞线程

@@ -1,8 +1,7 @@
 #_*_coding:utf-8_*_
 import itchat
 import pyttsx3
-import win32com.client
-import pyttsx3
+import win32com
 from itchat.content import *
 import os
 from PIL import Image
@@ -11,7 +10,7 @@ import sys
 
 # 利用微信接口itchat写了个电脑读微信的小程序
 # from win32comext.taskscheduler.test.test_addtask import tr
-from win32comext.taskscheduler.test.test_addtask import tr
+# from win32comext.taskscheduler.test.test_addtask import tr
 from win32netcon import TEXT
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='gb18030')
