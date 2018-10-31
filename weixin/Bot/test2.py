@@ -32,5 +32,25 @@ for sex, count in friends_stat["sex"].items():
     elif sex == 2:
         print("FEMALE %d" % count)
 
+
+
+
+# 定位群
+company_group = bot.groups().search('优惠券')[0]
+print(company_group)
+boss = company_group.search('阿杜')[0] #定位老板
+print(boss)
+
+# 将老板的消息转发到文件传输助手
+@bot.register(company_group)
+def forward_boss_message(msg):
+    print(msg.member)
+    print(msg)
+    if msg.member == boss:
+        print('消息转发:' + msg['Text'])
+
+
+
+
 # 堵塞线程
 embed()
