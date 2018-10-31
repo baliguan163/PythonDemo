@@ -18,8 +18,11 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='gb18030')
 if not os.path.exists('chat_temp'):
         os.mkdir('chat_temp')
 
-# pyttsx3这是一个文字转语音的python模块
+#pyttsx3这是一个文字转语音的python模块
 engine = pyttsx3.init()#语音模块的初始化
+engine1=pyttsx3.init()
+
+
 #个人消息提示
 @itchat.msg_register([TEXT,PICTURE,RECORDING])#这个@的用法，我也还不会，看的教程的。
 def get_New_msg(msg):
@@ -58,14 +61,12 @@ def get_New_msg(msg):
                 os.system(r'chat_temp\\'+str(Current_mp3))
 
 #群聊消息提示
-engine1=pyttsx3.init()
 @itchat.msg_register([TEXT,PICTURE,RECORDING],isGroupChat=True)
 def group_chat(msg):
         if msg['IsAt']==True:
                 engine1.say('Hey，'+msg['User']['Self']['NickName']+msg['User']['NickName']+'群的'+msg['ActualNickName']+'at你了！')
                 engine1.runAndWait()
                 print(msg)
-
         if msg['Type']=='Text':
                 print(msg['User']['NickName']+msg['ActualNickName']+':'+msg['Text'])
                 engine1.say(msg['User']['NickName']+'群的'+msg['ActualNickName']+'发来消息:'+msg['Text'])
@@ -75,6 +76,7 @@ def group_chat(msg):
         elif msg['Type']=='Recording':
                 print(msg['Type'])
         print(msg)
+
 
 itchat.auto_login()
 itchat.run()
