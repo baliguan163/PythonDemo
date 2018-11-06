@@ -87,5 +87,5 @@ def group_chat(msg):
 
 
 
-itchat.auto_login()
+itchat.auto_login(hotReload=True)
 itchat.run()

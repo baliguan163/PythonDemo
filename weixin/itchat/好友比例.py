@@ -9,8 +9,8 @@ import itchat
 
 
 # 先登录
-itchat.login()
-
+itchat.auto_login(hotReload=True)
+# itchat.run()
 # 获取好友列表
 friends = itchat.get_friends(update=True)[0:]
 
