@@ -31,20 +31,20 @@ robot.file_helper.send("hello")
 #收到好友消息
 @itchat.msg_register([TEXT,PICTURE,RECORDING])
 def tuling_reply(msg):
-    print(msg)
+    # print(msg)
 
-    # if msg['Type'] == TEXT:
-    #     defaultReply = 'I received: ' + msg['Text'] # 为了保证在图灵Key出现问题的时候仍旧可以回复，这里设置一个默认回复
-    #     print(defaultReply)
-    #     reply = auto_reply(msg['Text'])  #如果图灵Key出现问题，那么reply将会是None
-    #     # a or b的意思是，如果a有内容，那么返回a，否则返回b
-    #     # 有内容一般就是指非空或者非None，你可以用`if a: print('True')`来测试
-    #     print('回复:' + reply)
-    #     return reply or defaultReply
-    # elif msg['Type'] == PICTURE:
-    #     print('收到一张图片')
-    # elif msg['Type'] == RECORDING:
-    #     print('收到一段语音')
+    if msg['Type'] == TEXT:
+        defaultReply = 'I received: ' + msg['Text'] # 为了保证在图灵Key出现问题的时候仍旧可以回复，这里设置一个默认回复
+        print(defaultReply)
+        reply = auto_reply(msg['Text'])  #如果图灵Key出现问题，那么reply将会是None
+        # a or b的意思是，如果a有内容，那么返回a，否则返回b
+        # 有内容一般就是指非空或者非None，你可以用`if a: print('True')`来测试
+        print('回复:' + reply)
+        return reply or defaultReply
+    elif msg['Type'] == PICTURE:
+        print('收到一张图片')
+    elif msg['Type'] == RECORDING:
+        print('收到一段语音')
 
 
 @robot.register()

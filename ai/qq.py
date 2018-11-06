@@ -1,13 +1,10 @@
 #-*-coding:utf-8-*-
-#coding:utf-8
+import json
 import os
 import random
+from io import BytesIO
 
-from PIL import Image
-
-__author__ = 'Administrator'
-
-
+import requests
 import win32api
 import win32clipboard
 import win32gui
@@ -17,8 +14,10 @@ from time import sleep, time
 from win32gui import *
 import win32clipboard as w
 import pyperclip
+from PIL import Image
 
-
+# win32gui
+# https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/
 
 
 # bmp 转换为jpg
@@ -83,7 +82,7 @@ def EnumWindowsProc (hwnd,mouse):
         title = GetWindowText(hwnd)
         clname = GetClassName(hwnd)
         # print("window's text=%s hwnd=%d classname=%s" % (text,hwnd,classname))
-        if title=="提示" or title=="好友动态":
+        if title=="提示" or title=="好友动态" or title=='腾讯网迷你版' or title=='验证消息':
             win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
 
         if clname == classname and  not title in titles :
@@ -149,7 +148,7 @@ def dirlist(path, allfile):
 classname = "TXGuiFoundation"
 titlename = "QQ"
 hwnds = [];
-titles = ["QQ","在线安装","好友动态","提示"]
+titles = ["QQ","在线安装","好友动态","提示","腾讯网迷你版","验证消息"]
 
 send = r"2018天猫双11好货热销优惠券 \
 【店铺】绿之源旗舰店 \
@@ -172,14 +171,52 @@ clsname = win32gui.GetClassName(hwnd)
 print('    title:'+ title);
 print('classname:'+ clsname);
 
+#
+# aString = windll.user32.LoadImageW(0, "906.bmp", win32con.IMAGE_BITMAP, 0, 0, win32con.LR_LOADFROMFILE)
+# print(aString)
+# if aString != 0:  ## 由于图片编码问题  图片载入失败的话  aString 就等于0
+#     win32clipboard.OpenClipboard()
+#     win32clipboard.EmptyClipboard()
+#     win32clipboard.SetClipboardData(win32con.CF_BITMAP, aString)
+#     win32clipboard.CloseClipboard()
 
-aString = windll.user32.LoadImageW(0, "906.bmp", win32con.IMAGE_BITMAP, 0, 0, win32con.LR_LOADFROMFILE)
-print(aString)
-if aString != 0:  ## 由于图片编码问题  图片载入失败的话  aString 就等于0
-    win32clipboard.OpenClipboard()
-    win32clipboard.EmptyClipboard()
-    win32clipboard.SetClipboardData(win32con.CF_BITMAP, aString)
-    win32clipboard.CloseClipboard()
+
+def download_pics(url,path):
+    # print('下载:', url)
+    isExists = os.path.exists(path)
+    if not isExists:
+        ir = requests.get(url)
+        if ir.status_code == 200:
+            print('下载ok:',path)
+            with open(path, 'wb') as f:
+                f.write(ir.content)
+                f.close()
+        else:
+            print('下载ng:',ir.status_code,path)
+    else:
+        print('已经存在不下载:',path)
+
+def get_net_json(url,data):
+    ret = requests.post(url,data)
+    assert (ret.status_code == 200)
+    # print(type(r.text))
+    # print(r.text)
+    jsonData = json.loads(ret.text)
+    # print(type(jsonData))
+    # print(jsonData)
+    resultcode = jsonData['code']
+    if  200 == resultcode:
+        print("数据ok")
+        return jsonData
+    else:
+        print("数据ng")
+        return None
+
+
+data = {'id': '1'}
+# header_dict = {'Content-Type':'application/x-www-form-urlencoded'}
+url = 'http://127.0.0.1:8099/goods/quality/detail'
+dir_root = r"C:\chat_temp"
 
 
 #设置位置大小
@@ -190,11 +227,10 @@ bmplist = dirlist(r"F:\图片1\开发图片\80x80_bmp",allfile)
 x=145
 y=226
 moive_cursor(x,y)
-for i in range(0,11):
+for i in range(0,10):
     hwnds.clear()
     y = 226 + 60*i
     moive_cursor(x,y)
-    # win32api.keybd_event(40, 0, 0, 0)
     left_double_click();
     sleep(1)
 
@@ -204,31 +240,98 @@ for i in range(0,11):
     if len(hds) > 0:
         print(hds[0]);
         chartWnd = hds[0]['hwnd']
+
         #移动聊天对话框
         setForWin(chartWnd,280,10,600,600);
 
-        index = random.randint(0, len(allfile))
-        print("index:" + str(index))
+        id = random.randint(0, 1000);
+        data['id'] = id
+        jsondata = get_net_json(url, data)
+        if jsondata != None:
+            data = jsondata['data']
+            # print(data)
 
-        aString = windll.user32.LoadImageW(0, allfile[index], win32con.IMAGE_BITMAP, 0, 0, win32con.LR_LOADFROMFILE)
-        print(aString)
-        if aString != 0:  ## 由于图片编码问题  图片载入失败的话  aString 就等于0
-            win32clipboard.OpenClipboard()
-            win32clipboard.EmptyClipboard()
-            win32clipboard.SetClipboardData(win32con.CF_BITMAP, aString)
-            win32clipboard.CloseClipboard()
+            platform_type = data['platformType']
+            sellerNickname = data['sellerNickname']
+            goods_name = data['goodsName']
+            pic_url = data['goodsPicUrl']
+            platformType = data['platformType']
+            categoryName = data['categoryName']
+            discountsGeneralizeUrl = data['discountsGeneralizeUrl']
+            goodsUrl = data['goodsUrl']
+            discountsSellPrice = data['discountsSellPrice']
+            goodsId = data['goodsId']
+            goodsPrice = data['goodsPrice']
 
-        win32gui.PostMessage(chartWnd, win32con.WM_PASTE, 0, 0)  # 向窗口发送剪贴板内容
+            # print(goods_name)
+            # print(pic_url)
+            # print(platformType)
+            # print(categoryName)
+            # print(discountsGeneralizeUrl)
+            # print(goodsUrl)
 
-        pyperclip.copy(send)
-        # settext("打开支付宝首页搜索518552574立即领红包");
-        sleep(1)
-        # tid = win32gui.FindWindowEx(chartWnd, None, 'Edit', None)
-        # print(tid);
-        win32gui.PostMessage(chartWnd, win32con.WM_PASTE, 0, 0)  # 向窗口发送剪贴板内容
-        sleep(0.3)
-        win32gui.PostMessage(chartWnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)  # 向窗口发送 回车键
-        win32gui.PostMessage(chartWnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)
+
+            path = dir_root + '\\' + goodsId + '.jpg'
+            pathBmp = dir_root + '\\' + goodsId + '.bmp'
+            download_pics(pic_url, path)
+            print(path)
+
+            send = r"2018天猫双11好货热销优惠券 " +  platform_type + "\n\
+【店铺】" + sellerNickname + "\n\
+【商品】" + goods_name + "\n\
+【购买地址】" + goodsUrl + "\n\
+【商品价格】" + goodsPrice + "\n\
+【券后价】" + discountsSellPrice + "\n\
+【领优惠券地址】" + discountsGeneralizeUrl
+
+            # context = r"2018天猫双11好货热销优惠券【店铺】" + sellerNickname + '【商品】' + goods_name  + "【商品价格】" + discountsSellPrice
+            # context = r"2018天猫双11好货热销优惠券"
+            print(send)
+
+
+            img = Image.open(path)  # Image.open可以打开网络图片与本地图片。
+            # output = BytesIO()  # BytesIO实现了在内存中读写bytes
+            img_1 = img.convert("RGB")
+            img_1.save(pathBmp, "BMP")  # 以RGB模式保存图像
+
+            aString = windll.user32.LoadImageW(0, pathBmp, win32con.IMAGE_BITMAP, 0, 0, win32con.LR_LOADFROMFILE)
+            print(aString)
+            if aString != 0:  ## 由于图片编码问题  图片载入失败的话  aString 就等于0
+                win32clipboard.OpenClipboard()
+                win32clipboard.EmptyClipboard()
+                win32clipboard.SetClipboardData(win32con.CF_BITMAP, aString)
+                win32clipboard.CloseClipboard()
+
+
+            #data = output.getvalue()
+            #output.close()
+
+
+
+
+        # #bMP文件载入剪贴板
+        # index = random.randint(0, len(allfile))
+        # print("index:" + str(index))
+        # aString = windll.user32.LoadImageW(0, allfile[index], win32con.IMAGE_BITMAP, 0, 0, win32con.LR_LOADFROMFILE)
+        # print(aString)
+        # if aString != 0:  ## 由于图片编码问题  图片载入失败的话  aString 就等于0
+        #     win32clipboard.OpenClipboard()
+        #     win32clipboard.EmptyClipboard()
+        #     win32clipboard.SetClipboardData(win32con.CF_BITMAP, aString)
+        #     win32clipboard.CloseClipboard()
+
+                sleep(1)
+                win32gui.PostMessage(chartWnd, win32con.WM_PASTE, 0, 0)  # 向窗口发送剪贴板内容
+
+                pyperclip.copy(send)
+                # settext("打开支付宝首页搜索518552574立即领红包");
+                sleep(1)
+                # tid = win32gui.FindWindowEx(chartWnd, None, 'Edit', None)
+                # print(tid);
+                win32gui.PostMessage(chartWnd, win32con.WM_PASTE, 0, 0)  # 向窗口发送剪贴板内容
+                sleep(0.3)
+                win32gui.PostMessage(chartWnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)  # 向窗口发送 回车键
+                win32gui.PostMessage(chartWnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)
 
 
 
@@ -247,6 +350,9 @@ for i in range(0,11):
         sleep(2)
         #关闭窗口
         win32gui.PostMessage(chartWnd,win32con.WM_CLOSE, 0, 0)
+
+
+
         #
         # moive_cursor(x,y)
         # sleep(1)
