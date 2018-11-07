@@ -153,7 +153,8 @@ def SendChatRoomsMsg(gname,context,path):
 
 
 if __name__ == '__main__':
-    itchat.auto_login(hotReload=True, enableCmdQR=100)
+    # itchat.auto_login(hotReload=True, enableCmdQR=100)
+    itchat.auto_login(hotReload=True)
     myroom = itchat.get_chatrooms(update=True) #获取群组所有的相关信息
     # myroom = itchat.search_chatrooms(name=gname) # 传入指定群名进行搜索，之所以搜索，是因为群员的名称信息也在里面
     for room in myroom:
@@ -164,7 +165,7 @@ if __name__ == '__main__':
             print(str(room['NickName']))
 
     scheduler = BackgroundScheduler()
-    scheduler.add_job(tick, 'interval', seconds=900) #间隔3秒钟执行一次
+    scheduler.add_job(tick, 'interval', seconds=600) #间隔3秒钟执行一次
     scheduler.start()    #这里的调度任务是独立的一个线程
     print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
 

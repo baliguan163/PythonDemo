@@ -35,8 +35,8 @@ def request1(appkey, m="GET"):
         "pagesize": "",  # 每次返回条数,默认1,最大20
         "time": "",  # 时间戳（10位），如：1418816972
         "key": appkey,  # 您申请的key
-
     }
+
     params = urlencode(params)
     if m == "GET":
         f = urllib.urlopen("%s?%s" % (url, params))
