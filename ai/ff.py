@@ -2,7 +2,7 @@
 import pyperclip
 
 __author__ = 'dlq'
-
+# 测试
 import os
 import win32gui
 import win32api
