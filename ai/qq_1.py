@@ -1,7 +1,9 @@
 #-*-coding:utf-8-*-
+import io
 import json
 import os
 import random
+import sys
 from io import BytesIO
 
 import requests
@@ -19,7 +21,7 @@ from PIL import Image
 # win32gui
 # https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/
 
-
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='gb18030') #改变标准输出的默认编码
 # bmp 转换为jpg
 def bmpToJpg(file_path):
     for fileName in os.listdir(file_path):
@@ -143,6 +145,28 @@ def dirlist(path, allfile):
 
 
 
+
+def scan_files(directory, prefix=None, postfix=None):
+    files_list = []
+
+    for root, sub_dirs, files in os.walk(directory):
+        for special_file in files:
+            if postfix:
+                if special_file.endswith(postfix):
+                    files_list.append(os.path.join(root, special_file))
+            elif prefix:
+                if special_file.startswith(prefix):
+                    files_list.append(os.path.join(root, special_file))
+            else:
+                files_list.append(os.path.join(root, special_file))
+
+    return files_list
+
+file_list=scan_files(r'H:\开发视频\temp\mm131')
+file_sum=len(file_list)
+print(file_sum)
+
+
 # m_hQQHandle = ::FindWindow(_T("TXGuiFoundation"), _T("QQ"));
 # 通过类名和标题查找窗口句柄，并获得窗口位置和大小
 classname = "TXGuiFoundation"
@@ -212,7 +236,6 @@ def get_net_json(url,data):
         print("数据ng")
         return None
 
-
 data = {'id': '1'}
 # header_dict = {'Content-Type':'application/x-www-form-urlencoded'}
 url = 'http://127.0.0.1:8099/goods/quality/detail'
@@ -227,139 +250,93 @@ bmplist = dirlist(r"F:\图片1\开发图片\80x80_bmp",allfile)
 x=145
 y=226
 moive_cursor(x,y)
-for i in range(0,10):
-    hwnds.clear()
-    y = 226 + 60*i
-    moive_cursor(x,y)
-    left_double_click();
-    sleep(1)
 
-    #查找打开窗体
-    EnumWindows(EnumWindowsProc, 1)
-    hds = get_titles();
-    if len(hds) > 0:
-        print(hds[0]);
-        chartWnd = hds[0]['hwnd']
+while True:
+    for i in range(0,10):
+        hwnds.clear()
+        y = 226 + 60*i
+        moive_cursor(x,y)
+        left_double_click();
+        sleep(1)
 
-        #移动聊天对话框
-        setForWin(chartWnd,280,10,600,600);
+        #查找打开窗体
+        EnumWindows(EnumWindowsProc, 1)
+        hds = get_titles();
+        if len(hds) > 0:
+            print(hds[0]);
+            chartWnd = hds[0]['hwnd']
 
-        id = random.randint(0, 1000);
-        data['id'] = id
-        jsondata = get_net_json(url, data)
-        if jsondata != None:
-            data = jsondata['data']
-            # print(data)
+            #移动聊天对话框
+            setForWin(chartWnd,280,10,600,600);
 
-            platform_type = data['platformType']
-            sellerNickname = data['sellerNickname']
-            goods_name = data['goodsName']
-            pic_url = data['goodsPicUrl']
-            platformType = data['platformType']
-            categoryName = data['categoryName']
-            discountsGeneralizeUrl = data['discountsGeneralizeUrl']
-            goodsUrl = data['goodsUrl']
-            discountsSellPrice = data['discountsSellPrice']
-            goodsId = data['goodsId']
-            goodsPrice = data['goodsPrice']
+            id = random.randint(0, 1000);
+            data['id'] = id
+            jsondata = get_net_json(url, data)
+            if jsondata != None:
+                data = jsondata['data']
+                # print(data)
 
-            # print(goods_name)
-            # print(pic_url)
-            # print(platformType)
-            # print(categoryName)
-            # print(discountsGeneralizeUrl)
-            # print(goodsUrl)
+                platform_type = data['platformType']
+                sellerNickname = data['sellerNickname']
+                goods_name = data['goodsName']
+                pic_url = data['goodsPicUrl']
+                platformType = data['platformType']
+                categoryName = data['categoryName']
+                discountsGeneralizeUrl = data['discountsGeneralizeUrl']
+                goodsUrl = data['goodsUrl']
+                discountsSellPrice = data['discountsSellPrice']
+                goodsId = data['goodsId']
+                goodsPrice = data['goodsPrice']
+                # print(goods_name)
+                # print(pic_url)
+                # print(platformType)
+                # print(categoryName)
+                # print(discountsGeneralizeUrl)
+                # print(goodsUrl)
 
+                path = dir_root + '\\' + goodsId + '.jpg'
+                pathBmp = dir_root + '\\' + goodsId + '.bmp'
+                download_pics(pic_url, path)
+                print(path)
 
-            path = dir_root + '\\' + goodsId + '.jpg'
-            pathBmp = dir_root + '\\' + goodsId + '.bmp'
-            download_pics(pic_url, path)
-            print(path)
-
-            send = r"2018天猫双11好货热销优惠券 " +  platform_type + "\n\
-【店铺】" + sellerNickname + "\n\
-【商品】" + goods_name + "\n\
-【购买地址】" + goodsUrl + "\n\
-【商品价格】" + goodsPrice + "\n\
-【券后价】" + discountsSellPrice + "\n\
-【领优惠券地址】" + discountsGeneralizeUrl
-
-            # context = r"2018天猫双11好货热销优惠券【店铺】" + sellerNickname + '【商品】' + goods_name  + "【商品价格】" + discountsSellPrice
-            # context = r"2018天猫双11好货热销优惠券"
-            print(send)
-
-
-            img = Image.open(path)  # Image.open可以打开网络图片与本地图片。
-            # output = BytesIO()  # BytesIO实现了在内存中读写bytes
-            img_1 = img.convert("RGB")
-            img_1.save(pathBmp, "BMP")  # 以RGB模式保存图像
-
-            aString = windll.user32.LoadImageW(0, pathBmp, win32con.IMAGE_BITMAP, 0, 0, win32con.LR_LOADFROMFILE)
-            print(aString)
-            if aString != 0:  ## 由于图片编码问题  图片载入失败的话  aString 就等于0
-                win32clipboard.OpenClipboard()
-                win32clipboard.EmptyClipboard()
-                win32clipboard.SetClipboardData(win32con.CF_BITMAP, aString)
-                win32clipboard.CloseClipboard()
-
-
-            #data = output.getvalue()
-            #output.close()
+                send = r"2018天猫双11好货热销优惠券 " +  platform_type + "\n\
+    【店铺】" + sellerNickname + "\n\
+    【商品】" + goods_name + "\n\
+    【购买地址】" + goodsUrl + "\n\
+    【商品价格】" + goodsPrice + "\n\
+    【券后价】" + discountsSellPrice + "\n\
+    【领优惠券地址】" + discountsGeneralizeUrl
+                # context = r"2018天猫双11好货热销优惠券【店铺】" + sellerNickname + '【商品】' + goods_name  + "【商品价格】" + discountsSellPrice
+                # context = r"2018天猫双11好货热销优惠券"
+                print(send)
 
 
 
+                img = Image.open(path)  # Image.open可以打开网络图片与本地图片。
+                # output = BytesIO()  # BytesIO实现了在内存中读写bytes
+                img_1 = img.convert("RGB")
+                img_1.save(pathBmp, "BMP")  # 以RGB模式保存图像
 
-        # #bMP文件载入剪贴板
-        # index = random.randint(0, len(allfile))
-        # print("index:" + str(index))
-        # aString = windll.user32.LoadImageW(0, allfile[index], win32con.IMAGE_BITMAP, 0, 0, win32con.LR_LOADFROMFILE)
-        # print(aString)
-        # if aString != 0:  ## 由于图片编码问题  图片载入失败的话  aString 就等于0
-        #     win32clipboard.OpenClipboard()
-        #     win32clipboard.EmptyClipboard()
-        #     win32clipboard.SetClipboardData(win32con.CF_BITMAP, aString)
-        #     win32clipboard.CloseClipboard()
+                aString = windll.user32.LoadImageW(0, pathBmp, win32con.IMAGE_BITMAP, 0, 0, win32con.LR_LOADFROMFILE)
+                print(aString)
+                if aString != 0:  ## 由于图片编码问题  图片载入失败的话  aString 就等于0
+                    win32clipboard.OpenClipboard()
+                    win32clipboard.EmptyClipboard()
+                    win32clipboard.SetClipboardData(win32con.CF_BITMAP, aString)
+                    win32clipboard.CloseClipboard()
 
-                sleep(1)
+
                 win32gui.PostMessage(chartWnd, win32con.WM_PASTE, 0, 0)  # 向窗口发送剪贴板内容
-
                 pyperclip.copy(send)
                 # settext("打开支付宝首页搜索518552574立即领红包");
                 sleep(1)
                 # tid = win32gui.FindWindowEx(chartWnd, None, 'Edit', None)
                 # print(tid);
                 win32gui.PostMessage(chartWnd, win32con.WM_PASTE, 0, 0)  # 向窗口发送剪贴板内容
-                sleep(0.3)
                 win32gui.PostMessage(chartWnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)  # 向窗口发送 回车键
                 win32gui.PostMessage(chartWnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)
 
+            sleep(2)
+            #关闭窗口
+            win32gui.PostMessage(chartWnd,win32con.WM_CLOSE, 0, 0)
 
-
-    # tid = win32gui.FindWindowEx(hwndWind, None, 'Edit', None)
-    # print(tid);
-    # win32gui.SendMessage(tid, win32con.WM_SETTEXT, None, 'suuuu爱仕达无多')
-    # 输入中文
-    # win32gui.SendMessage(tid, win32con.WM_SETTEXT, None, u'你好'.encode('gbk'))
-
-
-    # # 发送回车键
-    # win32api.keybd_event(13,0,0,0)
-    # win32api.keybd_event(13,0,win32con.KEYEVENTF_KEYUP,0)
-
-
-        sleep(2)
-        #关闭窗口
-        win32gui.PostMessage(chartWnd,win32con.WM_CLOSE, 0, 0)
-
-
-
-        #
-        # moive_cursor(x,y)
-        # sleep(1)
-        # left_click()
-        # win32api.keybd_event(40, 0, 0, 0)
-
-
-# hds = get_titles();
-# sleep(1)
-# left_click(hwnd,595,310);
