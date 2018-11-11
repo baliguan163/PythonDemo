@@ -190,7 +190,7 @@ class MyImage:
 
             title = title.replace('!','').replace(' ','')
             alt = alt.replace('!', '').replace(' ', '')
-            print(str(len(listpic))+ "->"+str(i+1)+ " title:" +  title+ ' src:', downpath+ ' alt:'+alt + " " + listpic[i])
+            # print(str(len(listpic))+ "->"+str(i+1)+ " title:" +  title+ ' src:', downpath+ ' alt:'+alt + " " + listpic[i])
             vid = {
                 'name':url['name'],
                 'page_url':listpic[i],
@@ -286,12 +286,12 @@ if __name__ == "__main__":
         muImage.get_tag_npage_all_urlsc(MyImage.all_tag_urls[i])
     # print('图集总数:' + str(len(muImage.tag_all_page_images_sum_urls)))
     sum = len(muImage.tag_all_page_images_sum_urls)
-    for j in range(0, sum):
+    for j in range(109, sum):
         print('图集总数:' + str(sum) + "->" + str(j+1) + " url:" + muImage.tag_all_page_images_sum_urls[j]['href'])
         pic_list = muImage.get_url_all_image_urls(muImage.tag_all_page_images_sum_urls[j])
         for k in range(0,len(pic_list)):
             muImage.download_pics(pic_list[k],str(len(pic_list)),str(k+1))
-            time.sleep(1)
+            # time.sleep(2)
 
 
 # def main():
