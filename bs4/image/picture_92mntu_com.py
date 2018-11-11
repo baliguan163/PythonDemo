@@ -198,15 +198,14 @@ def download_pics(sum,page,pagesum,i,url,root,name):
         #     print('Error')
 
         if ir.status_code == 200:
-            print('  下载ok:',sum,'-',page, ' ',pagesum,'-',i, '',url,' ', path)
+            print('下载ok:' + str(sum) +'->' + str(page)+' '+str(pagesum) +'->'+str(i)+' '+ url+' '+path)
             with open(path, 'wb') as f:
                 f.write(ir.content)
                 f.close()
         else:
-            print('  下载ng:',ir.status_code,' ',sum,'-',page, ' ',pagesum,'-', i, '',url,' ', path)
+            print('下载ng:'+str(ir.status_code)+' '+ str(sum) +'->' + str(page)+' '+str(pagesum) +'->'+str(i)+' '+ url+' '+path)
     else:
-        # print('  存在不下载:',sum,'-',page, ' ',pagesum,'-', i, '',url,' ', path)
-        ''
+        print('不下载:'+ str(sum) +'->' + str(page)+' '+str(pagesum) +'->'+str(i)+' '+ url+' '+path)
 
     # 解锁
     thread_lock.release()
@@ -221,7 +220,7 @@ def create_dir(directory):
 
 # 92美女图
 def main():
-    root_dir = create_dir('C:\\picture_www.92mntu.com\\')  # 绝对路径
+    root_dir = create_dir('H:\\开发视频\\pic_temp\\www.92mntu.com\\')  # 绝对路径
     url = 'http://92mntu.com/'
 
     # 获取首页分类

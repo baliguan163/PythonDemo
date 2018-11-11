@@ -193,6 +193,7 @@ class MyImage:
             print(str(len(listpic))+ "->"+str(i+1)+ " title:" +  title+ ' src:', downpath+ ' alt:'+alt + " " + listpic[i])
             vid = {
                 'name':url['name'],
+                'page_url':listpic[i],
                 'title': title,
                 'src': downpath,
                 'alt': alt,
@@ -211,10 +212,9 @@ class MyImage:
         name = url['name']
         title=url['title']
         root = url['root']
-        offset = url['src']
         alt=url['alt']
         down_path=url['src']
-
+        page_url=url['page_url']
         # # 请求头
         # headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         #            'Accept-Encoding': 'gzip, deflate, sdch',
@@ -231,16 +231,15 @@ class MyImage:
                    'Accept-Encoding': 'gzip, deflate, sdch',
                    'Accept-Language': 'zh-CN,zh;q=0.8',
                    'Connection': 'keep-alive',
-                   'Host':'img.mmjpg.com',
-                   'Referer': offset,
+                   'Host':'fm.shiyunjj.com',
+                   'Referer': page_url,
                    'Upgrade-Insecure-Requests': '1',
                    "User-Agent":my_agent}
 
         path_dir = root + '\\'+ name
         path = path_dir + "\\" + alt + '.jpg'
         # print('path:', path)
-
-        print(headers)
+        # print('path:', page_url)
 
         self.is_exist_dir(path_dir)
         isExists = os.path.exists(path)

@@ -12,22 +12,19 @@ from urllib import request
 
 def main():
     # 配置您申请的APPKey
-    appkey = "*********************"
-
+    appkey = "ba7c3e80aa25169b7844789708373b1c"
+    print('----------------------------------日历------------------------------------------')
     # 1.日历
     request1(appkey, "GET")
-
+    print('----------------------------------时辰------------------------------------------')
     # 2.时辰
     request2(appkey, "GET")
-
-
 # 日历
 def request1(appkey, m="GET"):
     url = "http://v.juhe.cn/laohuangli/d"
     params = {
         "key": appkey,  # 应用APPKEY(应用详细页查询)
-        "date": "",  # 日期，格式2014-09-09
-
+        "date": "2018-11-11",  # 日期，格式2014-09-09
     }
     params = urllib.parse.urlencode(params)
     if m == "GET":
@@ -41,14 +38,11 @@ def request1(appkey, m="GET"):
         error_code = res["error_code"]
         if error_code == 0:
             # 成功请求
-            print
-            res["result"]
+            print(res["result"])
         else:
-            print
-            "%s:%s" % (res["error_code"], res["reason"])
+            print("%s:%s" % (res["error_code"], res["reason"]))
     else:
-        print
-        "request api error"
+        print("request api error")
 
 
 # 时辰
@@ -56,7 +50,7 @@ def request2(appkey, m="GET"):
     url = "http://v.juhe.cn/laohuangli/h"
     params = {
         "key": appkey,  # 应用APPKEY(应用详细页查询)
-        "date": "",  # 日期，格式2014-09-09
+        "date": "2018-11-11",  # 日期，格式2014-09-09
 
     }
     params = urllib.parse.urlencode(params)
@@ -71,14 +65,11 @@ def request2(appkey, m="GET"):
         error_code = res["error_code"]
         if error_code == 0:
             # 成功请求
-            print
-            res["result"]
+            print(res["result"])
         else:
-            print
-            "%s:%s" % (res["error_code"], res["reason"])
+            print("%s:%s" % (res["error_code"], res["reason"]))
     else:
-        print
-        "request api error"
+        print("request api error")
 
 
 if __name__ == '__main__':
