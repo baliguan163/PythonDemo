@@ -141,6 +141,7 @@ class MyImage:
             # print('图集名称:',count,' ',name )
             # print('首图地址:', mylist.find('a').img['src'])
             # print('图集地址:', picurl)
+            name = name.replace('!', '').replace(' ', '')
             vid = {
                 'name': name,
                 'href': picurl,
@@ -286,7 +287,8 @@ if __name__ == "__main__":
         muImage.get_tag_npage_all_urlsc(MyImage.all_tag_urls[i])
     # print('图集总数:' + str(len(muImage.tag_all_page_images_sum_urls)))
     sum = len(muImage.tag_all_page_images_sum_urls)
-    for j in range(109, sum):
+    #2699-> 137
+    for j in range(136, sum):
         print('图集总数:' + str(sum) + "->" + str(j+1) + " url:" + muImage.tag_all_page_images_sum_urls[j]['href'])
         pic_list = muImage.get_url_all_image_urls(muImage.tag_all_page_images_sum_urls[j])
         for k in range(0,len(pic_list)):
