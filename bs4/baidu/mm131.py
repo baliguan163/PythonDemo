@@ -47,7 +47,6 @@ def getDataByUrl(url):
     data = urllib.request.urlopen(url).read().decode("gb2312", "ignore")
     return data
 
-
 # 用户代理
 def ua(uapools):
     thisua = random.choice(uapools)

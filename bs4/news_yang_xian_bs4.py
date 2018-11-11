@@ -91,7 +91,7 @@ from w3lib.html import remove_tags
 def download_pics(url,alt,root,name):
     path = root + '\\'+ alt +'.jpg'
     # print('下载:', url)
-    # print('path:', path)
+    print('path:', path)
     isExists = os.path.exists(path)
     if not isExists:
         ir = requests.get(url)
@@ -191,38 +191,6 @@ def get_content(sum,i,page_sum,j,url,title,root):
     newHtml = get_html(url)
     soupHtml = BeautifulSoup(newHtml, 'lxml')
 
-    # infoMark  = soupHtml.find('div', class_='infoMark')
-    # # print('infoMark:', infoMark.find_all('span'))
-    # # print('news_list:', news_list)
-    # # print('新闻标题:', soupHtml.find('h1').text)
-    # spanTemp = ''
-    # for myspan in infoMark.find_all('span'):
-    #     # print('myspan:', myspan.get_text().strip())
-    #     spanTemp = spanTemp + ' ' + myspan.text.strip()
-    # # print('spanTemp:', spanTemp)
-    # # title = news_list.find('h1').get_text().strip()
-    #
-    # # 新闻内容
-    # info =  soupHtml.find('div', class_='info')
-    # # print('  dd1:', info)
-    # info1 =  info.find_all('p')  #.strip().replace('\n','').replace(' ','')
-    # str = ''
-    # for k in range(0,len(info1)):
-    #     str = str + info1[k].text.replace('\n','').strip()
-    # # print('  str:', str)
-    # # dd = remove_tags(info)
-    # # print('  dd:', info)
-    # # dr = re.compile(r'<[^>]+>', re.S)
-    # # dd = dr.sub('', info)
-    #
-    # # dr = re.compile(r'<[^>]+>', re.S)
-    # # dd = dr.sub('', info)
-    # print('---------------------------------------------------------------------')
-    # print('新闻地址:', url,sum,'-',i,page_sum,'-',j,)
-    # print('新闻标题:', title)
-    # print('新闻标记:', spanTemp)
-    # print('新闻内容:', str)
-
     infoMark  = soupHtml.find('div', class_='infoMark')
     # print('infoMark:', infoMark.find_all('span'))
     # print('news_list:', news_list)
@@ -241,7 +209,6 @@ def get_content(sum,i,page_sum,j,url,title,root):
     sourc_auth = span_list[2].get_text().strip().split('：')[1]
     sourc_edit = span_list[3].get_text().strip().split('：')[1]
 
-
     # 新闻内容
     info =  soupHtml.find('div', class_='info')
     # print('  dd1:', info)
@@ -249,6 +216,7 @@ def get_content(sum,i,page_sum,j,url,title,root):
     content = ''
     for k in range(0,len(info1)):
         content = content + info1[k].text.strip()
+
 
     print('------------------------------------------------------------------------------------------------------------')
     print('标题:'+ title)
@@ -263,6 +231,7 @@ def get_content(sum,i,page_sum,j,url,title,root):
     isExists = os.path.exists(file)
     if isExists:
         os.remove(file)
+
     Out2File(file, title)
     Out2File(file, sourc_time)
     Out2File(file, content)
@@ -279,6 +248,9 @@ def get_content(sum,i,page_sum,j,url,title,root):
             # alt = list_pics[y]['alt']
             href = list_pics[y]['src']
             alt  = list_pics[y]['alt']
+            if alt==None:
+                alt=y
+
             file_href = alt + " " + href;
             # print(' alt:', y, file_href)
             temp = {'title': title, 'href': href}
@@ -320,10 +292,17 @@ def get_content(sum,i,page_sum,j,url,title,root):
     # except:
     #     ''
 
+zhen_ban_info=['洋州办事处','纸坊办事处','戚氏办事处','黄金峡镇','磨子桥镇','八里关镇','黄家营镇','槐树关镇',
+'关帝镇','龙亭镇','华阳镇','茅坪镇','马畅镇','黄安镇','溢水镇','金水镇','桑溪镇','谢村镇']
+
 def main():
-     root = create_dir('D:\\洋县\\洋县新闻\\')
+     root = create_dir('H:\\洋县\\洋县新闻\\')
+     isExists = os.path.exists(root)
+     if not isExists:
+        os.makedirs(root)
      # url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10802&cur_page=1'  #洋县新闻
      url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10802'
+
 
      # 新闻页数
      pages_url_list = get_pages_url_count(url)
