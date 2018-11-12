@@ -108,7 +108,7 @@ def SentChat():
         download_pics(pic_url, path)
         print(path)
 
-        send = r"2018天猫双11好货热销优惠券  " + platform_type + "【店铺】" + sellerNickname + '   【商品】' + goods_name + "  【购买地址】" +goodsUrl + "  【商品价格】" + goodsPrice  + "  【券后价】" + discountsSellPrice + "【领优惠券地址】" + discountsGeneralizeUrl
+        send = r"2018天猫双11好货热销优惠券  " + platform_type + "【店铺】" + sellerNickname + '   【商品】' + goods_name + "  【购买】" +goodsUrl + "  【原价】" + goodsPrice  + "  【券后价】" + discountsSellPrice + "【领优惠券】" + discountsGeneralizeUrl
         #context = r"2018天猫双11好货热销优惠券【店铺】" + sellerNickname + '【商品】' + goods_name  + "【商品价格】" + discountsSellPrice
         # context = r"2018天猫双11好货热销优惠券"
         print(send)
@@ -135,7 +135,7 @@ def download_pics(url,path):
 #定义全局变量（也可以不定义）
 global username
 dir_root = r"C:\chat_temp"
-gname='洋县生活圈'
+gname='吃喝玩乐特价优惠券群'
 
 # 资料共享交流2群
 # 搞笑能量军团

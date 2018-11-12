@@ -308,6 +308,9 @@ def get_content(sum,i,page_sum,j,url,title,root):
             href = list_pics[y]['src']
             alt  = list_pics[y]['alt']
             file_href = alt + " " + href;
+            # print(' href:', href)
+            # print(' alt:', alt)
+
             # print(' alt:', y, file_href)
             temp = {'title': title, 'href': href}
             img_list.append(temp)

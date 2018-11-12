@@ -13,7 +13,7 @@ import random
 
 
 
-root_dir = "H:/开发视频/temp/mm131"
+root_dir = "C:/chat_temp/mm131"
 host_name = "http://www.mm131.com/"
 key_names = ["xinggan", "qingchun", "xiaohua", "chemo", "qipao", "mingxing"]
 # key_names = ["性感美女", "qingchun", "xiaohua", "chemo", "qipao", "mingxing"]
