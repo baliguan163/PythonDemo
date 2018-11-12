@@ -23,7 +23,7 @@ def binarizing(img,threshold):
             else:
                 pixdata[x, y] = 255
     return img
-image = Image.open(r'yzm.jpg')
+
 
 ###########去除干扰线算法
 def depoint(img):   #input: gray image
@@ -46,6 +46,7 @@ def depoint(img):   #input: gray image
 
 
 
+image = Image.open(r'yzm.jpg')
 # 转化为灰度图
 img = image.convert('L')
 # 把图片变成二值图像。
