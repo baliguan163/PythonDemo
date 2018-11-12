@@ -5,6 +5,9 @@ from imageai.Detection import ObjectDetection   #导入 ImageAI 目标检测类
 import os
 
 
+# resnet50_coco_best_v2.0.1.h5下载地址
+# https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/resnet50_coco_best_v2.0.1.h5，准确度，比其他的都高
+
 execution_path = os.getcwd()
 print(execution_path)
 print('--------------------000------------------------')
