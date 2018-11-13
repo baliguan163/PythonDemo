@@ -49,9 +49,10 @@ def get_short_url(url):
 def connnect_db():
     global conn
     global cursor
-    conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8')
+    # conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8')
+    conn = pymysql.connect(host='localhost', port=3308, user='root', passwd='123456', db='tools', charset='utf8')
     cursor = conn.cursor()
-    conn.select_db('test')
+    conn.select_db('tools')
 
 #
 # ---------------------遍历sheet1中所有单元格--------------------------------
@@ -259,8 +260,8 @@ if __name__ == "__main__":
                                     # print('row:', row)
 
                                     # 插入数据
-                                    # cursor.execute(sql, row)
-                                    # conn.commit()
+                                    cursor.execute(sql, row)
+                                    conn.commit()
 
                 # time.sleep(3)
                 #关闭数据库
