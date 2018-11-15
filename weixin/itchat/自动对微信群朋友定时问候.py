@@ -26,7 +26,7 @@ cityList_bsgs = [
 # http://www.weather.com.cn/weather1d/101110805.shtml#input
 # http://forecast.weather.com.cn/town/weather1dn/101110805001.shtml#input
 # {'code': '101110805001', 'name': " 八里关镇"}
-chatroom_list = ['八里关镇微信群', '洋县生活圈','同学群']
+chatroom_list = ['八里关镇微信群', '洋县生活圈']
 
 def get_huangli():
     data = {}
@@ -213,7 +213,7 @@ itchat.auto_login(hotReload=True, loginCallback=loginCallback, exitCallback=exit
 
 scheduler = BlockingScheduler()
 for sent_chatroom in chatroom_list:
-    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=12, minute=21,
+    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=12, minute=46,
                       kwargs={"name": sent_chatroom, "context": get_context()})
     print("任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context())
     print("******************************************************************************\n")

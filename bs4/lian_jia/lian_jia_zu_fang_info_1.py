@@ -90,9 +90,10 @@ def main():
     print(starturl[1],'地址总数', totalpage)
     # '/zufang/pg39l2/'
     # totalpage = int(math.ceil(float(soup.h2.span.get_text())/20)) #注1
+
+    # ---------------------------------------------------------------------
     first_urlset = []
     for i in range(1, int(totalpage) + 1):
-    # for i in range(1, 5):
         url = "http://xa.lianjia.com/zufang/pg" + str(i) + "l2"
         # print('总页地址:', i, '', url)
         first_urlset.append(url)  # 注2
