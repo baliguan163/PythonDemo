@@ -181,7 +181,7 @@ def get_context():
     huangli = get_huangli()
     # print(huangli)
     # msg = "美好的一天从我的问候开始:各位亲人早上好!\n" + twitter_realTime + "\n" + twitter_wholeDay + '\n' + huangli + '\n' + iciba
-    msg = "\n美好的一天从我的问候开始:各位中午好!\n" + twitter_realTime + "\n" + twitter_wholeDay  + '\n' + iciba + '\n' + huangli
+    msg = "\n美好的一天从我的问候开始:各位早上好!\n" + twitter_realTime + "\n" + twitter_wholeDay  + '\n' + iciba + '\n' + huangli
     # print(msg)
     return msg
 
@@ -213,7 +213,7 @@ itchat.auto_login(hotReload=True, loginCallback=loginCallback, exitCallback=exit
 
 scheduler = BlockingScheduler()
 for sent_chatroom in chatroom_list:
-    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=12, minute=46,
+    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=13, minute=43,
                       kwargs={"name": sent_chatroom, "context": get_context()})
     print("任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context())
     print("******************************************************************************\n")
