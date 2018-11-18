@@ -11,10 +11,10 @@ con.commit()
 #print r
 
 r=cur.execute('select * from people')
-print r
+print(r)
 s=cur.fetchall()
 m=len(s)
-print  m
+print(m)
 
 
 cur.close()
