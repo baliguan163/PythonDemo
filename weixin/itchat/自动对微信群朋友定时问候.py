@@ -224,7 +224,8 @@ scheduler.start()
 # context =get_context()
 #若为Linux服务器如下，否则二维码显示不正常。如部分的linux系统，块字符的宽度为一个字符（正常应为两字符），故赋值为2
 # itchat.auto_login(hotReload=True, enableCmdQR=2, loginCallback=loginCallback, exitCallback=exitCallback)
-#
+
+
 
 
 

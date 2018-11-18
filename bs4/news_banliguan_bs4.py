@@ -164,6 +164,7 @@ def get_content(url,title111,root):
     Out2File(file, content)
     Out2File(file, '文章来源于网络：洋县人民政府网，如有侵权，请联系作者删除' )
     # 文章来源于网络：洋县人民政府网，如有侵权，请联系作者删除
+
 # "CREATE TABLE `yangxian_new` (
 #   `id` int(11) NOT NULL AUTO_INCREMENT,
 #   `title` varchar(128) COLLATE utf8_bin DEFAULT NULL,
@@ -271,7 +272,8 @@ def get_pages_url_count(url):
 def main():
      root = create_dir('D:\\洋县\\八里关镇\\新闻\\')
      url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  #镇办信息
-     # connnect_db()  # 连接数据库
+     connnect_db()  # 连接数据库
+
      #新闻列表页数
      pages_url_list = get_pages_url_count(url)
 

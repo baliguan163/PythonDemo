@@ -4,7 +4,6 @@ import itchat
 
 KEY = '8aee32ea3c17bf087812ec9daacae3fa'  # 这个key可以直接拿来用
 
-
 # 向api发送请求
 def get_response(msg):
     Url = 'http://www.tuling123.com/openapi/api'
@@ -26,9 +25,14 @@ def tuling_reply(msg):
     # 为了保证在图灵Key出现问题的时候仍旧可以回复，这里设置一个默认回复
     defaultReply = '不想理你了'
     # 如果图灵Key出现问题，那么reply将会是None
-    reply = get_response(msg['Text'])
+    msg = msg['Text']
+    print('------------------------------------------------')
+    print('msg:'+ msg)
+    reply = get_response(msg)
     # a or b的意思是，如果a有内容，那么返回a，否则返回b
-    return reply or defaultReply
+    repMsg = reply or defaultReply
+    print('repMsg:' + repMsg)
+    return repMsg
 
 
 # 开启群聊是isGroupChat=True，默认为false#'isAt'是微信的@符号

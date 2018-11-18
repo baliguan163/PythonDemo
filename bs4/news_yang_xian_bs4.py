@@ -89,7 +89,9 @@ from w3lib.html import remove_tags
 
 #下载图片
 def download_pics(url,alt,root,name):
-    path = root + '\\'+ alt +'.jpg'
+    path = root + str(alt) +'.jpg'
+    print('root:', root)
+    print('alt:', str(alt))
     # print('下载:', url)
     print('path:', path)
     isExists = os.path.exists(path)
@@ -217,6 +219,7 @@ def get_content(sum,i,page_sum,j,url,title,root):
     for k in range(0,len(info1)):
         content = content + info1[k].text.strip()
 
+    title = title.replace('（','').replace('）','').replace('”','').replace('、','').replace('：','').replace(' ','')
 
     print('------------------------------------------------------------------------------------------------------------')
     print('标题:'+ title)
@@ -228,6 +231,7 @@ def get_content(sum,i,page_sum,j,url,title,root):
     print('内容:'+ content)
 
     file = root + title + '.txt'
+    print('file:' + file)
     isExists = os.path.exists(file)
     if isExists:
         os.remove(file)
@@ -241,24 +245,23 @@ def get_content(sum,i,page_sum,j,url,title,root):
     img_list = []
     news_list = soupHtml.find('div', class_='contentLeft')
     list_pics = news_list.find_all('img')
+
+
     #print('图片个数:', list_pics)
     try:
         for y in range(1, len(list_pics)):
             # print('  list_pic:', list_pics[y]['src'])
-            # alt = list_pics[y]['alt']
             href = list_pics[y]['src']
-            alt  = list_pics[y]['alt']
-            if alt==None:
-                alt=y
-
-            file_href = alt + " " + href;
-            # print(' alt:', y, file_href)
+            tag  = list_pics[y]['alt']
+            # tag=y
+            # if tag==None:
+            #     tag=title
+            file_href = y + " " + href;
             temp = {'title': title, 'href': href}
+            print('file_href:' + file_href)
             img_list.append(temp)
-
             Out2File(file, file_href)
-            #print('root:', root)
-            download_pics(href,alt,root,y)
+            download_pics(href,y,root,y)
     except:
         ''
     dic_info = {'title': title, 'url': url, 'sourc_in': sourc_in, 'sourc_time': sourc_time, 'sourc_auth': sourc_auth,
@@ -268,35 +271,12 @@ def get_content(sum,i,page_sum,j,url,title,root):
     # print(dic_info)
     return  dic_info
 
-    # file = root + title + '.txt'
-    # isExists = os.path.exists(file)
-    # if isExists:
-    #     os.remove(file)
-    # Out2File(file, title)
-    # Out2File(file, spanTemp)
-    # Out2File(file, str)
-    # Out2File(file, url)
-
-    # news_list = soupHtml.find('div', class_='contentLeft')
-    # list_pics = news_list.find_all('img')
-    # # print('  list_pics:', list_pics)
-    # try:
-    #     for y in range(1, len(list_pics)):
-    #         # print('  list_pic:', list_pics[y]['src'])
-    #         # alt = list_pics[y]['alt']
-    #         href = list_pics[y]['src']
-    #         Out2File(file, href)
-    #         name = y
-    #         # print(' 新闻图片:',name, href)
-    #         download_pics(href,root, name)
-    # except:
-    #     ''
 
 zhen_ban_info=['洋州办事处','纸坊办事处','戚氏办事处','黄金峡镇','磨子桥镇','八里关镇','黄家营镇','槐树关镇',
 '关帝镇','龙亭镇','华阳镇','茅坪镇','马畅镇','黄安镇','溢水镇','金水镇','桑溪镇','谢村镇']
 
 def main():
-     root = create_dir('H:\\洋县\\洋县新闻\\')
+     root = create_dir('D:\\洋县\\洋县新闻\\')
      isExists = os.path.exists(root)
      if not isExists:
         os.makedirs(root)

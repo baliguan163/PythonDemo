@@ -17,6 +17,7 @@ def tuling(info):
     answer = data['text']
     return answer
 
+
 # 对于群聊信息，定义获取想要针对某个群进行机器人回复的群ID函数
 def group_id(name):
     df = itchat.search_chatrooms(name=name)
@@ -37,7 +38,7 @@ def download_files(msg):
 @itchat.msg_register(TEXT, isGroupChat=True)
 def group_text_reply(msg):
     # 当然如果只想针对@你的人才回复，可以设置if msg['isAt']:
-    item = group_id(u'正能量军团')  # 根据自己的需求设置
+    item = group_id(u'洋县生活圈')  # 根据自己的需求设置
     if msg['ToUserName'] == item:
         itchat.send(u'%s' % tuling(msg['Text']), item)
 
