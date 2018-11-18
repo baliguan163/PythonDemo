@@ -12,18 +12,7 @@ session = requests.Session()
 #设置最大线程锁
 thread_lock = threading.BoundedSemaphore(value=1)
 
-def get_html(url):
-    try:
-        # s = requests.session()
-        # session.config['keep_alive'] = False
-        r = requests.get(url, timeout=10)
-        r.raise_for_status
-        r.encoding = 'utf8'
-        return r.text
-    except:
-        return "get_html someting wrong"
-
-def get_pages_url_count(url):
+def get_pages_url_count(host,url):
     html = get_html(url)
     soup = BeautifulSoup(html, 'lxml')
     pages_list = []
@@ -35,35 +24,63 @@ def get_pages_url_count(url):
         page_sum = nav_list[index1+1:index2].replace(' ','')
         print('page_sum:', page_sum)
 
+# "http://92.lui66sy.pw/pw/thread-htm-fid-14.html-1"
+# 'http://92.lui66sy.pw/pw/thread-htm-fid-14-page-2.html'
+# 'http://92.lui66sy.pw/pw/thread-htm-fid-14-page-3.html'
+# 'http://92.lui66sy.pw/pw/thread.php?fid=14&page=939'
 
         for i in range(1, int(page_sum) + 1):
-            newurl = url +  'thread.php?fid=14&page='+ str(i)
+            newurl = host +  'pw/thread-htm-fid-14-page-'+ str(i)  + '.html'
             # print('图集地址:',i,'' +  newurl)
             pages_list.append(newurl)
     except:
         print('get_pages_per_url_info异常', url)
     return pages_list
 
+def get_html(url):
+    try:
+        # s = requests.session()
+        # session.config['keep_alive'] = False
+        r = requests.get(url, timeout=10)
+        r.raise_for_status
+        r.encoding = 'utf8'
+        return r.text
+    except:
+        return "get_html someting wrong"
 
-def get_pages_per_url_info(url):
+
+def get_pages_per_url_info(host,url):
+    print('get_pages_per_url_info url:', url)
     html = get_html(url)
     soup = BeautifulSoup(html, 'lxml')
     pages_list = []
     try:
         yi_list = soup.find('tbody', style='table-layout:fixed;')
+        # print('yi_list:', yi_list)
+
         title_list = yi_list.find_all('tr', class_='tr3 t_one')
-        # print('title_list:', title_list)
+        print('title_list:' + str(len(title_list)))
 
         for i in range(6, len(title_list)):
             td_list= title_list[i].find_all('td')
+            # print(td_list)
             title = td_list[1].find('a').text
+            href = td_list[1].find('a')['href']
+            title= title.replace(' ','')
+            # auth = td_list[2].find('a').text
+            # reply = td_list[3].text
             # time = td_list[4].find('a').text
+            #print(str(len(title_list)) + '->' + str(i+1) + '  title:'+ title + ' auth:' + auth + ' reply:' + reply  + ' time:' + time + " " +href)
 
-            if '在线播放' != title:
-                href  =  'http://y3.1024yxy.org/pw/' + td_list[1].find('a')['href']
-                # print('  图集:', i-5, '',title,'',href,'')
+            # 'http://92.lui66sy.pw/pw/htm_data/14/1811/1394325.html'
+            if '在线看片' != title:
+                href  =  host + 'pw/' + href
+                # print('     图集:', i-5, '',title,'',href,'')
                 vid3 = {'title': title, 'href': href}
                 pages_list.append(vid3)
+            else:
+                # print('     图集pass:', i - 5, '', title, '', href, '')
+                pass
     except:
         print('get_pages_per_url_info异常', url)
     return  pages_list
@@ -184,23 +201,26 @@ def get_pic_all_content(tag,page_sum,index,all_url_list,root_dir):
 
 def main():
     root  = create_dir('C:\\www.w3.afulyu.rocks\\图文欣賞\\')
+    # 'http://92.lui66sy.pw/pw/'
+    host = 'http://92.lui66sy.pw/'
+    # 美图欣賞 ：唯美写真 | 网友自拍 | 露出激情 | 街拍偷拍 | 丝袜美腿 | 欧美风情
      # 分类地址
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=49', '偷窥原创']
-    url = ['http://y3.1024yxy.org/pw/thread.php?fid=14','唯美写真'] #11
+    url = [ host + 'pw/thread-htm-fid-14.html','唯美写真'] #11
     # url = ['http://w3.afulyu.rocks/pw/thread.php?fid=15', '网友自拍']
     # url = ['http://y3.1024yxy.org/pw/thread.php?fid=16', '露出激情']
 
     root_dir = create_dir(root + url[1] + '\\')
     # 分类的分页地址
-    pages_url_list = get_pages_url_count(url[0])
+    pages_url_list = get_pages_url_count(host,url[0])
     print('分类总页数:'+ str(len(pages_url_list)),url,root_dir)
 
     # 分类的所有页数据信息
     all_news_url = []
     for j in range(0,len(pages_url_list)):
-        pages_list = get_pages_per_url_info(pages_url_list[j])
+        pages_list = get_pages_per_url_info(host,pages_url_list[j])
         all_news_url = all_news_url + pages_list
-        # print('分类总页数:', len(pages_url_list),'-',j+1,'当前页图集数',len(pages_list),'','图集总数',len(all_news_url),'',pages_url_list[j])
+        #print('分类总页数:', len(pages_url_list),'-',j+1,'当前页图集数',len(pages_list),'','图集总数',len(all_news_url),'',pages_url_list[j])
         thread_lock.acquire(),
         t = threading.Thread(target=get_pic_all_content, args=(url[1],len(pages_url_list),j+1,pages_list,root_dir))
         t.start()
