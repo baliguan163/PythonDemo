@@ -59,37 +59,37 @@ class MysqldbHelper:
 if __name__ == "__main__":
     db = MysqldbHelper()
 
-    # def get():
-    #     sql = "select * from pythontest"
-    #     fc = db.select(sql)
-    #     for row in fc:
-    #         print(row["ptime"])
-    #
-    #
-    # def ins():
-    #     sql = "insert into pythontest values(5,'数据结构','this is a big book',now())"
-    #     count = db.update(sql)
-    #     print
-    #     count
-    #
-    #
-    # def insparam():
-    #     sql = "insert into pythontest values(%s,%s,%s,now())"
-    #     params = (6, 'C#', 'good book')
-    #     count = db.updateByParam(sql, params)
-    #     print(count)
-    #
-    #
-    # def delop():
-    #     sql = "delete from pythontest where pid=4"
-    #     count = db.update(sql)
-    #     print("the：" + str(count))
-    #
-    #
-    # def change():
-    #     sql = "update pythontest set pcontent='c# is a good book' where pid=6"
-    #     count = db.update(sql)
-    #     print(count)
+    def get():
+        sql = "select * from pythontest"
+        fc = db.select(sql)
+        for row in fc:
+            print(row["ptime"])
+
+
+    def ins():
+        sql = "insert into pythontest values(5,'数据结构','this is a big book',now())"
+        count = db.update(sql)
+        print
+        count
+
+
+    def insparam():
+        sql = "insert into pythontest values(%s,%s,%s,now())"
+        params = (6, 'C#', 'good book')
+        count = db.updateByParam(sql, params)
+        print(count)
+
+
+    def delop():
+        sql = "delete from pythontest where pid=4"
+        count = db.update(sql)
+        print("the：" + str(count))
+
+
+    def change():
+        sql = "update pythontest set pcontent='c# is a good book' where pid=6"
+        count = db.update(sql)
+        print(count)
 
     # get()
     # ins()
