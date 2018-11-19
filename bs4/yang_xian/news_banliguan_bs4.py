@@ -139,6 +139,7 @@ def get_content(url,title111,root):
     sourc_edit = span_list[3].get_text().strip().split('：')[1]
 
 
+
     # 新闻内容
     info =  soupHtml.find('div', class_='info')
     # print('  dd1:', info)

@@ -130,202 +130,186 @@ def Out2File(path,str):
         f.write('\n')
         f.close()
 
-def get_pages_url_count(url):
-    html = get_html(url)
-    soup = BeautifulSoup(html, 'lxml')
-    yi_list = soup.find('div', class_= 'list_page')
-    title_list = yi_list.find_all('span')
-    sum = title_list[0].text
-    sum_news= sum[2:len(sum)-1]
-
-    sum_page = title_list[1].text
-    index = sum_page.find('/', 0)
-    # print('index:', index)
-    page_sum = sum_page[index +1 :len(sum_page)-1]
-    print('页数:', page_sum,'条数:', sum_news)
-
-    pages_list = []
-    for i in range(1, int(page_sum) + 1):
-        newurl = url +  '&cur_page='+ str(i)
-        # print('newurl:', newurl)
-        pages_list.append(newurl)
-    return pages_list
 
 
-def get_pages_url(url):
+def get_pages_sum_urls(url):
     html = get_html(url)
     soup = BeautifulSoup(html, 'lxml')
     yi_list = soup.find_all('tbody')
-    print('yi_list:', len(yi_list))
-
-    for i in range(0, len(yi_list)):
-        a = yi_list[i]
-        print('----------------------------------------------------')
-        # print(a)
-        # b = a.find('th', class_='new')
-        # print(b)
-        text_href = a.find('a', class_='s xst')
-        print(text_href['href'])
-        # text = text_href.find('a')
-        # print(text)
-        # print(c['href'])
-    # yi_list = soup.find_all('th', class_='common')
     # print('yi_list:', len(yi_list))
 
-    # for i in range(0, len(yi_list)):
-    #      a = yi_list[i].find('a', class_='s xst')
-    #      # print(i,a)
-    #      print('----------------------------------------------------')
-    #      print(a['href'])
-    #      print(a.contents[0])
-
-    # title_list = yi_list.find('a')
-    # print(title_list)
-
-    # # 找到列表
-    # title_list = yi_list.find_all('li')
-    # # print('title_list:', len(title_list), ' ', title_list)
-    # # print('time_list:', len(time_list), ' ', time_list)
-    # # print('time_list:', time_list)
-    # # print('tag_list :', tag_list)
-    # # print('url_list :', url_list,' len:',len(url_list))
-    # pages_list = []
-    # for i in range(0, len(title_list)):
-    #     content = title_list[i].find('a').contents
-    #     href = title_list[i].find('a')['href']
-    #     bu_men = title_list[i].find('span', class_='red').contents
-    #     time = title_list[i].find('span', class_='goRight').contents
-    #
-    #     title = content[0];
-    #     bumen = bu_men[0][1:len(bu_men[0]) - 1]
-    #     time = time[0][0:len(time[0])]
-    #     url = 'http://www.yangxian.gov.cn' + href
-    #
-    #
-    #
-    #     # print('href:', href)
-    #     # print('---------------------', i + 1, '---------------------')
-    #     # print('新闻标题:', title)
-    #     # print('  发布者:', bumen)
-    #     # print('发布时间:', time)
-    #     # print('新闻地址:', url)
-    #     # if bumen == '八里关镇':
-    #     vid3 = {'title': title,'time': time,'bumen':bumen,'href': url,}
-    #     pages_list.append(vid3)
-    # return pages_list
+    page_sum = soup.find('div', class_='pg').find_all('a', class_='last')[0].text[4:]
+    print(page_sum)
+    # 'http://www.yangxian.com.cn/forum-20-2.html'
+    pages_list = []
+    for i in range(1, int(page_sum) + 1):
+        url = 'http://www.yangxian.com.cn/forum-20-' + str(i) + '.html'
+        # print(url)
+        pages_list.append(url)
+    return pages_list
 
 
-def get_content(sum,i,page_sum,j,url,title,root):
-    newHtml = get_html(url)
+def get_pages_url(sum,index,url):
+    html = get_html(url)
+    soup = BeautifulSoup(html, 'lxml')
+    yi_list = soup.find_all('tbody')
+    # print('yi_list:', len(yi_list))
+    page_sum = len(yi_list)
+    # print(str(page_sum) + ' ' +url)
+    if index==1:
+        begin_index = 3
+    else:
+        begin_index = 1
+
+    pages_list = []
+    count=0
+    for i in range(begin_index, page_sum):
+        # print('----------------------------------------------------')
+        href = yi_list[i].find('a',class_='s xst')['href']
+        title = yi_list[i].find('a', class_='s xst').text
+        # print(str(i-2) + " " + title + " " + href)
+
+        auth = yi_list[i].find_all('td',class_='by')[0].find('a').text
+        auth_time = yi_list[i].find_all('td', class_='by')[0].find('span').text
+        # print(auth + " " + auth_time)
+
+        reply = yi_list[i].find_all('td', class_='num')[0].find('a').text
+        play = yi_list[i].find_all('td', class_='num')[0].find('em').text
+        # print(reply + " " + play)
+        count = count +1
+        print(str(sum) + '->' + str(index) + ' ' + str(page_sum-1) + '->' + str(count) + " " + title + " " + auth + " " + auth_time + ' ' + reply + ' ' + play + ' ' +href)
+
+        # zui_gou_reply = yi_list[i].find_all('td', class_='by')[0].find('cite').find('a').text
+        # zui_gou_reply_time = yi_list[i].find_all('td', class_='by')[0].find('em').find('span').text
+        # print(zui_gou_reply )
+        # print(zui_gou_reply_time)
+        vid3 = {'title': title,'href': href,'auth':auth,'auth_time': auth_time,'reply': reply,'play': play,}
+        pages_list.append(vid3)
+    return pages_list
+
+
+def get_content(url_obj):
+    newHtml = get_html(url_obj['href'])
     soupHtml = BeautifulSoup(newHtml, 'lxml')
+    try:
+        infoMark  = soupHtml.find('iframe', class_='video_molie')
+    except AttributeError as e:
+        print(url_obj['title'] + ' 没有找到你想要的标签')
+    else:
+        if infoMark == None:
+            print(url_obj['title'] + ' 没有找到你想要的标签')
+        else:
+            video_url = infoMark['src']
+            print(url_obj['title'] + '  ' + video_url + ' ' + url_obj['auth_time']+ ' ' + url_obj['play']+ ' ' + url_obj['reply'])
 
+
+    #
+    # # # print('news_list:', news_list)
+    #
+    # # # print('新闻标题:', soupHtml.find('h1').text)
+    # # spanTemp = ''
+    # # for myspan in infoMark.find_all('span'):
+    # #     # print('myspan:', myspan.get_text().strip())
+    # #     spanTemp = spanTemp + ' ' + myspan.text.strip()
+    # # # print('spanTemp:', spanTemp)
+    # # # title = news_list.find('h1').get_text().strip()
+    # #
+    # # # 新闻内容
+    # # info =  soupHtml.find('div', class_='info')
+    # # # print('  dd1:', info)
+    # # info1 =  info.find_all('p')  #.strip().replace('\n','').replace(' ','')
+    # # str = ''
+    # # for k in range(0,len(info1)):
+    # #     str = str + info1[k].text.replace('\n','').strip()
+    # # # print('  str:', str)
+    # # # dd = remove_tags(info)
+    # # # print('  dd:', info)
+    # # # dr = re.compile(r'<[^>]+>', re.S)
+    # # # dd = dr.sub('', info)
+    # #
+    # # # dr = re.compile(r'<[^>]+>', re.S)
+    # # # dd = dr.sub('', info)
+    # # print('---------------------------------------------------------------------')
+    # # print('新闻地址:', url,sum,'-',i,page_sum,'-',j,)
+    # # print('新闻标题:', title)
+    # # print('新闻标记:', spanTemp)
+    # # print('新闻内容:', str)
+    #
     # infoMark  = soupHtml.find('div', class_='infoMark')
     # # print('infoMark:', infoMark.find_all('span'))
     # # print('news_list:', news_list)
-    # # print('新闻标题:', soupHtml.find('h1').text)
-    # spanTemp = ''
-    # for myspan in infoMark.find_all('span'):
-    #     # print('myspan:', myspan.get_text().strip())
-    #     spanTemp = spanTemp + ' ' + myspan.text.strip()
-    # # print('spanTemp:', spanTemp)
-    # # title = news_list.find('h1').get_text().strip()
+    # title = soupHtml.find('h1').text.strip().replace('  ','')\
+    #     .replace('“','').replace('”','').replace('）','').replace(' ','').replace('（','').replace('/','')\
+    #     .replace('1','').replace('2','').replace('3','').replace('4','').replace('5','').replace('5','').replace('：','')
+    # # print('title:', title)
+    #
+    # span_list = infoMark.find_all('span')
+    # # myspan: 来源：八里关镇
+    # # myspan: 发布时间：2018 - 03 - 07 18: 25
+    # # myspan: 作者：杨阳
+    # # myspan: 编辑：田雄
+    # sourc_in = span_list[0].get_text().strip().split('：')[1]
+    # sourc_time = span_list[1].get_text().strip().split('：')[1]
+    # sourc_auth = span_list[2].get_text().strip().split('：')[1]
+    # sourc_edit = span_list[3].get_text().strip().split('：')[1]
+    #
     #
     # # 新闻内容
     # info =  soupHtml.find('div', class_='info')
     # # print('  dd1:', info)
     # info1 =  info.find_all('p')  #.strip().replace('\n','').replace(' ','')
-    # str = ''
+    # content = ''
     # for k in range(0,len(info1)):
-    #     str = str + info1[k].text.replace('\n','').strip()
-    # # print('  str:', str)
-    # # dd = remove_tags(info)
-    # # print('  dd:', info)
-    # # dr = re.compile(r'<[^>]+>', re.S)
-    # # dd = dr.sub('', info)
+    #     content = content + info1[k].text.strip()
     #
-    # # dr = re.compile(r'<[^>]+>', re.S)
-    # # dd = dr.sub('', info)
-    # print('---------------------------------------------------------------------')
-    # print('新闻地址:', url,sum,'-',i,page_sum,'-',j,)
-    # print('新闻标题:', title)
-    # print('新闻标记:', spanTemp)
-    # print('新闻内容:', str)
-
-    infoMark  = soupHtml.find('div', class_='infoMark')
-    # print('infoMark:', infoMark.find_all('span'))
-    # print('news_list:', news_list)
-    title = soupHtml.find('h1').text.strip().replace('  ','')\
-        .replace('“','').replace('”','').replace('）','').replace(' ','').replace('（','').replace('/','')\
-        .replace('1','').replace('2','').replace('3','').replace('4','').replace('5','').replace('5','').replace('：','')
-    # print('title:', title)
-
-    span_list = infoMark.find_all('span')
-    # myspan: 来源：八里关镇
-    # myspan: 发布时间：2018 - 03 - 07 18: 25
-    # myspan: 作者：杨阳
-    # myspan: 编辑：田雄
-    sourc_in = span_list[0].get_text().strip().split('：')[1]
-    sourc_time = span_list[1].get_text().strip().split('：')[1]
-    sourc_auth = span_list[2].get_text().strip().split('：')[1]
-    sourc_edit = span_list[3].get_text().strip().split('：')[1]
-
-
-    # 新闻内容
-    info =  soupHtml.find('div', class_='info')
-    # print('  dd1:', info)
-    info1 =  info.find_all('p')  #.strip().replace('\n','').replace(' ','')
-    content = ''
-    for k in range(0,len(info1)):
-        content = content + info1[k].text.strip()
-
-    print('------------------------------------------------------------------------------------------------------------')
-    print('标题:'+ title)
-    print('来源:' + sourc_in)
-    print('时间:' + sourc_time)
-    print('作者:' + sourc_auth)
-    print('编辑:' + sourc_edit)
-    print('地址:' + url)
-    print('内容:'+ content)
-
-    file = root + title + '.txt'
-    isExists = os.path.exists(file)
-    if isExists:
-        os.remove(file)
-    Out2File(file, title)
-    Out2File(file, sourc_time)
-    Out2File(file, content)
-    Out2File(file, '文章来源于网络：洋县人民政府网，如有侵权，请联系作者删除')
-
-    # 图片地址
-    img_list = []
-    news_list = soupHtml.find('div', class_='contentLeft')
-    list_pics = news_list.find_all('img')
-    #print('图片个数:', list_pics)
-    try:
-        for y in range(1, len(list_pics)):
-            # print('  list_pic:', list_pics[y]['src'])
-            # alt = list_pics[y]['alt']
-            href = list_pics[y]['src']
-            alt  = list_pics[y]['alt']
-            file_href = alt + " " + href;
-            # print(' href:', href)
-            # print(' alt:', alt)
-
-            # print(' alt:', y, file_href)
-            temp = {'title': title, 'href': href}
-            img_list.append(temp)
-
-            Out2File(file, file_href)
-            #print('root:', root)
-            download_pics(href,alt,root,y)
-    except:
-        ''
-    dic_info = {'title': title, 'url': url, 'sourc_in': sourc_in, 'sourc_time': sourc_time, 'sourc_auth': sourc_auth,
-                'sourc_edit': sourc_edit,
-                'content': content,'img_list': img_list}
-    # print('\n')
-    # print(dic_info)
-    return  dic_info
+    # print('------------------------------------------------------------------------------------------------------------')
+    # print('标题:'+ title)
+    # print('来源:' + sourc_in)
+    # print('时间:' + sourc_time)
+    # print('作者:' + sourc_auth)
+    # print('编辑:' + sourc_edit)
+    # print('地址:' + url)
+    # print('内容:'+ content)
+    #
+    # file = root + title + '.txt'
+    # isExists = os.path.exists(file)
+    # if isExists:
+    #     os.remove(file)
+    # Out2File(file, title)
+    # Out2File(file, sourc_time)
+    # Out2File(file, content)
+    # Out2File(file, '文章来源于网络：洋县人民政府网，如有侵权，请联系作者删除')
+    #
+    # # 图片地址
+    # img_list = []
+    # news_list = soupHtml.find('div', class_='contentLeft')
+    # list_pics = news_list.find_all('img')
+    # #print('图片个数:', list_pics)
+    # try:
+    #     for y in range(1, len(list_pics)):
+    #         # print('  list_pic:', list_pics[y]['src'])
+    #         # alt = list_pics[y]['alt']
+    #         href = list_pics[y]['src']
+    #         alt  = list_pics[y]['alt']
+    #         file_href = alt + " " + href;
+    #         # print(' href:', href)
+    #         # print(' alt:', alt)
+    #
+    #         # print(' alt:', y, file_href)
+    #         temp = {'title': title, 'href': href}
+    #         img_list.append(temp)
+    #
+    #         Out2File(file, file_href)
+    #         #print('root:', root)
+    #         download_pics(href,alt,root,y)
+    # except:
+    #     ''
+    # dic_info = {'title': title, 'url': url, 'sourc_in': sourc_in, 'sourc_time': sourc_time, 'sourc_auth': sourc_auth,
+    #             'sourc_edit': sourc_edit,
+    #             'content': content,'img_list': img_list}
+    # # print('\n')
+    # # print(dic_info)
+    # return  dic_info
 
     # file = root + title + '.txt'
     # isExists = os.path.exists(file)
@@ -355,15 +339,26 @@ def main():
      # root = create_dir('D:\\洋县\\洋县新闻\\')
      # url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10802&cur_page=1'  #洋县新闻
      url = 'http://www.yangxian.com.cn/forum-20-1.html'
-     get_pages_url(url)
+     page_sum_list = get_pages_sum_urls(url)
+     url_sum = len(page_sum_list)
+     video_sum_urls = []
+     for i in range(0, url_sum):
+         pages_list = get_pages_url(url_sum,i+1,page_sum_list[i])
+         video_sum_urls = video_sum_urls + pages_list
+         for j in range(0, len(pages_list)):
+             get_content(pages_list[j])
 
-     # # 新闻页数
-     # pages_url_list = get_pages_url_count(url)
+     # video_sum_urls_sum = len(video_sum_urls)
+     # print('video_sum_urls_sum:' + str(video_sum_urls_sum))
+     # for j in range(0, video_sum_urls_sum):
+     #     get_content(video_sum_urls[j])
+
+
      #
      # # 每一页新闻数量
      # all_news_url = []
      # # for j in range(0,len(pages_url_list)):
-     # for j in range(0, 2):
+     # for j in rane(0, 2):g
      #    pages_list = get_pages_url(pages_url_list[j])
      #    all_news_url = all_news_url + pages_list
      #    # print('新闻总页数:', len(pages_url_list),'-',j+1,'新闻数',len(pages_list),'新闻总数',len(all_news_url),'',pages_url_list[j])

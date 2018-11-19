@@ -21,16 +21,16 @@ global cursor
 global count;
 
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='gb18030') #改变标准输出的默认编码
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='gb18030') #改变标准输出的默认编码
 
 #连接数据库
 def connnect_db():
     global conn
     global cursor
     # conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8')
-    conn = pymysql.connect(host='localhost', port=3308, user='root', passwd='123456', db='tools', charset='utf8')
+    conn = pymysql.connect(host='localhost', port=3308, user='root', passwd='123456', db='test', charset='utf8')
     cursor = conn.cursor()
-    conn.select_db('tools')
+    conn.select_db('test')
 
 #
 # ---------------------遍历sheet1中所有单元格--------------------------------
@@ -215,18 +215,18 @@ if __name__ == "__main__":
                                           "group_purchase_price," \
                                           "group_purchase_number," \
                                           "goods_url," \
-                                          "goods_begin_date," \
-                                          "goods_end_date," \
-                                          "inventory_number," \
-                                          "sold_number," \
-                                          "remain_number," \
-                                          "generalize_long_url," \
-                                          "generalize_short_url," \
-                                          "commission_rate," \
-                                          "commission_price," \
+                                          "goods_begindate," \
+                                          "goods_enddate," \
+                                          "inventory_sum," \
+                                          "inventory_sold," \
+                                          "inventory_remain," \
+                                          "promote_longurl," \
+                                          "promote_shorturl," \
+                                          "brokerage_rate," \
+                                          "brokerage_price," \
                                           "primary_categories_id," \
                                           "primary_categories_name) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-                                    # print('sql:',sql)
+                                    # print('sql:',sql)                                       '
                                     # 插入数据
                                     cursor.execute(sql, row)
                                     conn.commit()
