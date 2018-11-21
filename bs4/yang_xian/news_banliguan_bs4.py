@@ -16,7 +16,6 @@ from bs4 import BeautifulSoup
 import os
 
 #创建锁，用于访问数据库
-from bs4.yang_xian.MySqlConn import MyPymysqlPool
 
 lock = threading._allocate_lock()
 global conn
@@ -31,9 +30,9 @@ def get_now_time():
 def connnect_db():#连接数据库
     global conn
     global cursor  #193.112.131.94  192.168.1.110
-    conn = pymysql.connect(host='127.0.0.1',user='root',passwd='123456',db='info',charset='utf8')
+    conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8',port=3308)
     cursor = conn.cursor()
-    conn.select_db('info')
+    conn.select_db('test')
 
 #一页数据，插入数据库
 def insert_db(vid_date):
@@ -271,14 +270,15 @@ def get_pages_url_count(url):
         pages_list.append(newurl)
     return pages_list
 
+
 def main():
      root = create_dir('D:\\洋县\\八里关镇\\新闻\\')
      url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  #镇办信息
-     # connnect_db()  # 连接数据库
-     mysql = MyPymysqlPool("yangxianMysql")
-     sqlAll = "use tools;"
-     result = mysql.update(sqlAll)
-     print('result:' + str(result))
+     connnect_db()  # 连接数据库
+     # mysql = MyPymysqlPool("yangxianMysql")
+     # sqlAll = "use tools;"
+     # result = mysql.update(sqlAll)
+     # print('result:' + str(result))
 
 
      #新闻列表页数
@@ -302,7 +302,7 @@ def main():
 
 
      # 释放资源
-     mysql.dispose()
+     # mysql.dispose()
 
 if __name__ == "__main__":
     main()
