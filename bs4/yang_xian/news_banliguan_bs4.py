@@ -166,47 +166,61 @@ def get_content(url,title111,root):
     Out2File(file, '文章来源于网络：洋县人民政府网，如有侵权，请联系作者删除' )
     # 文章来源于网络：洋县人民政府网，如有侵权，请联系作者删除
 
-# "CREATE TABLE `yangxian_new` (
-#   `id` int(11) NOT NULL AUTO_INCREMENT,
-#   `title` varchar(128) COLLATE utf8_bin DEFAULT NULL,
-#   `source_in` varchar(16) COLLATE utf8_bin DEFAULT NULL,
-#   `public_time` datetime DEFAULT '0000-00-00 00:00:00',
-#   `auth` varchar(16) COLLATE utf8_bin DEFAULT NULL,
-#   `edit` varchar(16) COLLATE utf8_bin DEFAULT NULL,
-#   `url` varchar(256) COLLATE utf8_bin DEFAULT NULL,
-#   `img_list` varchar(256) COLLATE utf8_bin DEFAULT NULL,
-#   `content` text COLLATE utf8_bin,
-#   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-#   PRIMARY KEY (`id`)
-# ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-# "
-
     # 图片地址
-    img_list = []
+
     news_list = soupHtml.find('div', class_='contentLeft')
     list_pics = news_list.find_all('img')
-    #print('图片个数:', list_pics)
-    try:
-        for y in range(1, len(list_pics)):
-            # print('  list_pic:', list_pics[y]['src'])
-            # alt = list_pics[y]['alt']
+    img_count = len(list_pics)-1
+    print('图片个数:', img_count)
+    img_list = []
+    img_list_str=''
+    if img_count > 0:
+        for y in range(1, img_count+1):
             href = list_pics[y]['src']
-            alt  = list_pics[y]['alt']
-            file_href = alt + " " + href;
-            #print(' alt:', y, file_href)
+            alt = list_pics[y]['alt']
+            print('  list_pic:',alt, list_pics[y]['src'])
+
             temp = {'title': title, 'href': href}
             img_list.append(temp)
-
+            file_href = alt + " " + href;
             Out2File(file, file_href)
-            #print('root:', root)
-            download_pics(href,alt,root,y)
-    except:
-        ''
-    dic_info = {'title': title, 'url': url, 'sourc_in': sourc_in, 'sourc_time': sourc_time, 'sourc_auth': sourc_auth,
+            if y != img_count:
+                img_list_str= img_list_str +  href + '&'
+            else:
+                img_list_str = img_list_str +  href
+    else:
+        pass
+
+    print('  img_list_str:', img_list_str)
+    dic_info = {'title': title,
+                'url': url,
+                'sourc_in': sourc_in,
+                'sourc_time': sourc_time,
+                'sourc_auth': sourc_auth,
                 'sourc_edit': sourc_edit,
-                'content': content,'img_list': img_list}
-    print('\n')
-    print(dic_info)
+                'content': content,
+                'img_list': img_list_str}
+
+    #
+    # try:
+    #     for y in range(1, len(list_pics)):
+    #         # print('  list_pic:', list_pics[y]['src'])
+    #         # alt = list_pics[y]['alt']
+    #         href = list_pics[y]['src']
+    #         alt  = list_pics[y]['alt']
+    #         file_href = alt + " " + href;
+    #         #print(' alt:', y, file_href)
+    #         temp = {'title': title, 'href': href}
+    #         img_list.append(temp)
+    #
+    #         Out2File(file, file_href)
+    #         #print('root:', root)
+    #         download_pics(href,alt,root,y)
+    # except:
+
+
+    # print('\n')
+    # print(dic_info)
     return  dic_info
 
 
