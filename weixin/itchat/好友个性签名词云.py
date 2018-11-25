@@ -17,6 +17,7 @@ friends = itchat.get_friends(update=True)[0:]
 # 打印之后你会发现，有大量的span，class，emoji，emoji1f3c3等的字段，因为个性签名中使用了表情符号，这些字段都是要过滤掉的，写个正则和replace方法过滤掉
 tList = []
 friends_count=0
+friends_count_kong=0
 for i in friends:
 # 获取个性签名
     signature = i["Signature"].strip().replace("span", "").replace("class", "").replace("emoji", "")
@@ -26,9 +27,19 @@ for i in friends:
     signature = signature.strip()
     signature = signature.replace(' ','')
     signature = signature.replace('\n','')
-    tList.append(signature)
-    friends_count = friends_count +1
-    print(str(friends_count) + ":" +signature)
+    signature = signature.strip().replace(' ','')
+    signature = signature.strip().replace('❥','')
+
+    if signature != '':
+        tList.append(signature)
+        friends_count = friends_count + 1
+        print(str(friends_count) + ":" +signature)
+    else:
+        friends_count_kong = friends_count_kong + 1
+
+
+print('friends_count_kong:' + str(friends_count_kong))
+
 
 # 接来下用jieba分词，然后制作成词云，首先要安装jieba和wordcloud库
 

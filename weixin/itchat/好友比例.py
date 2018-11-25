@@ -1,7 +1,4 @@
 #-*-coding:utf-8-*-
-from winxpgui import Pie
-
-from matplotlib.legend import Legend
 
 __author__ = 'Administrator'
 

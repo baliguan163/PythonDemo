@@ -18,7 +18,7 @@ from urllib.parse import urlencode
 # 网上有很多例子可供参考。天气预报使用了中国天气网数据，将城市代码换成自己所在城市的即可。代码比较简单，
 # 使用Pyhton3.6，功能已实现，贴出来供参考，下一步工作是将杂乱的功能函数封装成类，使代码更加紧凑。
 # ---------------------
-from nose import result
+
 
 cityList_bsgs = [
     {'code': '101110805', 'name': " 洋县"}
@@ -55,8 +55,8 @@ def get_huangli():
             content2 = '五行：' + result['wuxing']
             content3 = '拜祭：' + result['baiji']
             content4 = '忌神：' + result['jishen']
-            content5 = ' 宜：' + result['yi']
-            content6 = ' 忌：' + result['ji']
+            content5 = '【宜】：' + result['yi']
+            content6 = '【忌】：' + result['ji']
             return '【今日黄历】\n' + content1 + '\n' + content2 + '\n' + content3 + '\n' + content4 + '\n' + content5 + '\n' + content6
             # pass
         else:
@@ -181,7 +181,7 @@ def get_context():
     huangli = get_huangli()
     # print(huangli)
     # msg = "美好的一天从我的问候开始:各位亲人早上好!\n" + twitter_realTime + "\n" + twitter_wholeDay + '\n' + huangli + '\n' + iciba
-    msg = "\n美好的一天从我的问候开始,各位好!\n" + twitter_realTime + "\n" + twitter_wholeDay  + '\n' + iciba + '\n' + huangli
+    msg = "\n美好的一天从我的问候开始,各位下午好!\n" + twitter_realTime + "\n" + twitter_wholeDay  + '\n' + iciba + '\n' + huangli
     # print(msg)
     return msg
 
@@ -213,7 +213,7 @@ itchat.auto_login(hotReload=True, loginCallback=loginCallback, exitCallback=exit
 
 scheduler = BlockingScheduler()
 for sent_chatroom in chatroom_list:
-    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=12, minute=57,
+    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=16, minute=12,
                       kwargs={"name": sent_chatroom, "context": get_context()})
     print("任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context())
     print("******************************************************************************\n")

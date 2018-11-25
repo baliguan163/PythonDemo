@@ -11,10 +11,10 @@ import threading
 import bs4
 import pymysql
 import requests
-from bs4 import BeautifulSoup
+from bs4 import *
 # import re
 import os
-
+import lxml
 #创建锁，用于访问数据库
 
 lock = threading._allocate_lock()
@@ -30,7 +30,7 @@ def get_now_time():
 def connnect_db():#连接数据库
     global conn
     global cursor  #193.112.131.94  192.168.1.110
-    conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8',port=3308)
+    conn = pymysql.connect(host='localhost',user='root',passwd='123456',db='test',charset='utf8',port=3306)
     cursor = conn.cursor()
     conn.select_db('test')
 
@@ -38,19 +38,28 @@ def connnect_db():#连接数据库
 def insert_db(vid_date):
     #global lock
     #lock.acquire()  # 创建锁
+    img_list = '#'.join(vid_date['img_list'])
+    save_list = '#'.join(vid_date['save_list'])
+    print(img_list)
+    print(save_list)
+    sql = "insert into news_baliguan(title,url,sourc_in,sourc_time,sourc_auth,sourc_edit,content,sourc_list,save_list) values('%s','%s','%s','%s','%s','%s','%s','%s','%s')" %( vid_date['title'],vid_date['url'],vid_date['sourc_in'],vid_date['sourc_time'],vid_date['sourc_auth'],vid_date['sourc_edit'],vid_date['content'],img_list,save_list)
 
-    sql = "insert into yangxian_new(title,url," \
-          "source_in,public_time,auth,edit," \
-          "content,img_list,date_time) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     # print('sql:',sql)
     # print('get_now_time:', get_now_time())
     # print('img_list:', vid_date['img_list'],)
 
-    param = (vid_date['title'],vid_date['url'],
-             vid_date['sourc_in'],vid_date['sourc_time'],
-             vid_date['sourc_auth'],vid_date['sourc_edit'],
-             vid_date['content'],'#'.join(vid_date['img_list']),
-             get_now_time())
+    # param = (vid_date['title'],
+    #          vid_date['url'],
+    #          vid_date['sourc_in'],
+    #          vid_date['sourc_time'],
+    #          vid_date['sourc_auth'],
+    #          vid_date['sourc_edit'],
+    #          vid_date['content'],
+    #          '#'.join(vid_date['img_list']),
+    #          '#'.join(vid_date['save_list']))
+
+
+
 
     # cursor.execute(sql, param)
     # conn.commit()
@@ -58,7 +67,7 @@ def insert_db(vid_date):
     #print('数据保存到数据库:',page,i+1)
     #查询数据中是否存在
     title = vid_date['title']
-    sql2 = "select * from  yangxian_new where  title='%s'" % (title)
+    sql2 = "select * from  news_baliguan where  title='%s'" % (title)
     print('查询数据中是否存在sql:',sql2)
     cursor.execute(sql2)
     results=cursor.fetchall()
@@ -66,15 +75,14 @@ def insert_db(vid_date):
         print('数据中已经存在:' + title)
     else:
         print('存到数据库:'+title)
-        cursor.execute(sql,param)
+        cursor.execute(sql)
         conn.commit()
     #lock.release() #释放锁
 
 
 
 #下载图片
-def download_pics(url,alt,root,name):
-    path = root + '\\'+ alt +'.jpg'
+def download_pics(url,path):
     # print('下载:', url)
     isExists = os.path.exists(path)
     if not isExists:
@@ -172,26 +180,45 @@ def get_content(url,title111,root):
     list_pics = news_list.find_all('img')
     img_count = len(list_pics)-1
     print('图片个数:', img_count)
+
     img_list = []
+    save_list = []
     img_list_str=''
+    img_save_ist_str = ''
     if img_count > 0:
         for y in range(1, img_count+1):
             href = list_pics[y]['src']
             alt = list_pics[y]['alt']
-            print('  list_pic:',alt, list_pics[y]['src'])
+            alt = alt.strip().replace('  ','').replace('“','').replace('”','').replace('）','').replace(' ','').replace('（','').replace('/','').replace('：','')
+            # print('  list_pic:',alt, list_pics[y]['src'])
 
-            temp = {'title': title, 'href': href}
-            img_list.append(temp)
+            # temp = {'title': title, 'href': href}
+            img_list.append(href)
+
             file_href = alt + " " + href;
+            # print('file_href:' + file_href)
             Out2File(file, file_href)
+
+            path = root  + alt + '.jpg'
+            save_list.append(path)
+
+            # print('save_path:' + path)
+            download_pics(href,path)
             if y != img_count:
                 img_list_str= img_list_str +  href + '&'
+                img_save_ist_str = img_save_ist_str + path + '&'
+
             else:
                 img_list_str = img_list_str +  href
+                img_save_ist_str = img_save_ist_str + path
     else:
         pass
 
-    print('  img_list_str:', img_list_str)
+    # print('      img_list_str:', img_list_str)
+    # print('  img_save_ist_str:', img_save_ist_str)
+
+    # print(img_list)
+    # print(save_list)
     dic_info = {'title': title,
                 'url': url,
                 'sourc_in': sourc_in,
@@ -199,7 +226,8 @@ def get_content(url,title111,root):
                 'sourc_auth': sourc_auth,
                 'sourc_edit': sourc_edit,
                 'content': content,
-                'img_list': img_list_str}
+                'img_list':img_list ,
+                'save_list': save_list}
 
     #
     # try:
@@ -219,8 +247,8 @@ def get_content(url,title111,root):
     # except:
 
 
-    # print('\n')
-    # print(dic_info)
+    print('\n')
+    print(dic_info)
     return  dic_info
 
 
@@ -228,7 +256,6 @@ def get_content(url,title111,root):
 def get_pages_url(url):
     html = get_html(url)
     soup = BeautifulSoup(html, 'lxml')
-
     yi_list = soup.find('div', class_= 'list_content')
     # print('yi_list:', yi_list)
     # 找到列表
@@ -250,7 +277,7 @@ def get_pages_url(url):
         time = time[0][0:len(time[0])]
         url = 'http://www.yangxian.gov.cn' + href
 
-
+        title = title.strip().replace('  ', '').replace('“', '').replace('”', '').replace('）', '').replace(' ', '').replace('（', '').replace('/', '').replace('：', '')
         if bumen == '八里关镇':
             vid3 = {'title': title,'time': time,'bumen':bumen,'href': url,}
             pages_list.append(vid3)
@@ -265,7 +292,7 @@ def get_pages_url(url):
 #新闻列表页地址
 def get_pages_url_count(url):
     html = get_html(url)
-    soup = BeautifulSoup(html, 'lxml')
+    soup = bs4.BeautifulSoup(html, 'lxml')
     yi_list = soup.find('div', class_= 'list_page')
     title_list = yi_list.find_all('span')
     sum = title_list[0].text
@@ -312,7 +339,7 @@ def main():
             dir_name = pages_list[i]['time']+ '_' + pages_list[i]['title']
             root_dir_1 = create_dir(root + dir_name + '\\')
             dic_info = get_content(pages_list[i]['href'],dir_name,root_dir_1) #获取新闻内容
-            #insert_db(dic_info)#插入数据库
+            insert_db(dic_info)#插入数据库
 
 
      # 释放资源
