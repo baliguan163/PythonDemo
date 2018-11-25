@@ -422,9 +422,6 @@ def group_text_reply_gxnljt(msg):
         print(msg['Type'])
 
 
-
-
-
 chatroom_list = ['八里关镇微信群', '洋县生活圈','搞笑能量军团']
 itchat.auto_login(hotReload = True)
 itchat.run()

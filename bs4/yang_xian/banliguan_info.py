@@ -26,6 +26,7 @@ class NewsBaliguan:
     #获取每一页列表中新闻地址
     def get_pages_url(self,url):
         html = self.get_html(url)
+        from bs4 import BeautifulSoup
         soup = BeautifulSoup(html, 'lxml')
         yi_list = soup.find('div', class_= 'list_content')
         title_list = yi_list.find_all('li')

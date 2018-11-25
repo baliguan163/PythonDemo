@@ -5,10 +5,9 @@
 使用requests --- bs4 线路
 Python版本： 3.6
 '''
-
+from bs4 import BeautifulSoup
 import bs4
 import requests
-from bs4 import *
 
 class NewsYangxian:
     url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10802'
