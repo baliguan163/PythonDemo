@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 import re
 import requests
+import bs4
 from bs4 import *
 
 class YangxianWZ:

@@ -7,6 +7,7 @@ from itchat.content import *
 import json
 import itchat
 import requests
+from bs4 import *
 
 class NewsBaliguan:
     url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  # 镇办信息
