@@ -1,0 +1,5 @@
+[notdbMysql]
+host = localhost
+port = 3308
+user = root
+password = 123456
