@@ -9,6 +9,9 @@ import itchat
 import requests
 from bs4 import *
 
+from api.yang_xian.picture_mm_jpg import get_mm_images
+
+
 class NewsBaliguan:
     url = 'http://www.yangxian.gov.cn/info/iList.jsp?cat_id=10804'  # 镇办信息
     pages_list = []
@@ -301,6 +304,8 @@ def group_text_reply(msg):
         group_text_reply_yx(msg)
     elif who_qun == chatroom_list[2]: #搞笑能量军团
         group_text_reply_gxnljt(msg)
+    elif who_qun == chatroom_list[3]:
+        group_text_reply_jszytl(msg)
 
 
 
@@ -316,7 +321,7 @@ def group_text_reply_blg(msg):
             reply = get_baliguan()
             print('群回：' + reply)
             itchat.send('%s' % reply, msg['FromUserName'])
-        if "笑话" == group_text_msg:
+        elif "笑话" == group_text_msg:
             # 最新笑话
             result = request2(m="GET")['data']
             # content1 = '【最新笑话' + str(len(result)) + '条】' + '\n'
@@ -361,7 +366,7 @@ def group_text_reply_yx(msg):
                 content1 = content1 + '【' + result[i]['time'] + '】' + str(i + 1) + '.' + result[i]['title'] + result[i]['href'] + '\n'
             print('群回：' + content1)
             itchat.send('%s' % content1, msg['FromUserName'])
-        if "笑话" == group_text_msg:
+        elif "笑话" == group_text_msg:
             # 最新笑话
             result = request2(m="GET")['data']
             # content1 = '【最新笑话' + str(len(result)) + '条】' + '\n'
@@ -401,6 +406,10 @@ def group_text_reply_gxnljt(msg):
                 download_pics(down_pic_path,save_apth)
                 itchat.send_image(save_apth, msg['FromUserName'])
                 time.sleep(2)
+        elif "美女" == group_text_msg:
+            save_apth = get_mm_images();
+            # print('save_apth:' + save_apth)
+            itchat.send_image(save_apth, msg['FromUserName'])
         else:
             reply = tuling(msg['Text'])
             print('群回：' + reply)
@@ -411,7 +420,29 @@ def group_text_reply_gxnljt(msg):
         print(msg['Type'])
 
 
-chatroom_list = ['八里关镇老乡群', '洋县生活圈','搞笑能量军团']
+
+
+def group_text_reply_jszytl(msg):
+    if msg['Type'] == 'Text':
+        group_text_msg = msg['Text']
+        # print(msg['User']['NickName'] + '->' + msg['ActualNickName'] + ':' + msg['Text'])
+        print('-------------------------------------')
+        print('群问：' + group_text_msg)
+        if "美女" == group_text_msg:
+            save_apth = get_mm_images();
+            # print('save_apth:' + save_apth)
+            itchat.send_image(save_apth, msg['FromUserName'])
+        else:
+            reply = tuling(msg['Text'])
+            print('群回：' + reply)
+            itchat.send('%s' % reply, msg['FromUserName'])
+    elif msg['Type'] == 'Picture':
+        print(msg['Type'])
+    elif msg['Type'] == 'Recording':
+        print(msg['Type'])
+
+
+chatroom_list = ['八里关镇老乡群', '洋县生活圈','搞笑能量军团','技术资源分享讨论']
 itchat.auto_login(hotReload = True)
 itchat.run()
 
