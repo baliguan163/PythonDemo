@@ -213,7 +213,7 @@ itchat.auto_login(hotReload=True, loginCallback=loginCallback, exitCallback=exit
 
 scheduler = BlockingScheduler()
 for sent_chatroom in chatroom_list:
-    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=12, minute=00,
+    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=12, minute=41,
                       kwargs={"name": sent_chatroom, "context": get_context()})
     print("任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context())
     print("******************************************************************************\n")

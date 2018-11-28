@@ -2,9 +2,12 @@
 import urllib
 from urllib import request
 
-import os
 
+
+import os
 import time
+from bs4 import *
+# from bs4 import BeautifulSoup
 
 from tools.timer.每天凌晨3点执行方法 import timer
 
@@ -66,7 +69,7 @@ class NewsBaliguan:
     #新闻列表页地址
     def get_pages_url_count(self,url):
         html = self.get_html(url)
-        soup = bs4.BeautifulSoup(html, 'lxml')
+        soup = BeautifulSoup(html, 'lxml')
         yi_list = soup.find('div', class_= 'list_page')
         title_list = yi_list.find_all('span')
         sum = title_list[0].text
@@ -132,7 +135,7 @@ class NewsYangxian:
     #新闻列表页地址
     def get_pages_url_count(self,url):
         html = self.get_html(url)
-        soup = bs4.BeautifulSoup(html, 'lxml')
+        soup = BeautifulSoup(html, 'lxml')
         yi_list = soup.find('div', class_= 'list_page')
         title_list = yi_list.find_all('span')
         sum = title_list[0].text
@@ -301,16 +304,21 @@ def group_id(name):
 # 现在微信加了好多群，并不想对所有的群都进行设置微信机器人，只针对想要设置的群进行微信机器人，可进行如下设置
 @itchat.msg_register(TEXT, isGroupChat=True)
 def group_text_reply(msg):
+    print(msg)
+    myitem = msg['FromUserName']
+    print(myitem)
     # 当然如果只想针对@你的人才回复，可以设置if msg['isAt']:
-    # print(msg[0]['UserName'])
-    who_qun = msg['User']['NickName']
+    item = group_id(chatroom_list[0])  # 根据自己的需求设置
+    item1 = group_id(chatroom_list[1])
+    item2 = group_id(chatroom_list[2])
+    # print(msg)
+    # who_qun = msg['User']['NickName']
     # print(who_qun)
-    # item = group_id(u'洋县生活圈')  # 根据自己的需求设置
-    if who_qun == chatroom_list[0]:
+    if myitem == item:
         group_text_reply_blg(msg)
-    elif who_qun == chatroom_list[1]:
+    elif myitem == item1:
         group_text_reply_yx(msg)
-    elif who_qun == chatroom_list[2]: #搞笑能量军团
+    elif myitem == item2: #搞笑能量军团
         group_text_reply_gxnljt(msg)
 
 

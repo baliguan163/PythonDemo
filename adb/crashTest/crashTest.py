@@ -3,7 +3,7 @@ from asyncio import sleep
 
 for i in range(500):
     os.popen("adb shell < cmd.txt")
-    step1 = os.popen("adb pull /sdcard/t1.txt  D:/tracelog/")
+    step1 = os.popen("adb pull /sdcard/t1.txt  D:/")
     fo = open("t1.txt", 'r+')
     input = fo.read()
     fo2 = open("mem.txt", 'r+')
