@@ -1,25 +1,11 @@
 #-*-coding:utf-8-*-
 import urllib
 from urllib import request
-
-
-
 import os
 import time
-from bs4 import *
-# from bs4 import BeautifulSoup
-
-from tools.timer.每天凌晨3点执行方法 import timer
-
-__author__ = 'Administrator'
-###################### 完整代码##############################
-# 加载库
 from itchat.content import *
-import requests
 import json
 import itchat
-
-import bs4
 import requests
 from bs4 import *
 
@@ -304,21 +290,16 @@ def group_id(name):
 # 现在微信加了好多群，并不想对所有的群都进行设置微信机器人，只针对想要设置的群进行微信机器人，可进行如下设置
 @itchat.msg_register(TEXT, isGroupChat=True)
 def group_text_reply(msg):
-    print(msg)
-    myitem = msg['FromUserName']
-    print(myitem)
     # 当然如果只想针对@你的人才回复，可以设置if msg['isAt']:
-    item = group_id(chatroom_list[0])  # 根据自己的需求设置
-    item1 = group_id(chatroom_list[1])
-    item2 = group_id(chatroom_list[2])
-    # print(msg)
-    # who_qun = msg['User']['NickName']
+    # print(msg[0]['UserName'])
+    who_qun = msg['User']['NickName']
     # print(who_qun)
-    if myitem == item:
+    # item = group_id(u'洋县生活圈')  # 根据自己的需求设置
+    if who_qun == chatroom_list[0]:
         group_text_reply_blg(msg)
-    elif myitem == item1:
+    elif who_qun == chatroom_list[1]:
         group_text_reply_yx(msg)
-    elif myitem == item2: #搞笑能量军团
+    elif who_qun == chatroom_list[2]: #搞笑能量军团
         group_text_reply_gxnljt(msg)
 
 
@@ -430,7 +411,7 @@ def group_text_reply_gxnljt(msg):
         print(msg['Type'])
 
 
-chatroom_list = ['八里关镇微信群', '洋县生活圈','搞笑能量军团']
+chatroom_list = ['八里关镇老乡群', '洋县生活圈','搞笑能量军团']
 itchat.auto_login(hotReload = True)
 itchat.run()
 

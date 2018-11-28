@@ -1,8 +1,9 @@
 #!usr/bin/python
 # -*- coding:utf-8 -*-
 import re
-import bs4
 import requests
+import bs4
+from bs4 import *
 
 class YangxianWZ:
     pages_list = []
