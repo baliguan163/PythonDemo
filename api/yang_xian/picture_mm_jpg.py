@@ -81,14 +81,13 @@ class MyImage:
         soup = BeautifulSoup(html, 'lxml')
         piclist = soup.find('div', class_='subnav').find_all('a')
         for i in range(1, len(piclist)):
-            print(str(i+1) + ' 分类:'+ piclist[i].text  + " " + piclist[i]['href'])
+            print(str(i-1) + ' 分类:'+ piclist[i].text  + " " + piclist[i]['href'])
             vid = {
                 'tag': piclist[i].text,
                 'href': piclist[i]['href'],
                 'root':self.root + '\\' + piclist[i].text
             }
             self.all_tag_urls.append(vid)
-
 
     # 每一个类别n页所有图集的url
     def get_tag_npage_all_urlsc(self,url):
@@ -203,8 +202,54 @@ class MyImage:
         print("   图片张数：" + str(len(list)) + " " + url['root'] + " " + url['href'])
         return list
 
+    def download_my_pics(self,url,path):
+        name = url['name']
+        title = url['title']
+        root = url['root']
+        alt = url['alt']
+        down_path = url['src']
+        page_url = url['page_url']
+        my_agent = random.choice(self.uapools)
+        # 请求头
+        headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                   'Accept-Encoding': 'gzip, deflate, sdch',
+                   'Accept-Language': 'zh-CN,zh;q=0.8',
+                   'Connection': 'keep-alive',
+                   'Host': 'fm.shiyunjj.com',
+                   'Referer': page_url,
+                   'Upgrade-Insecure-Requests': '1',
+                   "User-Agent": my_agent}
 
+        my_agent = random.choice(self.uapools)
+        # 请求头
+        headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                   'Accept-Encoding': 'gzip, deflate, sdch',
+                   'Accept-Language': 'zh-CN,zh;q=0.8',
+                   'Connection': 'keep-alive',
+                   'Host':'fm.shiyunjj.com',
+                   'Referer': page_url,
+                   'Upgrade-Insecure-Requests': '1',
+                   "User-Agent":my_agent}
 
+        # print('path:', path)
+        # print('path:', page_url)
+
+        self.is_exist_dir(path)
+        isExists = os.path.exists(path)
+        if  isExists:
+            os.remove(path)
+        try:
+            ir = session.get(down_path, headers=headers)
+            time.sleep(5)
+            if ir.status_code == 200:
+                with open(path, 'wb') as f:
+                    f.write(ir.content)
+                    f.close()
+                print('  图片下载ok:',down_path, ' ', path)
+            else:
+                print('  图片下载ng:', down_path, ' ', path)
+        except requests.exceptions.ConnectionError:
+            print('  图片下载异常错误:',down_path, ' ', path)
 
 
     #下载图片，并写入文件
@@ -215,16 +260,6 @@ class MyImage:
         alt=url['alt']
         down_path=url['src']
         page_url=url['page_url']
-        # # 请求头
-        # headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        #            'Accept-Encoding': 'gzip, deflate, sdch',
-        #            'Accept-Language': 'zh-CN,zh;q=0.8',
-        #            'Connection': 'keep-alive',
-        #            'Host':'img.mmjpg.com',
-        #            'Referer': offset,
-        #            'Upgrade-Insecure-Requests': '1',
-        #            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
-
         my_agent = random.choice(self.uapools)
         # 请求头
         headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -277,11 +312,41 @@ class MyImage:
             print('  图片不下载:', count, '-', n, '',down_path, ' ', path)
 
 
-if __name__ == "__main__":
+def get_mm_images():
     url = 'http://www.mmjpg.com/top'
     root = "C:\开发视频\pic_temp\www.mmjpg.com"
-    muImage = MyImage(url,root)
+    muImage = MyImage(url, root)
     muImage.get_all_tag()
+    sum = len(muImage.all_tag_urls)
+    print('获取图集分类:' + str(sum))
+    # index = random.randint(0, sum - 1)
+    index = 6
+    print('index:' + str(index))
+
+    muImage.get_tag_npage_all_urlsc(MyImage.all_tag_urls[index])
+    one_sum = len(muImage.tag_all_page_images_sum_urls)
+    print('one_sum:' + str(one_sum))
+    one_index = random.randint(0, one_sum - 1)
+    print('one_index:' + str(one_index))
+
+    pic_list = muImage.get_url_all_image_urls(muImage.tag_all_page_images_sum_urls[one_index])
+    pic_sum = len(pic_list)
+    print('pic_sum:' + str(pic_sum))
+    pic_index = random.randint(0, pic_sum - 1)
+    print('pic_index:' + str(pic_index))
+    url = pic_list[pic_index]['src']
+
+    save_apth = 'd:\\temp.png'
+    print('url:' + url + " save_apth:" + save_apth)
+    muImage.download_my_pics(pic_list[pic_index], save_apth)
+    return save_apth;
+
+if __name__ == "__main__":
+    save_apth = get_mm_images();
+    print(save_apth)
+
+
+    #
     # for i in range(0, len(MyImage.all_tag_urls)):
     #     muImage.get_tag_npage_all_urlsc(MyImage.all_tag_urls[i])
     # # print('图集总数:' + str(len(muImage.tag_all_page_images_sum_urls)))
@@ -294,34 +359,6 @@ if __name__ == "__main__":
     #         muImage.download_pics(pic_list[k],str(len(pic_list)),str(k+1))
     #         # time.sleep(2)
 
-
-# def main():
-#     url = 'http://www.mmjpg.com/top'
-#     root_dir = "H:\开发视频\pic_temp\picture_www.mmjpg.com\\"
-#     isExists = os.path.exists(root_dir)
-#     if not isExists:
-#         os.makedirs(root_dir)
-#
-#     taglist = get_all_tag(url)
-#
-#     for i in range(0,len(taglist)):
-#
-#         root_dir_2 = create_dir(root_dir +  taglist[i]['title']+ '\\') # 绝对路径
-#         print('创建分类目录:', taglist[i]['title'],' ',root_dir_2)
-#
-#
-#         # print('图集个数:',len(list))
-#         lenlist = len(list)
-#         for i in range(0,lenlist):
-#             print('  下载图集href:', list[i]['href'])
-#             piclist = get_page_content(list[i]['href'])
-#             root_dir_3 = create_dir(root_dir_2 + list[i]['title'])  # 绝对路径
-#             print('  下载图集:', lenlist, '-', i + 1, ' ', len(piclist), ' ', list[i]['title'], list[i]['href'])
-#
-#             #上锁
-#             thread_lock.acquire()
-#             t = threading.Thread(target=download_list_pics, args=(lenlist,i+1,piclist,root_dir_3))
-#             t.start()
 
 
 
