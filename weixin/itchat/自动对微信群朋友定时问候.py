@@ -26,7 +26,7 @@ cityList_bsgs = [
 # http://www.weather.com.cn/weather1d/101110805.shtml#input
 # http://forecast.weather.com.cn/town/weather1dn/101110805001.shtml#input
 # {'code': '101110805001', 'name': " 八里关镇"}
-chatroom_list = ['八里关镇微信群', '洋县生活圈']
+chatroom_list = ['八里关镇老乡群', '洋县生活圈']
 
 def get_huangli():
     data = {}
@@ -167,7 +167,6 @@ def get_context():
         # print(twitter)
         twitter_realTime = title_small + twitter['message']
         # print(twitter_realTime)
-
     for city in cityList_bsgs:
         title_small=''
         twitter = getCityWeather_AllDay(city['code'])
@@ -181,7 +180,8 @@ def get_context():
     huangli = get_huangli()
     # print(huangli)
     # msg = "美好的一天从我的问候开始:各位亲人早上好!\n" + twitter_realTime + "\n" + twitter_wholeDay + '\n' + huangli + '\n' + iciba
-    msg = "\n美好的一天从我的问候开始,各位老乡好!\n" + twitter_realTime + "\n" + twitter_wholeDay  + '\n' + iciba + '\n' + huangli
+    # msg = "\n美好的一天从我的问候开始,各位老乡好!\n" + twitter_realTime + "\n" + twitter_wholeDay  + '\n' + iciba + '\n' + huangli
+    msg = "\n各位老乡好!\n" + twitter_realTime + "\n" + twitter_wholeDay + '\n' + iciba + '\n' + huangli
     # print(msg)
     return msg
 
@@ -203,17 +203,12 @@ def SentChatRoomsMsg(name, context):
 
 def loginCallback():
     print("***登录成功***")
-
-
 def exitCallback():
     print("***已退出***")
-
-
 itchat.auto_login(hotReload=True, loginCallback=loginCallback, exitCallback=exitCallback)
-
 scheduler = BlockingScheduler()
 for sent_chatroom in chatroom_list:
-    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=12, minute=41,
+    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=12, minute=51,
                       kwargs={"name": sent_chatroom, "context": get_context()})
     print("任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context())
     print("******************************************************************************\n")
