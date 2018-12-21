@@ -4,6 +4,7 @@ import itchat
 
 from api.yang_xian.sm_it.get_joke import get_joke
 from api.yang_xian.sm_it.get_tuling import get_tuling
+from api.yang_xian.sm_it.get_weather import get_yangxian_weather
 from web.news_baliguan_weixin import get_yangxian_new
 
 
@@ -23,6 +24,10 @@ def group_text_reply_yx(msg):
                 content1 = content1 + '【' + result[i]['time'] + '】' + str(i + 1) + '.' + result[i]['title'] + result[i]['href'] + '\n'
             print('群回：' + content1)
             itchat.send('%s' % content1, msg['FromUserName'])
+        elif "洋县天气" == group_text_msg:
+            result = get_yangxian_weather()
+            print('群回：' + result)
+            itchat.send('%s' % result, msg['FromUserName'])
         elif "笑话" == group_text_msg:
             # 最新笑话
             result = get_joke(m="GET")['data']

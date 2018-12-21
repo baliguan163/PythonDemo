@@ -7,6 +7,10 @@ from urllib import request
 import json
 import urllib.request
 
+import requests
+from bs4 import BeautifulSoup
+
+
 def getCityWeather_RealTime(cityID):
     url = "http://www.weather.com.cn/data/sk/" + str(cityID) + ".html"
     try:
@@ -89,7 +93,90 @@ cityList_bsgs = [
     {'code': '101110805', 'name': " 洋县"}
 ]
 
-# result = get_yx_weather()
+
+
+
+class Weather:
+    def get_html(self,url):
+        try:
+            r = requests.get(url, timeout=30)
+            r.raise_for_status
+            r.encoding = 'utf8'
+            # print(r.text)
+            return r.text
+        except:
+            return "get_html someting wrong"
+
+    def get_pages_url(self,html):
+        soup = BeautifulSoup(html, 'lxml')
+        pm = soup.find('div', class_= 'ba-con').find('a').text.strip()
+        # print(pm)
+
+        weather = soup.find('div', class_='weather').text
+        # print(weather)
+
+        ba_tips = soup.find_all('div', class_='ba-tips')
+        ba_tips_temp=''
+        for i in range(0,len(ba_tips)):
+            temp = ba_tips[i].find_all('span')
+            ba_tips_temp = ba_tips_temp +  temp[0].text.strip().replace(' ','') + ' ' + temp[1].text.strip().replace(' ','') + '\n'
+        # print(ba_tips_temp)
+        update = soup.find('p', class_='update-time').text.strip().replace('乡','镇')
+        # print(update)
+        # print('------------------------------------------')
+
+
+        day_night = soup.find('ul', class_='day-night').find_all('li')
+        day_night_temp=''
+        for i in range(0, len(day_night)):
+            temp = day_night[i].find_all('span')
+            day_night_temp = day_night_temp + temp[0].text.strip().replace(' ','') + temp[1].text.strip().replace(' ','')  +' ' + temp[2].text.strip().replace(' ','') + '\n'
+        # print(day_night_temp)
+        ba_right_tips = soup.find('p', class_='ba-right-tips').text.strip().replace('乡','镇')
+        # print(ba_right_tips)
+        # print('------------------------------------------')
+        ny_mod_th = soup.find('div', class_='ny-mod-th').text.strip().replace('乡','镇')
+        # print(ny_mod_th)
+
+        days_list_clearfix = soup.find('ul', class_='days-list clearfix').find_all('li')
+        days_list_clearfix_temp=''
+        for i in range(0, len(days_list_clearfix)):
+            temp = days_list_clearfix[i].find_all('span')
+            days_list_clearfix_temp = days_list_clearfix_temp +  temp[0].text.strip() + ' ' + temp[1].text.strip() + ' ' + temp[3].text.strip() + ' ' +  temp[4].text.strip().replace(' ','') + '\n'
+        # print(days_list_clearfix_temp)
+        # print('------------------------------------------')
+
+        ny_mod_th2 = soup.find('div', class_='ny-mod mt14').find('div', class_='ny-mod-th').text.strip().replace('乡','镇')
+        # print(ny_mod_th2)
+
+        hours_weather_clearfix = soup.find('ul', class_='hours-weather clearfix').find_all('li')
+        hours_weather_clearfix_temp=''
+        for i in range(0, len(hours_weather_clearfix)):
+            temp = hours_weather_clearfix[i].find_all('span')
+            hours_weather_clearfix_temp = hours_weather_clearfix_temp +  temp[0].text.strip() + ' ' + temp[2].text.strip() + ' ' + temp[3].text.strip() + '\n'
+        # print(hours_weather_clearfix_temp)
+        # print('------------------------------------------')
+
+        temp = '【' + update + '】' + '\n' + ba_right_tips + '\n' + day_night_temp  +  pm.replace('汉中','')  + ' ' +  weather + '\n' + ba_tips_temp \
+               + '【' + ny_mod_th + '】' + '\n' + days_list_clearfix_temp  \
+               + '【' + ny_mod_th2 + '】' + '\n' + hours_weather_clearfix_temp
+        # print(temp)
+        return temp
+
+def get_baliguan_weather():
+    weather =  Weather()
+    html = weather.get_html('https://www.weaoo.com/hanzhong-baliguanxiang-3889.html')
+    return weather.get_pages_url(html)
+
+
+def get_yangxian_weather():
+    weather =  Weather()
+    html = weather.get_html('https://www.weaoo.com/hanzhong-yangxian-2115.html')
+    return weather.get_pages_url(html)
+
+
+
+# result = get_yangxian_weather()
 # print(result)
 
 

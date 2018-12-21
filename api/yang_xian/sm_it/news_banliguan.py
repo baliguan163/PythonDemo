@@ -96,8 +96,8 @@ def get_baliguan_new_list(news_count='10'):
 def get_baliguan_news():
     result = get_baliguan_new_list()
     # print(result)
-    content1 = '【洋县镇办新闻共' + str(result[0]) + '条其中八里关镇最新' + str(len(result[1])-1) + '条新闻如下】' + '\n'
-    for i in range(0, len(result[1])-1):
+    content1 = '【洋县镇办新闻共' + str(result[0]) + '条其中八里关镇最新' + str(len(result[1])) + '条新闻如下】' + '\n'
+    for i in range(0, len(result[1])):
         content1 = content1 + '【' + result[1][i]['time'] + '】' + str(i + 1) + '.' + result[1][i]['title'] + \
                    result[1][i]['href'] + '\n'
         # print(content1)

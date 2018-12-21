@@ -4,6 +4,7 @@ import itchat
 
 from api.yang_xian.sm_it.get_joke import get_joke
 from api.yang_xian.sm_it.get_tuling import get_tuling
+from api.yang_xian.sm_it.get_weather import get_baliguan_weather
 from api.yang_xian.sm_it.news_banliguan import get_baliguan_news
 
 
@@ -19,6 +20,10 @@ def group_text_reply_blg(msg):
             reply = get_baliguan_news()
             print('群回：' + reply)
             itchat.send('%s' % reply, msg['FromUserName'])
+        elif "八里关天气" == group_text_msg:
+            result = get_baliguan_weather()
+            print('群回：' + result)
+            itchat.send('%s' % result, msg['FromUserName'])
         elif "笑话" == group_text_msg:
             # 最新笑话
             result = get_joke(m="GET")['data']

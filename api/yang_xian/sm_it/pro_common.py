@@ -4,6 +4,7 @@ from datetime import datetime
 
 import itchat
 from api.yang_xian.sm_it.get_huangli import get_huangli
+from api.yang_xian.sm_it.get_weather import get_baliguan_weather, get_yangxian_weather
 from api.yang_xian.sm_it.get_yiju import get_iciba
 
 
@@ -43,10 +44,11 @@ def SentChatRoomsMsg(name, context):
 # 每个群相同信息
 def sent_chatrooms_same_msg(chatroom_list):
     print("***************************************每个群相同信息******************************************")
-    msg = "各位群友好!\n"  + get_iciba() + '\n' + get_huangli()
+    msg = "各位群友好!\n" + get_iciba() + '\n' + get_huangli()
     for sent_chatroom in chatroom_list:
-        # print('sent_chatroom:' + sent_chatroom)
-        SentChatRoomsMsg(sent_chatroom, msg);
+        print('sent_chatroom:' + sent_chatroom)
+        if sent_chatroom == chatroom_list[0]:
+            SentChatRoomsMsg(sent_chatroom, msg);
 
 # 每个群不同信息
 def sent_chatrooms_diff_msg(chatroom_list):
@@ -58,8 +60,12 @@ def sent_chatrooms_diff_msg(chatroom_list):
         if sent_chatroom == chatroom_list[0]:
             result = get_baliguan_news();
             SentChatRoomsMsg(sent_chatroom, result);
+            result = get_baliguan_weather();
+            SentChatRoomsMsg(sent_chatroom, result);
         if sent_chatroom == chatroom_list[1]:
             result = get_yangxian_news();
+            SentChatRoomsMsg(sent_chatroom, result);
+            result = get_yangxian_weather();
             SentChatRoomsMsg(sent_chatroom, result);
 
     #     # print('sent_chatroom:' + sent_chatroom)
