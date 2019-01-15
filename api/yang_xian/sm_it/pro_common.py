@@ -27,6 +27,8 @@ from api.yang_xian.sm_it.get_yiju import get_iciba
 # print(result)
 from api.yang_xian.sm_it.news_banliguan import get_baliguan_news
 from api.yang_xian.sm_it.news_yangxian import get_yangxian_news
+from api.yang_xian.sm_it.yangxian_wz_info import get_yangxian_wz_news
+
 
 def SentChatRoomsMsg(name, context):
     itchat.get_chatrooms(update=True)
@@ -44,7 +46,8 @@ def SentChatRoomsMsg(name, context):
 # 每个群相同信息
 def   sent_chatrooms_same_msg(chatroom_list):
     print("***************************************第一步：每个群相同信息******************************************")
-    msg = "各位群友好!\n" + get_iciba() + '\n' + get_huangli()
+    result_wz_news = get_yangxian_wz_news()
+    msg = "各位群友好!\n" + get_iciba() + '\n' + get_huangli() + '\n' + result_wz_news
     for sent_chatroom in chatroom_list:
         print('sent_chatroom:' + sent_chatroom)
         if sent_chatroom == chatroom_list[0]:

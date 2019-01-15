@@ -112,9 +112,35 @@ def get_yangxian_wz():
             break
     return wzYangxian.obj_list
 
-if __name__ == "__main__":
-    result = get_yangxian_wz()
-    print(result)
 
+def get_yangxian_wz_news():
+    result = get_yangxian_wz()
+    # print(result)
+    # [{'bian_hao': 'yx1812080JI6', 'bu_men': '洋州办事处', 'title': '中国移动不给洋州镇贯溪村六组拉宽带村...',
+    #   'href': 'http://www.yangxian.gov.cn/appeal/view.jsp?model_id=2&sq_id=5253', 'status': '公开', 'time': '2019-01-11'},
+    #  {'bian_hao': 'yx181218VY0O', 'bu_men': '交通局', 'title': '全体村民对公共交通的期盼',
+    #   'href': 'http://www.yangxian.gov.cn/appeal/view.jsp?model_id=2&sq_id=5279', 'status': '公开', 'time': '2019-01-10'},
+    #  {'bian_hao': 'yx181221B157', 'bu_men': '环保局', 'title': '洋县的空气怎么了？',
+    #   'href': 'http://www.yangxian.gov.cn/appeal/view.jsp?model_id=2&sq_id=5296', 'status': '公开', 'time': '2019-01-04'},
+    #  {'bian_hao': 'yx1812210BBW', 'bu_men': '国土局', 'title': '农村房屋确权证办理',
+    #   'href': 'http://www.yangxian.gov.cn/appeal/view.jsp?model_id=2&sq_id=5298', 'status': '公开', 'time': '2018-12-29'},
+    #  {'bian_hao': 'yx18121920FE', 'bu_men': '住建局', 'title': '洋州公馆天然气何时能通',
+    #   'href': 'http://www.yangxian.gov.cn/appeal/view.jsp?model_id=2&sq_id=5287', 'status': '公开', 'time': '2018-12-29'},
+    #  {'bian_hao': 'yx181221P7KB', 'bu_men': '公安局', 'title': '户口本分户或者换户主',
+    #   'href': 'http://www.yangxian.gov.cn/appeal/view.jsp?model_id=2&sq_id=5299', 'status': '公开', 'time': '2018-12-25'},
+    #  {'bian_hao': 'yx181220J01T', 'bu_men': '政府办', 'title': '洋州公馆天然气不通',
+    #   'href': 'http://www.yangxian.gov.cn/appeal/view.jsp?model_id=2&sq_id=5293', 'status': '公开', 'time': '2018-12-24'},
+    #  {'bian_hao': 'yx18121950EQ', 'bu_men': '卫计局', 'title': '新生儿怎么交合辽或居民医保（社保）',
+    #   'href': 'http://www.yangxian.gov.cn/appeal/view.jsp?model_id=2&sq_id=5283', 'status': '公开', 'time': '2018-12-20'}]
+    #
+    content1 = '【洋县网络问政最新咨询建议' + str(len(result)) + '条如下】' + '\n'
+    for i in range(0, len(result)):
+        content1 = content1 + '【' + result[i]['bu_men'] + '】' + str(i + 1) + '_' + result[i]['status'] + '.' + \
+                   result[i]['title'] + result[i]['href'] + '\n'
+    return content1
+
+# if __name__ == "__main__":
+#     result = get_yangxian_wz_news()
+#     print(result)
 
 
