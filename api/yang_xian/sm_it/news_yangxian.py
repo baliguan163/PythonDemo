@@ -73,7 +73,7 @@ class NewsYangxian:
             self.pages_list.append(newurl)
         return self.pages_list
 
-def get_yangxian_new_list(news_count=10):
+def get_yangxian_new_list(news_count=20):
     newsYangxian = NewsYangxian()
     newsYangxian.get_news_count = news_count
     # 新闻列表页数
@@ -91,13 +91,14 @@ def get_yangxian_new_list(news_count=10):
 def get_yangxian_news():
     result = get_yangxian_new_list()
     # print(result)
-    content1 = '【洋县新闻共' + str(result[0]) + '条其最新' + str(len(result[1])) + '条新闻如下】' + '\n'
+    # content1 = '【洋县新闻共' + str(result[0]) + '条其最新' + str(len(result[1])) + '条新闻如下】' + '\n'
+    content1 = '【洋县新闻最新' + str(len(result[1])) + '条如下】' + '\n'
     for i in range(0,len(result[1])):
         content1 = content1 + '【'+result[1][i]['time'] + '】'+ str(i+1) + '.' + result[1][i]['title'] +  result[1][i]['href'] + '\n'
     # print(content1)
     return content1
 
-#
+
 # if __name__ == "__main__":
 #     result = get_yangxian_news()
 #     print(result)

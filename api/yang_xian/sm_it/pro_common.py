@@ -42,31 +42,35 @@ def SentChatRoomsMsg(name, context):
     print("*********************************************************************************")
 
 # 每个群相同信息
-def sent_chatrooms_same_msg(chatroom_list):
-    print("***************************************每个群相同信息******************************************")
+def   sent_chatrooms_same_msg(chatroom_list):
+    print("***************************************第一步：每个群相同信息******************************************")
     msg = "各位群友好!\n" + get_iciba() + '\n' + get_huangli()
     for sent_chatroom in chatroom_list:
         print('sent_chatroom:' + sent_chatroom)
         if sent_chatroom == chatroom_list[0]:
             SentChatRoomsMsg(sent_chatroom, msg);
+        elif sent_chatroom == chatroom_list[1]:
+            SentChatRoomsMsg(sent_chatroom, msg);
 
 # 每个群不同信息
 def sent_chatrooms_diff_msg(chatroom_list):
-    print("***************************************每个群不同信息******************************************")
-    # chatroom_list = ['八里关镇微信群', '洋县生活圈', '八里关村微信群', '搞笑能量军团', '技术资源分享', '吃喝玩乐特价优惠券群']
+    print("***************************************第二步：每个群不同信息******************************************")
+    # chatroom_list = ['八里关镇微信群', '洋县生活圈','八里关村微信群','搞笑能量军团','技术视频图片资源分享','特价优惠券分享群']
     # result = get_pro_context()
     for sent_chatroom in chatroom_list:
         print('sent_chatroom:' + sent_chatroom)
-        if sent_chatroom == chatroom_list[0]:
-            result = get_baliguan_news();
-            SentChatRoomsMsg(sent_chatroom, result);
+        if sent_chatroom == chatroom_list[0] or sent_chatroom == chatroom_list[2]: #八里关镇微信群
             result = get_baliguan_weather();
             SentChatRoomsMsg(sent_chatroom, result);
-        if sent_chatroom == chatroom_list[1]:
-            result = get_yangxian_news();
+            result = get_baliguan_news();
             SentChatRoomsMsg(sent_chatroom, result);
+        elif sent_chatroom == chatroom_list[1]: #洋县生活圈
             result = get_yangxian_weather();
             SentChatRoomsMsg(sent_chatroom, result);
+            result = get_yangxian_news();
+            SentChatRoomsMsg(sent_chatroom, result);
+
+
 
     #     # print('sent_chatroom:' + sent_chatroom)
     #     SentChatRoomsMsg(sent_chatroom, result);

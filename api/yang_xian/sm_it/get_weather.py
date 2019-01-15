@@ -108,8 +108,11 @@ class Weather:
             return "get_html someting wrong"
 
     def get_pages_url(self,html):
+        # print(html)
         soup = BeautifulSoup(html, 'lxml')
-        pm = soup.find('div', class_= 'ba-con').find('a').text.strip()
+        # print(soup)
+        # pm = soup.find('div', class_= 'ba-con')
+        pm = '平均气温'
         # print(pm)
 
         weather = soup.find('div', class_='weather').text
@@ -157,9 +160,14 @@ class Weather:
         # print(hours_weather_clearfix_temp)
         # print('------------------------------------------')
 
-        temp = '【' + update + '】' + '\n' + ba_right_tips + '\n' + day_night_temp  +  pm.replace('汉中','')  + ' ' +  weather + '\n' + ba_tips_temp \
-               + '【' + ny_mod_th + '】' + '\n' + days_list_clearfix_temp  \
-               + '【' + ny_mod_th2 + '】' + '\n' + hours_weather_clearfix_temp
+        # temp = '【' + update + '】' + '\n' + ba_right_tips + '\n' + day_night_temp  +  pm.replace('汉中','')  + ' ' +  weather + '\n' + ba_tips_temp \
+        #        + '【' + ny_mod_th + '】' + '\n' + days_list_clearfix_temp  \
+        #        + '【' + ny_mod_th2 + '】' + '\n' + hours_weather_clearfix_temp
+
+        temp = '【' + update + '】' + '\n' + ba_right_tips + '\n' + day_night_temp + pm.replace('汉中',
+                                                                                              '') + ' ' + weather + '\n' + ba_tips_temp \
+               + '【' + ny_mod_th + '】' + '\n' + days_list_clearfix_temp
+
         # print(temp)
         return temp
 
@@ -175,8 +183,8 @@ def get_yangxian_weather():
     return weather.get_pages_url(html)
 
 
-
-# result = get_yangxian_weather()
+#
+# result = get_baliguan_weather()
 # print(result)
 
 

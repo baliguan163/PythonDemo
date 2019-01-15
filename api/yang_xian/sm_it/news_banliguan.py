@@ -15,6 +15,7 @@ class NewsBaliguan:
     pages_list = []
     get_news_count=10
     news_sum = 0;
+
     def get_html(self,url):
         try:
             r = requests.get(url, timeout=30)
@@ -57,7 +58,9 @@ class NewsBaliguan:
 
     #新闻列表页地址
     def get_pages_url_count(self,url):
+        print(url)
         html = self.get_html(url)
+
         soup = bs4.BeautifulSoup(html, 'lxml')
         yi_list = soup.find('div', class_= 'list_page')
         title_list = yi_list.find_all('span')
@@ -79,9 +82,9 @@ class NewsBaliguan:
             self.pages_list.append(newurl)
         return self.pages_list
 
-def get_baliguan_new_list(news_count='10'):
+def get_baliguan_new_list(news_count=20):
     newsBaliguan = NewsBaliguan()
-    newsBaliguan.news_count = news_count
+    newsBaliguan.get_news_count = news_count
     # 新闻列表页数
     newsBaliguan.get_pages_url_count(newsBaliguan.url)
     all_news_baliguan_url = []  #所有新闻地址
@@ -96,7 +99,8 @@ def get_baliguan_new_list(news_count='10'):
 def get_baliguan_news():
     result = get_baliguan_new_list()
     # print(result)
-    content1 = '【洋县镇办新闻共' + str(result[0]) + '条其中八里关镇最新' + str(len(result[1])) + '条新闻如下】' + '\n'
+    # content1 = '【洋县镇办新闻共' + str(result[0]) + '条其中八里关镇最新' + str(len(result[1])) + '条新闻如下】' + '\n'
+    content1 = '【八里关镇新闻最新' + str(len(result[1])) + '条如下】' + '\n'
     for i in range(0, len(result[1])):
         content1 = content1 + '【' + result[1][i]['time'] + '】' + str(i + 1) + '.' + result[1][i]['title'] + \
                    result[1][i]['href'] + '\n'
