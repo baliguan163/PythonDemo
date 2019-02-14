@@ -130,7 +130,7 @@ def loginCallback():
 def exitCallback():
     print("***已退出***")
 
-chatroom_list = ['八里关镇微信群', '洋县生活圈','八里关村微信群','搞笑能量军团','技术视频图片资源分享','特价优惠券分享群']
+chatroom_list = ['八里关镇便民交流群', '洋县生活圈','八里关村微信群','搞笑能量军团','技术视频图片资源分享','特价优惠券分享群']
 itchat.auto_login(hotReload=True, loginCallback=loginCallback, exitCallback=exitCallback)
 # itchat.auto_login(hotReload=True)
 # itchat.send("文件助手你好哦", toUserName="filehelper")

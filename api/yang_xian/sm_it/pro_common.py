@@ -27,7 +27,7 @@ from api.yang_xian.sm_it.get_yiju import get_iciba
 # print(result)
 from api.yang_xian.sm_it.news_banliguan import get_baliguan_news
 from api.yang_xian.sm_it.news_yangxian import get_yangxian_news
-from api.yang_xian.sm_it.yangxian_wz_info import get_yangxian_wz_news
+from api.yang_xian.sm_it.yangxian_wz_info import yangxian_wz_news_xzxx, yangxian_wz_news_zxtsjy, yangxian_wz_news_xzxx_baliguan, yangxian_wz_news_zxtsjy_baliguan, yangxian_address
 
 
 def SentChatRoomsMsg(name, context):
@@ -46,14 +46,27 @@ def SentChatRoomsMsg(name, context):
 # 每个群相同信息
 def   sent_chatrooms_same_msg(chatroom_list):
     print("***************************************第一步：每个群相同信息******************************************")
-    result_wz_news = get_yangxian_wz_news()
-    msg = "各位群友好!\n" + get_iciba() + '\n' + get_huangli() + '\n' + result_wz_news
+    result_yangxian_xzxx = yangxian_wz_news_xzxx()
+    result_yangxian_zxtsjy = yangxian_wz_news_zxtsjy()
+
+    result_xzxx_baliguan = yangxian_wz_news_xzxx_baliguan()
+    result_zxtsjy_baliguan = yangxian_wz_news_zxtsjy_baliguan()
+    result_address = yangxian_address()
+
+    msg = "各位群友好!\n" + get_iciba() + '\n' + get_huangli()
     for sent_chatroom in chatroom_list:
         print('sent_chatroom:' + sent_chatroom)
-        if sent_chatroom == chatroom_list[0]:
+        if sent_chatroom == chatroom_list[0]:#八里关镇微信群
+            SentChatRoomsMsg(sent_chatroom, result_xzxx_baliguan);
+            SentChatRoomsMsg(sent_chatroom, result_zxtsjy_baliguan);
+            SentChatRoomsMsg(sent_chatroom, result_address);
             SentChatRoomsMsg(sent_chatroom, msg);
-        elif sent_chatroom == chatroom_list[1]:
+        elif sent_chatroom == chatroom_list[1]:#洋县生活圈
+            SentChatRoomsMsg(sent_chatroom, result_yangxian_xzxx);
+            SentChatRoomsMsg(sent_chatroom, result_yangxian_zxtsjy);
+            SentChatRoomsMsg(sent_chatroom, result_address);
             SentChatRoomsMsg(sent_chatroom, msg);
+
 
 # 每个群不同信息
 def sent_chatrooms_diff_msg(chatroom_list):
@@ -62,7 +75,7 @@ def sent_chatrooms_diff_msg(chatroom_list):
     # result = get_pro_context()
     for sent_chatroom in chatroom_list:
         print('sent_chatroom:' + sent_chatroom)
-        if sent_chatroom == chatroom_list[0] or sent_chatroom == chatroom_list[2]: #八里关镇微信群
+        if sent_chatroom == chatroom_list[0]: #八里关镇微信群
             result = get_baliguan_weather();
             SentChatRoomsMsg(sent_chatroom, result);
             result = get_baliguan_news();

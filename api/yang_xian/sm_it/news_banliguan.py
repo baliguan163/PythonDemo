@@ -82,7 +82,7 @@ class NewsBaliguan:
             self.pages_list.append(newurl)
         return self.pages_list
 
-def get_baliguan_new_list(news_count=20):
+def get_baliguan_new_list(news_count=8):
     newsBaliguan = NewsBaliguan()
     newsBaliguan.get_news_count = news_count
     # 新闻列表页数
