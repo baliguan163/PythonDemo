@@ -145,7 +145,7 @@ class YangxianWZ:
 def yangxian_wz_xzxx(): # 洋县网络问政->县长信箱
     base_url = 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=1&cur_page='
     url = 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=1&cur_page=1'
-    wzYangxian = YangxianWZ(url,20,base_url)
+    wzYangxian = YangxianWZ(url,10,base_url)
     wzYangxian.get_pages_url_count()
     wzYangxian.obj_list.clear()  #所有新闻
     for j in range(0, len(wzYangxian.pages_list)):
@@ -158,7 +158,7 @@ def yangxian_wz_xzxx(): # 洋县网络问政->县长信箱
 def yangxian_wz_zxtsjy():# 洋县网络问政->咨询投诉建议
     base_url = 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=2&cur_page='
     url = 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=2'
-    wzYangxian2 = YangxianWZ(url,20,base_url)
+    wzYangxian2 = YangxianWZ(url,10,base_url)
     wzYangxian2.get_pages_url_count()
     wzYangxian2.obj_list.clear()  #所有新闻
     for j in range(0, len(wzYangxian2.pages_list)):
@@ -173,7 +173,7 @@ def yangxian_wz_zxtsjy():# 洋县网络问政->咨询投诉建议
 def yangxian_wz_xzxx_baliguan(): # 洋县网络问政->县长信箱_baliguan
     base_url = 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=1&cur_page='
     url = 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=1&cur_page=1'
-    wzYangxian = YangxianWZ(url,20,base_url)
+    wzYangxian = YangxianWZ(url,10,base_url)
     wzYangxian.get_pages_url_count()
     wzYangxian.obj_list.clear()  #所有新闻
     for j in range(0, len(wzYangxian.pages_list)):
@@ -186,7 +186,7 @@ def yangxian_wz_xzxx_baliguan(): # 洋县网络问政->县长信箱_baliguan
 def yangxian_wz_zxtsjy_baliguan():# 洋县网络问政->咨询投诉建议_baliguan
     base_url = 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=2&cur_page='
     url = 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=2'
-    wzYangxian2 = YangxianWZ(url,20,base_url)
+    wzYangxian2 = YangxianWZ(url,10,base_url)
     wzYangxian2.get_pages_url_count()
     wzYangxian2.obj_list.clear()  #所有新闻
     for j in range(0, len(wzYangxian2.pages_list)):
@@ -202,7 +202,8 @@ def yangxian_wz_zxtsjy_baliguan():# 洋县网络问政->咨询投诉建议_balig
 def yangxian_wz_news_xzxx():
     result = yangxian_wz_xzxx() #洋县网络问政->县长信箱
     # print(result)
-    content1 = '【洋县网络问政_最新县长信箱' + str(len(result)) + '条】' + '\n'
+    # content1 = '【洋县网络问政_最新县长信箱' + str(len(result)) + '条】' + '\n'
+    content1 = '【网络问政县长信箱】' + '\n'
     for i in range(0, len(result)):
         content1 = content1 + '【' + result[i]['bu_men'] +  result[i]['time'] + '】'  + ' ' +  str(i + 1) +  '.' + \
                    result[i]['title'] + result[i]['href']  +  '\n'
@@ -211,7 +212,8 @@ def yangxian_wz_news_xzxx():
 def yangxian_wz_news_zxtsjy():
     result2 = yangxian_wz_zxtsjy() #洋县网络问政->咨询投诉建议
     # print(result2)
-    content1 = '【洋县网络问政_最新咨询投诉建议' + str(len(result2)) + '条】' + '\n'
+    # content1 = '【洋县网络问政_最新咨询投诉建议' + str(len(result2)) + '条】' + '\n'
+    content1 = '【网络问政咨询投诉建议】' + '\n'
     for i in range(0, len(result2)):
         content1 = content1 + '【' + result2[i]['bu_men'] + result2[i]['time'] + '】' + str(i + 1) +  '.' + \
                    result2[i]['title'] + result2[i]['href'] + '\n'
@@ -221,7 +223,8 @@ def yangxian_wz_news_zxtsjy():
 def yangxian_wz_news_xzxx_baliguan():
     result = yangxian_wz_xzxx_baliguan() #洋县网络问政->县长信箱 _baliguan
     # print(result)
-    content1 = '【洋县网络问政八里关镇最新县长信箱' + str(len(result)) + '条】' + '\n'
+    # content1 = '【洋县网络问政八里关镇最新县长信箱' + str(len(result)) + '条】' + '\n'
+    content1 = '【网络问政县长信箱】' + '\n'
     for i in range(0, len(result)):
         content1 = content1 + '【' + result[i]['bu_men'] +  result[i]['time'] + '】'  + ' ' +  str(i + 1) +  '.' + \
                    result[i]['title'] + result[i]['href']  + '【' + result[i]['status']  + '】' +  '\n'
@@ -230,7 +233,8 @@ def yangxian_wz_news_xzxx_baliguan():
 def yangxian_wz_news_zxtsjy_baliguan():
     result2 = yangxian_wz_zxtsjy_baliguan() #洋县网络问政->咨询投诉建议 _baliguan
     # print(result2)
-    content1 = '【洋县网络问政八里关镇最新咨询投诉建议' + str(len(result2)) + '条】' + '\n'
+    # content1 = '【八里关镇咨询投诉建议' + str(len(result2)) + '条】' + '\n'
+    content1 = '【网络问政咨询投诉建议】' + '\n'
     for i in range(0, len(result2)):
         content1 = content1 + '【' + result2[i]['bu_men'] + result2[i]['time'] + '】' + str(i + 1) +  '.' + \
                    result2[i]['title'] + result2[i]['href'] + '【' + result2[i]['status']  + '】' +'\n'
@@ -239,10 +243,10 @@ def yangxian_wz_news_zxtsjy_baliguan():
 # ---------------------------------------------------------------------------------------
 
 def yangxian_address():
-    content1 = '【查看全县县长信箱点我进入】' + 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=1'  +'\n'
-    content1 = content1 + '【查看全县询投诉建议点我进入】' + 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=2' + '\n'
-    content1 = content1 + '【给县长信箱写信点我进入】' + 'http://www.yangxian.gov.cn/appeal/form.jsp?model_id=1'  + '\n'
-    content1 = content1 + '【给政府咨询投诉建议点我进入】' + 'http://www.yangxian.gov.cn/appeal/form.jsp?model_id=2'
+    content1 = '【进入县长信箱】' + 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=1'  +'\n'
+    content1 = content1 + '【进入咨询投诉建议】' + 'http://www.yangxian.gov.cn/appeal/list.jsp?model_id=2' + '\n'
+    content1 = content1 + '【县长信箱写信进入】' + 'http://www.yangxian.gov.cn/appeal/form.jsp?model_id=1'  + '\n'
+    content1 = content1 + '【询投诉建议进入】' + 'http://www.yangxian.gov.cn/appeal/form.jsp?model_id=2'
     return content1
 
 # if __name__ == "__main__":

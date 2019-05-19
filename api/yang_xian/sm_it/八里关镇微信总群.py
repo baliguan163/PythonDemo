@@ -1,11 +1,14 @@
 #!usr/bin/python
 # -*- coding:utf-8 -*-
 import itchat
+from PIL import Image
+from itchat.content import PICTURE, VIDEO
 
 from api.yang_xian.sm_it.get_joke import get_joke
 from api.yang_xian.sm_it.get_tuling import get_tuling
 from api.yang_xian.sm_it.get_weather import get_baliguan_weather
 from api.yang_xian.sm_it.news_banliguan import get_baliguan_news
+from api.yang_xian.sm_it.tools_nude import ToolsNude
 
 
 def group_text_reply_blg(msg):
@@ -38,6 +41,29 @@ def group_text_reply_blg(msg):
             print('群回：' + reply)
             itchat.send('%s' % reply, msg['FromUserName'])
     elif msg['Type'] == 'Picture':
-        print(msg['Type'])
+        temp_file = str(msg.download(r'wx_chat_pic/' + msg['FileName']))
+        print(temp_file)
+        current_picture_path = './wx_chat_pic/' + msg['FileName']
+        print('下载保存图片:' + current_picture_path)
+        if current_picture_path.endswith('png'):
+            typeSymbol = {
+                PICTURE: 'img',
+                VIDEO: 'vid', }.get(msg.type, 'fil')
+            fname = Image.open(current_picture_path)
+            n = ToolsNude(fname)
+            n.resize(maxheight=800, maxwidth=600)
+            n.parse()  # 分析函数
+            n.showSkinRegions()
+            # print(n.result, n.inspect())
+            # itchat.send_image(msg.fileName,'filehelper') # 发送图片
+            if n.result == True:
+                itchat.send('经专业鉴定，此图涉黄，请注意你的言行', msg['FromUserName'])
+            else:
+                # pass
+                itchat.send('经专业鉴定，此图清清白白，组织相信你了', msg['FromUserName'])
+        elif current_picture_path.endswith('gif'):
+            pass
+            # itchat.send('经专业鉴定，此图动态图片清清白白，组织相信你了', msg['FromUserName'])
+
     elif msg['Type'] == 'Recording':
         print(msg['Type'])

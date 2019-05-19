@@ -1,32 +1,14 @@
 # coding=utf-8
 from datetime import datetime
 from urllib import request
-
 import itchat
+import schedule
 from apscheduler.schedulers.background import BlockingScheduler
 import json
 import urllib.request
 import requests
-from urllib.parse import urlencode
-
-# 使用Python itchat接口对自动对微信群朋友定时问候（发送天气预报、黄历、每日一句）
-# itchat是一个支持微信控制的接口，可以对发送和接收的微信消息进行定制，网上有很多现成的实例，
-# 该API的使用可以参考http://itchat.readthedocs.io/zh/latest/，上面写得很详细，并且有实例，
-# 本文在此基础上参考了网络上的部分代码，完成每天上午自动对几个群的朋友进行问候，发送问候语、
-# 黄历和每日一句。其中黄历使用了极数据的黄历接口，见https://www.jisuapi.com/，
-# 但是该接口有使用100次的限制，也可以使用聚合数据接口，这个没有次数限制。每日一句使用了爱词霸的每日一句接口，
-# 网上有很多例子可供参考。天气预报使用了中国天气网数据，将城市代码换成自己所在城市的即可。代码比较简单，
-# 使用Pyhton3.6，功能已实现，贴出来供参考，下一步工作是将杂乱的功能函数封装成类，使代码更加紧凑。
-# ---------------------
 
 
-cityList_bsgs = [
-    {'code': '101110805', 'name': " 洋县"}
-]
-# http://www.weather.com.cn/weather1d/101110805.shtml#input
-# http://forecast.weather.com.cn/town/weather1dn/101110805001.shtml#input
-# {'code': '101110805001', 'name': " 八里关镇"}
-chatroom_list = ['八里关镇老乡群', '洋县生活圈']
 
 def get_huangli():
     data = {}
@@ -181,7 +163,7 @@ def get_context():
     # print(huangli)
     # msg = "美好的一天从我的问候开始:各位亲人早上好!\n" + twitter_realTime + "\n" + twitter_wholeDay + '\n' + huangli + '\n' + iciba
     # msg = "\n美好的一天从我的问候开始,各位老乡好!\n" + twitter_realTime + "\n" + twitter_wholeDay  + '\n' + iciba + '\n' + huangli
-    msg = "\n各位老乡好!\n" + twitter_realTime + "\n" + twitter_wholeDay + '\n' + iciba + '\n' + huangli
+    msg = "各位老乡早上好!\n" + twitter_realTime + "\n" + twitter_wholeDay + '\n' + iciba + '\n' + huangli
     # print(msg)
     return msg
 
@@ -189,38 +171,96 @@ def get_context():
 def SentChatRoomsMsg(name, context):
     itchat.get_chatrooms(update=True)
     iRoom = itchat.search_chatrooms(name)
+    userName = ''
     for room in iRoom:
         if room['NickName'] == name:
             userName = room['UserName']
             break
+
     itchat.send_msg(context, userName)
     print("发送时间：" + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
     print("发送到：" + name)
     print("发送内容：" + context)
     print("*********************************************************************************")
-    scheduler.print_jobs()
+    # scheduler.print_jobs()
 
+def get_context_1145():
+    msg = "各位老乡中午好，吃饭啦"
+    return msg
+
+
+def get_context_1730():
+    msg = "各位老乡晚上好，吃饭啦"
+    return msg
 
 def loginCallback():
     print("***登录成功***")
+
+
 def exitCallback():
     print("***已退出***")
 
-itchat.auto_login(hotReload=True, loginCallback=loginCallback, exitCallback=exitCallback)
-scheduler = BlockingScheduler()
-for sent_chatroom in chatroom_list:
-    scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=11, minute=48,
-                      kwargs={"name": sent_chatroom, "context": get_context()})
-    print("任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context())
-    print("******************************************************************************\n")
-scheduler.start()
+
+# 使用Python itchat接口对自动对微信群朋友定时问候（发送天气预报、黄历、每日一句）
+# itchat是一个支持微信控制的接口，可以对发送和接收的微信消息进行定制，网上有很多现成的实例，
+# 该API的使用可以参考http://itchat.readthedocs.io/zh/latest/，上面写得很详细，并且有实例，
+# 本文在此基础上参考了网络上的部分代码，完成每天上午自动对几个群的朋友进行问候，发送问候语、
+# 黄历和每日一句。其中黄历使用了极数据的黄历接口，见https://www.jisuapi.com/，
+# 但是该接口有使用100次的限制，也可以使用聚合数据接口，这个没有次数限制。每日一句使用了爱词霸的每日一句接口，
+# 网上有很多例子可供参考。天气预报使用了中国天气网数据，将城市代码换成自己所在城市的即可。代码比较简单，
+# 使用Pyhton3.6，功能已实现，贴出来供参考，下一步工作是将杂乱的功能函数封装成类，使代码更加紧凑。
+# ---------------------
 
 
-# name = '八里关镇微信群'
-# context =get_context()
-#若为Linux服务器如下，否则二维码显示不正常。如部分的linux系统，块字符的宽度为一个字符（正常应为两字符），故赋值为2
-# itchat.auto_login(hotReload=True, enableCmdQR=2, loginCallback=loginCallback, exitCallback=exitCallback)
+cityList_bsgs = [
+    {'code': '101110805', 'name': " 洋县"}
+]
+# http://www.weather.com.cn/weather1d/101110805.shtml#input
+# http://forecast.weather.com.cn/town/weather1dn/101110805001.shtml#input
+# {'code': '101110805001', 'name': " 八里关镇"}
+chatroom_list = ['八里关镇便民交流群', '洋县生活圈']
+# chatroom_list = ['洋县生活圈','搞笑能量军团']
 
+
+
+
+def job(name):
+    print("her name is : ", name)
+
+
+if __name__ == "__main__":
+    scheduler = BlockingScheduler()
+    # 若为Linux服务器如下，否则二维码显示不正常。如部分的linux系统，块字符的宽度为一个字符（正常应为两字符），故赋值为2
+    # itchat.auto_login(hotReload=True, enableCmdQR=2, loginCallback=loginCallback, exitCallback=exitCallback)
+    itchat.auto_login(hotReload=True, enableCmdQR=2, loginCallback=loginCallback, exitCallback=exitCallback)
+    # for sent_chatroom in chatroom_list:
+    #     itchat.get_chatrooms(update=True)
+    #     iRoom = itchat.search_chatrooms(sent_chatroom)
+    #     for room in iRoom:
+    #         if room['NickName'] == sent_chatroom:
+    #             userName = room['UserName']
+    #             print('微信群:' + sent_chatroom + ' ' + userName)
+    #             # break
+
+        #
+        # scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=6, minute=30,
+        #                   kwargs={"name": sent_chatroom, "context": get_context()})
+        # scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=11, minute=45,
+        #                   kwargs={"name": sent_chatroom, "context": get_context_1145()})
+        # scheduler.add_job(SentChatRoomsMsg, 'cron', day_of_week='0-6', hour=17, minute=30,
+        #                   kwargs={"name": sent_chatroom, "context": get_context_1730()})
+        # print("\n任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context())
+        # print("\n任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context_1145())
+        # print("\n任务" + ":\n" + "待发送到：" + sent_chatroom + "\n" + "待发送内容：" + get_context_1730())
+        # print("******************************************************************************\n")
+
+        schedule.every().day.at("10:30").do(job)
+
+
+    itchat.run()
+    print("*********************************************tchat.run************************************")
+    scheduler.start()
+    print("*********************************************scheduler.start************************************")
 
 
 
